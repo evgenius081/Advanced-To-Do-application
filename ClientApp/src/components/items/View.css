@@ -1,0 +1,43 @@
+#item-title{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    margin-bottom: 40px;
+}
+
+#root #item-title h2{
+    width: auto;
+    margin-bottom: 0;
+}
+
+#edit-item, #delete-item{
+    border: none;
+    outline: none;
+    background: none;
+    height: 80%;
+    margin-bottom: 1px;
+}
+
+#edit-item{
+    margin-left: 15px;
+}
+
+#delete-item{
+    color: #d32f2f;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.fa-2x{
+    font-size: 1.25em;
+}
+
+#edit-item i{
+    line-height: 80%;
+    height: 80%
+}
+
+#item-folder-container a{
+    font-weight: bold;
+    text-decoration: underline;
+}

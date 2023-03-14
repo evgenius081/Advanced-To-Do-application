@@ -1,0 +1,36 @@
+.view-today-header{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#items{
+    padding-top: 30px;
+}
+
+@media only screen and (max-width: 700px) {
+    .view-today-header{
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .view-today-header .view-controls{
+        justify-content: flex-end;
+        padding-top: 0;
+    }
+
+    .separator hr{
+        width: 35%;
+    }
+}
+
+@media only screen and (max-device-width: 700px) {
+    .view-header .add-item{
+        padding: 0
+    }
+
+    .separator hr{
+        width: 35%;
+    }
+}

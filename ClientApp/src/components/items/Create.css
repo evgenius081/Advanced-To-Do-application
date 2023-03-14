@@ -1,0 +1,78 @@
+form{
+    width: 80%;
+}
+
+.input-group{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+}
+
+#deadline-input{
+    cursor: pointer;
+}
+
+.btn-group{
+    display: flex;
+    align-items: flex-end;
+}
+
+.btn-group.dropdown .dropdown-toggle{
+    width: 100%;
+    height: 44.5px;
+    text-align: left;
+    position: relative;
+}
+
+.btn-group .dropdown-toggle:hover, .btn-group .dropdown-toggle, .btn-group .dropdown-toggle:focus, .btn-group .dropdown-toggle:checked, .btn-group .btn.show, .btn-group .btn.show:focus{
+    background: #eeeeee;
+    color: #000
+}
+
+.input-group .btn-group .dropdown-toggle::after{
+    right: 0.75rem;
+    position: absolute;
+    top: calc(50% - 3px);
+    display: block;
+}
+
+.btn-group .dropdown-item:active{
+    background: transparent;
+    color: #000
+}
+
+.btn-group{
+    margin-bottom: 1rem;
+    width: 268px;
+}
+
+.form-check-input{
+    width: 10px;
+    height: 10px
+}
+
+.btn-group .dropdown-item.active, .btn-group .dropdown-item:hover{
+    color: #000;
+    background: #eee;
+}
+
+.from-group .btn-group .dropdown-toggle::after{
+    display: block;
+}
+
+#todo-entry-description{
+    min-height: 400px
+}
+
+@media only screen and (max-device-width: 460px){
+    .input-group .form-group, .input-group .btn-group{
+        width: 100%
+    }
+}
+
+@media only screen and (max-width: 460px){
+    .input-group .form-group, .input-group .btn-group{
+        width: 100%
+    }
+}

@@ -1,0 +1,21 @@
+form{
+    width: 100%
+}
+
+/* label{
+    margin-bottom: 0.5rem
+} */
+
+.form-group{
+    margin-bottom: 1rem
+}
+
+#list-archived-input{
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-check-label{
+    margin-left: 10px
+}

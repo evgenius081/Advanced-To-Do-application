@@ -1,0 +1,426 @@
+.view-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.add-list{
+    padding: 0 10px;
+    border-radius: 18px;
+    background: #0086c3;
+}
+
+.view-header #add{
+    width: 114px;
+    height: 36px;
+    border-radius: 18px;
+    background: #0086c3;
+    color: #fff;
+    font-size: 36px;
+    line-height: 28px;
+    display: flex;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.add-list p{
+    margin-bottom: 0;
+    text-align: left;
+    line-height: 36px;
+    font-size: 22px;
+    color: #fff
+}
+
+.lists-container .completed {
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lists-container article{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f5f5f5;
+    margin: 1rem 0;
+    border-radius: 10px;
+    padding: 0.5rem 0 0.5rem 0.75rem;
+    height: 50px;
+    transition: all 0.3s ease;
+}
+
+.lists-container article:hover{
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#todo-lists-list, #archived-todo-lists-list{
+    margin-bottom: 1rem;
+}
+
+.list-title a{
+    text-decoration: none;
+}
+
+.completed-text {
+    vertical-align: middle;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.completed-text span, .completed-text p{
+    margin-bottom: 10px;
+}
+
+.completed-status-comp, .completed-status-proc, .completed-status-not-st {
+    font-size: 14px;
+    padding: 3px 7px;
+    height: 20px;
+    border-radius: 10px;
+    white-space: nowrap;
+    line-height: 14px;
+}
+
+.item-status .completed-status-comp, .item-status .completed-status-proc, .item-status .completed-status-not-st {
+    font-size: 18px;
+    width: 105px;
+    display: block;
+    height: 30px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.completed-status-comp {
+    background-color: #43a047;
+    color: #fff;
+}
+
+.list-controls{
+    text-align: right;
+    margin-left: 10px
+}
+
+.list-controls .dropend{
+    margin-bottom: 0;
+    width: auto;
+    height: 50px;
+}
+
+.list-controls .btn-group.dropend .dropdown-toggle{
+    width: 30px;
+    height: 50px;
+    text-align: right;
+    vertical-align: middle;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 0.75rem 0 0;
+    border: none;
+    background: none;
+}
+
+.list-controls .dropend .dropdown-toggle::after{
+    display: none;
+}
+
+.list-controls .btn.btn-primary:focus, .list-controls.btn.btn-primary.focus {
+    box-shadow: none;
+}
+
+.list-controls .btn.btn-primary:not(:disabled):not(.disabled):active,
+.list-controls .btn.btn-primary:not(:disabled):not(.disabled).active{
+    background: none;
+    box-shadow: none;
+}
+
+.list-controls .btn-group.show.dropend .dropdown-toggle.show{
+    background: none;
+}
+
+#todo-lists-list .list-controls .dropdown-menu{
+    min-width: 0;
+    padding: 0.25rem 0;
+    transform: translate(40px, 0px) !important;
+}
+
+#archived-todo-lists-list .list-controls .dropdown-menu{
+    min-width: 0;
+    padding: 0.25rem 0;
+    transform: translate(40px, 0px) !important;
+}
+
+.list-controls .dropdown-menu .dropdown-item{
+    padding: 0;
+}
+
+.list-controls .dropdown-menu .dropdown-item:hover{
+    background: none;
+}
+
+#todo-lists-list .dropdown-menu.show button.dropdown-toggle, #archived-todo-lists-list .dropdown-menu.show button.dropdown-toggle {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    height: 36px;
+}
+
+.copy{
+    width: 100%;
+}
+
+.delete-list, .edit-list{
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    display: block;
+}
+
+.edit-list{
+    text-decoration: none;
+    color: #000;
+    transition: all 0.3s ease;
+}
+
+.edit-list:hover{
+    color: #0086c3;
+}
+
+.dropdown-menu.show .dropdown-toggle.dropdown-item{
+    width: auto;
+}
+
+.dearchive, .archive, .copy{
+    background: none;
+    border: none;
+    outline: none;
+    padding: 0.25rem 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.dearchive:hover, .archive:hover{
+    color: #0086c3;
+}
+
+.delete-list{
+    color: #d32f2f;
+}
+
+.accept-deleting-list, .close-deleting-list{
+    color: #fff;
+    border: none;
+    outline: none;
+    height: 35px;
+    width: 70px;
+    border-radius: 5px;
+}
+
+.accept-deleting-list{
+    background-color: #d32f2f;
+}
+
+.close-deleting-list{
+    background-color: #0086c3;
+}
+
+.completed-status-proc {
+    background-color: #fdd835;
+    color: #000;
+}
+
+.completed-status-not-st {
+    background-color: #e0e0e0;
+    color: #000;
+}
+
+.completed-bar {
+    width: 268px;
+    height: 10px;
+    background: #e0e0e0;
+    display: inline-block;
+    position: relative;
+    border-radius: 5px;
+}
+
+.comp-completed-bar {
+    position: absolute;
+    height: 100%;
+    left: 0;
+    background: #43a047;
+    border-radius: 5px;
+}
+
+.proc-completed-bar {
+    position: absolute;
+    height: 100%;
+    left: 0;
+    background: #fdd835;
+    border-radius: 5px;
+}
+
+@media only screen and (max-device-width: 992px) {
+    .view-header #add {
+        width: 36px;
+        padding: 0;
+    }
+
+    .view-header .add-list{
+        width: 36px;
+        padding: 0;
+    }
+
+    #add p:first-child{
+        display: none;
+    }
+
+    .add-list #add p:last-child {
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .view-header #add {
+        width: 36px;
+        padding: 0;
+    }
+
+    .view-header .add-list{
+        width: 36px;
+        padding: 0;
+    }
+
+    #add p:first-child{
+        display: none;
+    }
+
+    .add-list #add p:last-child {
+        text-align: center;
+    }
+}
+
+@media only screen and (max-device-width: 900px) {
+    .list-controls .dropdown-menu{
+        min-width: 0;
+        padding: 0.25rem 0;
+    }
+
+    #todo-lists-list .list-controls .dropdown-menu{
+        min-width: 0;
+        padding: 0.25rem 0;
+        transform: translate(-40px, 0px) !important;
+    }
+
+    #archived-todo-lists-list .list-controls .dropdown-menu{
+        min-width: 0;
+        padding: 0.25rem 0;
+        transform: translate(-40px, 0px) !important;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    #todo-lists-list article, #archived-todo-lists-list article{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        min-height:90px;
+        background: #eeeeee;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding-right: 0.75rem;
+    }
+
+    .list-controls .dropend{
+        height: auto;
+    }
+
+    .list-controls .btn-group.dropend .dropdown-toggle{
+        height: auto;
+        padding: 0.75rem;
+    }
+
+    .completed-text{
+        justify-content: flex-start;
+    }
+
+    .list-title{
+        width: calc(100% - 20px)
+    }
+
+    #todo-lists-list div{
+        border: none;
+    }
+
+    .list-controls a{
+        visibility: visible;
+    }
+}
+
+@media only screen and (max-device-width: 700px) {
+    #todo-lists-list article, #archived-todo-lists-list article{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        min-height:90px;
+        background: #eeeeee;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding-right: 0.75rem;
+    }
+
+    .list-controls .dropend{
+        height: auto;
+    }
+
+    .list-controls .btn-group.dropend .dropdown-toggle{
+        height: auto;
+        padding: 0.75rem;
+    }
+
+    .dropdown-menu.show .dropdown-toggle.dropdown-item{
+        padding: 0;
+    }
+
+    .completed-text{
+        justify-content: flex-start;
+    }
+
+    .list-title{
+        width: calc(100% - 20px)
+    }
+
+    #todo-lists-list div{
+        border: none;
+    }
+
+    .list-controls a{
+        visibility: visible;
+    }
+}
+
+@media only screen and (max-device-width: 500px){
+    .view-header p:first-child{
+        display: none;
+    }
+    .add-list #add{
+        width: 36px;
+    }
+
+    .view-header .add-list{
+        padding: 0
+    }
+
+    .add-list #add p:last-child{
+        text-align: center;
+    }
+
+}
