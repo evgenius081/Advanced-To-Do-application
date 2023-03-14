@@ -1,6 +1,13 @@
 # To-Do Application
 ToDo application created with **ASP.NET Web API** on the backend and **React** on the frontend. 
 
+## Used technologies
+On the frontend just `React` was used. On the backend, following technologies were used:
+- AspNetCore
+- EntityFramework
+- JWT tokens
+- NUnit
+- StyleCop
 
 ## Install
 First of all, you will need to download project code. The easiest way is to clone it using git:
