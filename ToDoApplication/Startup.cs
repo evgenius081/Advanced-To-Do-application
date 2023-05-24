@@ -63,7 +63,7 @@ namespace ToDoApplication
                    x.TokenValidationParameters = new TokenValidationParameters
                    {
                        ValidateIssuerSigningKey = true,
-                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("A_VERY_SECRET_SECURITY_KEY_FOR_JWT_AUTH")),
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Configuration.GetSection("JWT").Value)),
                        ValidateAudience = false,
                        ValidateIssuer = false,
                    };
@@ -92,7 +92,7 @@ namespace ToDoApplication
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins(this.Configuration.GetSection("Frontend").Value));
 
             app.UseAuthentication();
             app.UseRouting();

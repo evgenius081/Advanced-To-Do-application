@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ToDoApplication.DTOs;
 using ToDoApplication.Services.Interfaces;
@@ -17,18 +18,22 @@ namespace ToDoApplication.Services
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private readonly IConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountService"/> class.
         /// </summary>
         /// <param name="userManager">Manager for user in persistance store.</param>
         /// <param name="signInManager">Manager for signing in/out user.</param>
+        /// <param name="configuration">Configuration.</param>
         public AccountService(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            IConfiguration configuration)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.configuration = configuration;
         }
 
         /// <inheritdoc/>
@@ -43,7 +48,7 @@ namespace ToDoApplication.Services
                 if ((await this.signInManager.PasswordSignInAsync(user, userLogin.Password, false, false)).Succeeded)
                 {
                     var tokenHandler = new JwtSecurityTokenHandler();
-                    var seckey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("A_VERY_SECRET_SECURITY_KEY_FOR_JWT_AUTH"));
+                    var seckey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.configuration.GetSection("JWT").Value));
                     var signingCreds = new SigningCredentials(seckey, SecurityAlgorithms.HmacSha256Signature);
                     var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
                     {
