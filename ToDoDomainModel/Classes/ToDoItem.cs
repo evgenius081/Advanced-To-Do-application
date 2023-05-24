@@ -45,20 +45,15 @@ namespace TODOListDomainModel.Classes
         public DateTime Deadline { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether <see cref="ToDoItem"/> is hidden.
+        /// Gets or sets priority of <see cref="ToDoList"/>.
         /// </summary>
         [Required]
-        public bool IsHidden { get; set; }
+        public Priority Priority { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to remind that there is one hour till <see cref="ToDoItem.Deadline"/> left.
         /// </summary>
         public bool Remind { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether <see cref="ToDoItem"/> is starred.
-        /// </summary>
-        public bool Starred { get; set; }
 
         /// <summary>
         /// Gets or sets Guid of ToDoList this item belongs to.
@@ -73,9 +68,9 @@ namespace TODOListDomainModel.Classes
         public virtual ToDoList TodoList { get; set; }
 
         /// <summary>
-        /// Gets or sets statusof <see cref="ToDoList"/> completeness.
+        /// Gets or sets ItemStatus of <see cref="ToDoList"/> completeness.
         /// </summary>
         [Required]
-        public Status Status { get; set; }
+        public ItemStatus Status { get; set; }
     }
 }

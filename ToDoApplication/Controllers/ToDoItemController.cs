@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ToDoApplication.Services.Interfaces;
 using TODOListDomainModel.Classes;
 using TODOListDomainModel.Interfaces;
 
@@ -16,18 +17,15 @@ namespace ToDoApplication.Controllers
     [Route("items")]
     public class ToDoItemController : ControllerBase
     {
-        private readonly IRepository<ToDoItem> itemRepository;
-        private readonly IRepository<ToDoList> listRepository;
+        private readonly IToDoItemService toDoItemService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToDoItemController"/> class.
         /// </summary>
-        /// <param name="itemRepository">Repository for <see cref="ToDoItem"/>.</param>
-        /// <param name="listRepository">Repository for <see cref="ToDoList"/>.</param>
-        public ToDoItemController(IRepository<ToDoItem> itemRepository, IRepository<ToDoList> listRepository)
+        /// <param name="toDoItemService">Service for <see cref="ToDoList"/>.</param>
+        public ToDoItemController(IToDoItemService toDoItemService)
         {
-            this.itemRepository = itemRepository;
-            this.listRepository = listRepository;
+            this.toDoItemService = toDoItemService;
         }
 
         /// <summary>
@@ -35,9 +33,9 @@ namespace ToDoApplication.Controllers
         /// </summary>
         /// <returns>Http response with the list of all <see cref="ToDoItem"/>.</returns>
         [HttpGet]
-        public async Task<ActionResult> GetAllItems()
+        public ActionResult GetAllItems()
         {
-            var items = await this.itemRepository.GetAll();
+            var items = this.toDoItemService.GetAllItems();
             return this.Ok(items);
         }
 
@@ -50,15 +48,7 @@ namespace ToDoApplication.Controllers
         [Route("list/{id:int}")]
         public async Task<IActionResult> GetItemsByListID(int id)
         {
-            var list = await this.listRepository.GetByID(id);
-
-            if (list == null)
-            {
-                return this.NotFound();
-            }
-
-            var items = await this.itemRepository.GetAll();
-            var listItems = items.Where(i => i.ToDoListID == id).ToList();
+            var listItems = await this.GetItemsByListID(id);
             return this.Ok(listItems);
         }
 
@@ -68,11 +58,9 @@ namespace ToDoApplication.Controllers
         /// <returns>Ok response with list of <see cref="ToDoItem"/> which <see cref="ToDoItem.Deadline"/> is due today.</returns>
         [HttpGet]
         [Route("today")]
-        public async Task<IActionResult> GetToday()
+        public IActionResult GetToday()
         {
-            var items = await this.itemRepository.GetAll();
-            var todayItems = items.Where(i => i.Deadline.Date == DateTime.Now.Date).ToList();
-
+            var todayItems = this.toDoItemService.GetItemsByDate(DateTime.Now.Date);
             return this.Ok(todayItems);
         }
 
@@ -82,15 +70,9 @@ namespace ToDoApplication.Controllers
         /// <returns>Ok response with list of <see cref="ToDoItem"/> which <see cref="ToDoItem.Deadline"/> is due today.</returns>
         [HttpGet]
         [Route("remind")]
-        public async Task<ActionResult> GetReminded()
+        public ActionResult GetReminded()
         {
-            var items = await this.itemRepository.GetAll();
-            var remindedItems = items.Where(i =>
-            (i.Deadline.Subtract(DateTime.Now).TotalMinutes <= 60) &&
-            (i.Deadline.Subtract(DateTime.Now).TotalMinutes >= 0) &&
-            (i.Status != Status.Completed) &&
-            i.Remind).ToList();
-
+            var remindedItems = this.toDoItemService.GetItemsForReminder();
             return this.Ok(remindedItems);
         }
 
@@ -100,11 +82,10 @@ namespace ToDoApplication.Controllers
         /// <returns>Ok response with all <see cref="ToDoItem"/> that have <see cref="ToDoItem.Starred"/> set.</returns>
         [HttpGet]
         [Route("starred")]
-        public async Task<ActionResult> GetStarred()
+        public ActionResult GetStarred()
         {
-            var items = await this.itemRepository.GetAll();
-
-            return this.Ok(items.Where(item => item.Starred).ToList());
+            var starredItems = this.toDoItemService.GetItemsByPriority(Priority.Top);
+            return this.Ok(starredItems);
         }
 
         /// <summary>
@@ -116,7 +97,7 @@ namespace ToDoApplication.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> GetItemByID(int id)
         {
-            var item = await this.itemRepository.GetByID(id);
+            var item = await this.toDoItemService.GetItem(id);
             if (item == null)
             {
                 return this.NotFound();
@@ -128,40 +109,28 @@ namespace ToDoApplication.Controllers
         /// <summary>
         /// Handles request for updating <see cref="ToDoItem"/> by specified <see cref="ToDoItem.Id"/>.
         /// </summary>
-        /// <param name="id"><see cref="ToDoItem.Id"/> to be searched by.</param>
         /// <param name="item">Updated <see cref="ToDoItem"/>.</param>
         /// <returns>BadRequest response if <see cref="ToDoItem"/> is empty or <see cref="ToDoItem.Id"/> in query and <see cref="ToDoItem.Id"/> in <see cref="ToDoItem"/> (or <see cref="ToDoItem.Id"/> in found item and <see cref="ToDoItem"/> in sent <see cref="ToDoItem"/>) are different, NotFound response if there is no such <see cref="ToDoItem"/>, Ok response with the updated <see cref="ToDoItem"/>.</returns>
         [HttpPut]
-        [Route("{id:int}")]
-        public async Task<IActionResult> EditItem(int id, [FromBody] ToDoItem item)
+        public async Task<IActionResult> UpdateItem([FromBody] ToDoItem item)
         {
-            if (item == null)
+            try
             {
-                return this.BadRequest("Sent item object is empty.");
+                var updatedItem = await this.toDoItemService.UpdateItem(item);
+                return this.Ok(updatedItem);
             }
-
-            if (item.Id != id)
+            catch (ArgumentNullException ex)
             {
-                return this.BadRequest("Id in query and Id of object are different.");
+                return this.BadRequest(ex.Message);
             }
-
-            var foundItem = await this.itemRepository.GetByID(id);
-
-            if (foundItem == null)
+            catch (ArgumentException)
             {
                 return this.NotFound();
             }
-
-            if (foundItem.ToDoListID != item.ToDoListID)
+            catch (InvalidOperationException ex)
             {
-                return this.BadRequest("ToDo item Id in real object and ToDo item Id of sent object are different.");
+                return this.BadRequest(ex.Message);
             }
-
-            item.TodoList = foundItem.TodoList;
-
-            this.itemRepository.Update(item);
-
-            return this.Ok(item);
         }
 
         /// <summary>
@@ -172,23 +141,19 @@ namespace ToDoApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem([FromBody] ToDoItem item)
         {
-            if (item == null)
+            try
             {
-                return this.BadRequest("Passed object is empty.");
+                var createdItem = await this.toDoItemService.AddItem(item);
+                return this.Created("todolists", createdItem);
             }
-
-            var list = await this.listRepository.GetByID(item.ToDoListID);
-
-            if (list == null)
+            catch (ArgumentNullException ex)
             {
-                return this.BadRequest("There is no ToDo list with this ID.");
+                return this.BadRequest(ex.Message);
             }
-
-            item.TodoList = list;
-
-            await this.itemRepository.Insert(item);
-
-            return this.Created("todolists", item);
+            catch (ArgumentException ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -198,18 +163,17 @@ namespace ToDoApplication.Controllers
         /// <returns>NotFound response in case there is no such <see cref="ToDoItem"/> or Accepted response in case it was successfully deleted.</returns>
         [HttpDelete]
         [Route("{id:int}")]
-        public async Task<IActionResult> DeleteItem(int id)
+        public IActionResult DeleteItem(int id)
         {
-            var foundItem = await this.itemRepository.GetByID(id);
-
-            if (foundItem == null)
+            try
+            {
+                this.toDoItemService.DeleteItem(id);
+                return this.Accepted();
+            }
+            catch (InvalidOperationException)
             {
                 return this.NotFound();
             }
-
-            this.itemRepository.Delete(foundItem);
-
-            return this.Accepted();
         }
     }
 }

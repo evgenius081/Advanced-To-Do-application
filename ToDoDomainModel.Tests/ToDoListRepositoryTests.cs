@@ -202,7 +202,7 @@ namespace ToDoListApplication.Tests
             var repo = new ToDoListRepository(this.context);
 
             // Assert
-            Assert.DoesNotThrow(() => repo.Delete(todo));
+            Assert.DoesNotThrow(() => repo.Delete(todo.Id));
             Assert.IsTrue(this.context.ToDoLists.ToList().Count == 0);
         }
 
@@ -214,30 +214,16 @@ namespace ToDoListApplication.Tests
         {
             // Arrange
             var todo = new ToDoList { Title = "Title" };
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = ItemStatus.NotStarted };
             this.context.ToDoLists.Add(todo);
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoListRepository(this.context);
 
             // Assert
-            Assert.DoesNotThrow(() => repo.Delete(todo));
+            Assert.DoesNotThrow(() => repo.Delete(todo.Id));
             Assert.IsTrue(!this.context.ToDoLists.Any());
             Assert.IsTrue(!this.context.Items.Any());
-        }
-
-        /// <summary>
-        /// Tests deleteing <see cref="ToDoList"/> object in case it's null.
-        /// </summary>
-        [Test]
-        public void DeleteNullException()
-        {
-            // Arrange
-            var repo = new ToDoListRepository(this.context);
-
-            // Assert
-            Assert.Throws<ArgumentNullException>(() => repo.Delete((ToDoList)null));
-            Assert.IsTrue(!this.context.ToDoLists.Any());
         }
 
         /// <summary>
@@ -252,7 +238,7 @@ namespace ToDoListApplication.Tests
             var repo = new ToDoListRepository(this.context);
 
             // Assert
-            Assert.Throws<ArgumentException>(() => repo.Delete(todo));
+            Assert.Throws<ArgumentException>(() => repo.Delete(todo.Id));
             Assert.IsTrue(!this.context.ToDoLists.Any());
         }
 
@@ -271,7 +257,7 @@ namespace ToDoListApplication.Tests
             var repo = new ToDoListRepository(this.context);
 
             // Assert
-            Assert.Throws<ArgumentException>(() => repo.Delete(todo2));
+            Assert.Throws<ArgumentException>(() => repo.Delete(todo2.Id));
             Assert.IsTrue(this.context.ToDoLists.Count() == 1);
         }
 
@@ -343,7 +329,7 @@ namespace ToDoListApplication.Tests
         /// </summary>
         /// <returns>Void async function result.</returns>
         [Test]
-        public async Task GetAllCorrect()
+        public void GetAllCorrect()
         {
             // Arrange
             var todo1 = new ToDoList { Title = "Title" };
@@ -355,7 +341,7 @@ namespace ToDoListApplication.Tests
             var repo = new ToDoListRepository(this.context);
 
             // Act
-            var res = await repo.GetAll().ConfigureAwait(true);
+            var res = repo.GetAll().ToList();
 
             // Assert
             Assert.IsTrue(res.Count == 2);
@@ -368,13 +354,13 @@ namespace ToDoListApplication.Tests
         /// </summary>
         /// <returns>Void async function result.</returns>
         [Test]
-        public async Task GetAllNotFound()
+        public void GetAllNotFound()
         {
             // Arrange
             var repo = new ToDoListRepository(this.context);
 
             // Act
-            var res = await repo.GetAll().ConfigureAwait(true);
+            var res = repo.GetAll().ToList();
 
             // Assert
             Assert.IsTrue(res.Count == 0);

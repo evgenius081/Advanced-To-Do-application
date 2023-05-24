@@ -28,28 +28,20 @@ namespace TODOListDomainModel.Repositories
         }
 
         /// <inheritdoc/>
-        /// <exception cref="ArgumentNullException">Thrown if object is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is no such <see cref="ToDoItem"/> in database.</exception>
-        public void Delete(ToDoItem item)
+        public void Delete(int id)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item), "ToDoItem object must not be null.");
-            }
-
-            if (!this.context.Items.Contains(item))
-            {
-                throw new ArgumentException("There is no such ToDoItem in database.");
-            }
+            var item = this.context.Items.SingleOrDefault(x => x.Id == id) ??
+                throw new ArgumentException("There is no such object in database with this id.");
 
             this.context.Items.Remove(item);
             this.context.SaveChanges();
         }
 
         /// <inheritdoc />
-        public async Task<List<ToDoItem>> GetAll()
+        public IQueryable<ToDoItem> GetAll()
         {
-            return await this.context.Items.Include(i => i.TodoList).ToListAsync();
+            return this.context.Items.Include(i => i.TodoList);
         }
 
         /// <inheritdoc/>
@@ -97,9 +89,8 @@ namespace TODOListDomainModel.Repositories
             entryFound.Description = item.Description;
             entryFound.Deadline = item.Deadline;
             entryFound.Status = item.Status;
-            entryFound.IsHidden = item.IsHidden;
             entryFound.Remind = item.Remind;
-            entryFound.Starred = item.Starred;
+            entryFound.Priority = item.Priority;
             this.context.SaveChanges();
         }
 

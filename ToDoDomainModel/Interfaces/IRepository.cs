@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TODOListDomainModel.Classes;
 
@@ -28,7 +29,7 @@ namespace TODOListDomainModel.Interfaces
         /// Gets all ToDo lists, marked as not hidden.
         /// </summary>
         /// <returns>List of objects in database.</returns>
-        public Task<List<TEntity>> GetAll();
+        public IQueryable<TEntity> GetAll();
 
         /// <summary>
         /// Gets object by ID from datab.
@@ -40,7 +41,7 @@ namespace TODOListDomainModel.Interfaces
         /// <summary>
         /// Delete ToDo list object form database.
         /// </summary>
-        /// <param name="t">Object to be deleted from database.</param>
-        public void Delete(TEntity t);
+        /// <param name="id">Id of object to be deleted from database.</param>
+        public void Delete(int id);
     }
 }

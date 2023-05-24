@@ -27,28 +27,20 @@ namespace TODOListDomainModel.Repositories
         }
 
         /// <inheritdoc/>
-        /// <exception cref="ArgumentNullException">Thrown if <see cref="ToDoList"/> is null.</exception>
         /// <exception cref="ArgumentException">Thrown if there is no such <see cref="ToDoList"/> in database.</exception>
-        public void Delete(ToDoList todo)
+        public void Delete(int id)
         {
-            if (todo == null)
-            {
-                throw new ArgumentNullException(nameof(todo), "ToDo List object must not be null.");
-            }
-
-            if (!this.context.ToDoLists.Contains(todo))
-            {
+            var todo = this.context.ToDoLists.SingleOrDefault(l => l.Id == id) ??
                 throw new ArgumentException("There is no such ToDo List in database.");
-            }
 
             this.context.ToDoLists.Remove(todo);
             this.context.SaveChanges();
         }
 
         /// <inheritdoc/>
-        public async Task<List<ToDoList>> GetAll()
+        public IQueryable<ToDoList> GetAll()
         {
-            return await this.context.ToDoLists.Include(l => l.Items).ToListAsync();
+            return this.context.ToDoLists.Include(l => l.Items);
         }
 
         /// <inheritdoc/>

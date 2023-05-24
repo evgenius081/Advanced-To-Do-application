@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ToDoApplication.Context;
+using ToDoApplication.Services;
+using ToDoApplication.Services.Interfaces;
 using TODOListDomainModel.Classes;
 using TODOListDomainModel.Context;
 using TODOListDomainModel.Interfaces;
@@ -70,6 +72,9 @@ namespace ToDoApplication
             services.AddControllers();
             services.AddScoped<IRepository<ToDoList>, ToDoListRepository>();
             services.AddScoped<IRepository<ToDoItem>, ToDoItemRepository>();
+            services.AddScoped<IToDoItemService, ToDoItemService>();
+            services.AddScoped<IToDoListService, ToDoListService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             services.AddCors();
         }

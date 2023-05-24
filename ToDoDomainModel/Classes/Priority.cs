@@ -5,23 +5,23 @@ using System.Text;
 namespace TODOListDomainModel.Classes
 {
     /// <summary>
-    /// Represents possible statuses of <see cref="ToDoItem" />.
+    /// Represents possible priorities for <see cref="ToDoItem"/>.
     /// </summary>
-    public enum ItemStatus
+    public enum Priority
     {
         /// <summary>
-        /// ToDo item was not started.
+        /// Default status.
         /// </summary>
-        NotStarted,
+        Default,
 
         /// <summary>
-        /// ToDo item is in process.
+        /// Item is hidden.
         /// </summary>
-        InProcess,
+        Low,
 
         /// <summary>
-        /// ToDo item is completed.
+        /// Item is starred.
         /// </summary>
-        Completed,
+        Top,
     }
 }

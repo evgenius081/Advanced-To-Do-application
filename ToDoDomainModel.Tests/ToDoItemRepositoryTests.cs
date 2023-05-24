@@ -75,7 +75,7 @@ namespace ToDoListApplication.Tests
         public void InsertCorrectEmptyDatabase()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
@@ -90,8 +90,8 @@ namespace ToDoListApplication.Tests
         public void InsertCorrectNotEmptyDatabase()
         {
             // Arrange
-            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
-            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
+            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item1);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -121,7 +121,7 @@ namespace ToDoListApplication.Tests
         public void InsertExceptionToDoListIdDoesNotMatch()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id + 1, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id + 1, Status = ItemStatus.NotStarted };
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
@@ -138,7 +138,7 @@ namespace ToDoListApplication.Tests
             // Arrange
             this.context.ToDoLists.RemoveRange(this.context.ToDoLists);
             this.context.SaveChanges();
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
@@ -154,7 +154,7 @@ namespace ToDoListApplication.Tests
         {
             // Arrange
             var todo1 = new ToDoList { Title = "List title 1" };
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = todo1, ToDoListID = todo1.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = todo1, ToDoListID = todo1.Id, Status = ItemStatus.NotStarted };
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
@@ -169,7 +169,7 @@ namespace ToDoListApplication.Tests
         public void InsertExceptionAlreadyExists()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -201,7 +201,7 @@ namespace ToDoListApplication.Tests
         public void UpdateCorrect()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -233,7 +233,7 @@ namespace ToDoListApplication.Tests
         public void UpdateExceptionNoToDoListAssigned()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -250,7 +250,7 @@ namespace ToDoListApplication.Tests
         public void UpdateExceptionToDoListIdDoesNotMatch()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -268,7 +268,7 @@ namespace ToDoListApplication.Tests
         {
             // Arrange
             var todo2 = new ToDoList { Title = "List title 2" };
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -287,7 +287,7 @@ namespace ToDoListApplication.Tests
         {
             // Arrange
             var repo = new ToDoItemRepository(this.context);
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             item.Title = "New title";
 
             // Assert
@@ -302,10 +302,10 @@ namespace ToDoListApplication.Tests
         {
             // Arrange
             var repo = new ToDoItemRepository(this.context);
-            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item1);
             this.context.SaveChanges();
-            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             item1.Title = "New title";
 
             // Assert
@@ -319,27 +319,13 @@ namespace ToDoListApplication.Tests
         public void DeleteCorrect()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(-1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
-            Assert.DoesNotThrow(() => repo.Delete(item));
-            Assert.IsTrue(!this.context.Items.Any());
-        }
-
-        /// <summary>
-        /// Tests deleteing <see cref="ToDoItem"/> object in case it's null.
-        /// </summary>
-        [Test]
-        public void DeleteNullException()
-        {
-            // Arrange
-            var repo = new ToDoItemRepository(this.context);
-
-            // Assert
-            Assert.Throws<ArgumentNullException>(() => repo.Delete((ToDoItem)null));
+            Assert.DoesNotThrow(() => repo.Delete(item.Id));
             Assert.IsTrue(!this.context.Items.Any());
         }
 
@@ -350,12 +336,12 @@ namespace ToDoListApplication.Tests
         public void DeleteNotFoundEmptyDatabase()
         {
             // Arrange
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
 
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
-            Assert.Throws<ArgumentException>(() => repo.Delete(item));
+            Assert.Throws<ArgumentException>(() => repo.Delete(item.Id));
             Assert.IsTrue(!this.context.Items.Any());
         }
 
@@ -366,13 +352,13 @@ namespace ToDoListApplication.Tests
         public void DeleteNotFound()
         {
             // Arrange
-            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item1);
-            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             var repo = new ToDoItemRepository(this.context);
 
             // Assert
-            Assert.Throws<ArgumentException>(() => repo.Delete(item2));
+            Assert.Throws<ArgumentException>(() => repo.Delete(item2.Id));
             Assert.IsTrue(!this.context.Items.Any());
         }
 
@@ -385,7 +371,7 @@ namespace ToDoListApplication.Tests
             // Arrange
             var todo = new ToDoList { Title = "List title" };
             this.context.ToDoLists.Add(todo);
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
             var repo = new ToDoItemRepository(this.context);
@@ -406,7 +392,7 @@ namespace ToDoListApplication.Tests
         {
             // Arrange
             var todo = new ToDoList();
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = ItemStatus.NotStarted };
 
             var repo = new ToDoItemRepository(this.context);
 
@@ -425,10 +411,10 @@ namespace ToDoListApplication.Tests
         public async Task GetByIdNotFound()
         {
             // Arrange
-            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item1 = new ToDoItem { Title = "Item title 1", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item1);
             this.context.SaveChanges();
-            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = Status.NotStarted };
+            var item2 = new ToDoItem { Title = "Item title 2", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = this.todo, ToDoListID = this.todo.Id, Status = ItemStatus.NotStarted };
             var repo = new ToDoItemRepository(this.context);
 
             // Act
@@ -443,18 +429,18 @@ namespace ToDoListApplication.Tests
         /// </summary>
         /// <returns>Void async function result.</returns>
         [Test]
-        public async Task GetAllCorrect()
+        public void GetAllCorrect()
         {
             var todo = new ToDoList { Title = "List title" };
             this.context.ToDoLists.Add(todo);
-            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = Status.NotStarted };
+            var item = new ToDoItem { Title = "Item title", Deadline = DateTime.Now.AddDays(1), CreatedAt = DateTime.Now, TodoList = todo, ToDoListID = todo.Id, Status = ItemStatus.NotStarted };
             this.context.Items.Add(item);
             this.context.SaveChanges();
 
             var repo = new ToDoItemRepository(this.context);
 
             // Act
-            var res = await repo.GetAll().ConfigureAwait(true);
+            var res = repo.GetAll().ToList();
 
             // Assert
             Assert.IsTrue(res.Count == 1);
@@ -466,12 +452,12 @@ namespace ToDoListApplication.Tests
         /// </summary>
         /// <returns>Void async function result.</returns>
         [Test]
-        public async Task GetAllEmpty()
+        public void GetAllEmpty()
         {
             var repo = new ToDoItemRepository(this.context);
 
             // Act
-            var res = await repo.GetAll().ConfigureAwait(true);
+            var res = repo.GetAll().ToList();
 
             // Assert
             Assert.IsTrue(res.Count == 0);

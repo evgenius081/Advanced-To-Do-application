@@ -36,13 +36,10 @@ namespace TODOListDomainModel.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("bit");
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Remind")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Starred")
                         .HasColumnType("bit");
 
                     b.Property<int>("Status")
@@ -66,12 +63,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 27, 10, 31, 28, 149, DateTimeKind.Utc).AddTicks(9521),
-                            Deadline = new DateTime(2023, 3, 2, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(689),
+                            CreatedAt = new DateTime(2023, 5, 23, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(4791),
+                            Deadline = new DateTime(2023, 5, 26, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(5198),
                             Description = "Milk, bread, eggs, cheese",
-                            IsHidden = false,
+                            Priority = 2,
                             Remind = true,
-                            Starred = true,
                             Status = 0,
                             Title = "Buy groceries",
                             ToDoListID = 1
@@ -79,12 +75,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 2, 25, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4448),
-                            Deadline = new DateTime(2023, 3, 1, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4491),
+                            CreatedAt = new DateTime(2023, 5, 21, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6486),
+                            Deadline = new DateTime(2023, 5, 25, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6497),
                             Description = "Write up the findings from the experiments",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = false,
-                            Starred = false,
                             Status = 1,
                             Title = "Finish project report",
                             ToDoListID = 2
@@ -92,12 +87,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 2, 21, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4699),
-                            Deadline = new DateTime(2023, 2, 26, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4703),
+                            CreatedAt = new DateTime(2023, 5, 17, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6541),
+                            Deadline = new DateTime(2023, 5, 22, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6542),
                             Description = "Run for 30 minutes around the park",
-                            IsHidden = true,
+                            Priority = 1,
                             Remind = false,
-                            Starred = false,
                             Status = 2,
                             Title = "Go for a run",
                             ToDoListID = 3
@@ -105,12 +99,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 2, 26, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4710),
-                            Deadline = new DateTime(2023, 3, 3, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4712),
+                            CreatedAt = new DateTime(2023, 5, 22, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6544),
+                            Deadline = new DateTime(2023, 5, 27, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6545),
                             Description = "Check in with her and see how she's doing",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = false,
-                            Starred = false,
                             Status = 0,
                             Title = "Call mom",
                             ToDoListID = 3
@@ -118,12 +111,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2023, 2, 24, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4717),
-                            Deadline = new DateTime(2023, 3, 2, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4721),
+                            CreatedAt = new DateTime(2023, 5, 20, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6546),
+                            Deadline = new DateTime(2023, 5, 26, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6547),
                             Description = "Complete the coding challenge for the job application",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = false,
-                            Starred = false,
                             Status = 1,
                             Title = "Finish coding challenge",
                             ToDoListID = 2
@@ -131,12 +123,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2023, 2, 26, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4725),
-                            Deadline = new DateTime(2023, 3, 1, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4727),
+                            CreatedAt = new DateTime(2023, 5, 22, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6549),
+                            Deadline = new DateTime(2023, 5, 25, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6550),
                             Description = "Vacuum the floors and dust the surfaces",
-                            IsHidden = false,
+                            Priority = 2,
                             Remind = false,
-                            Starred = true,
                             Status = 0,
                             Title = "Clean the house",
                             ToDoListID = 1
@@ -144,12 +135,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2023, 2, 23, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4737),
-                            Deadline = new DateTime(2023, 3, 1, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4742),
+                            CreatedAt = new DateTime(2023, 5, 19, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6551),
+                            Deadline = new DateTime(2023, 5, 25, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6552),
                             Description = "Mail the birthday card to your friend",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = true,
-                            Starred = false,
                             Status = 2,
                             Title = "Send birthday card",
                             ToDoListID = 3
@@ -157,12 +147,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2023, 2, 27, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4744),
-                            Deadline = new DateTime(2023, 3, 7, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4745),
+                            CreatedAt = new DateTime(2023, 5, 23, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6553),
+                            Deadline = new DateTime(2023, 5, 31, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6554),
                             Description = "Make an appointment for a teeth cleaning",
-                            IsHidden = true,
+                            Priority = 1,
                             Remind = false,
-                            Starred = false,
                             Status = 0,
                             Title = "Schedule dentist appointment",
                             ToDoListID = 3
@@ -170,12 +159,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2023, 2, 25, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4752),
-                            Deadline = new DateTime(2023, 2, 28, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4754),
+                            CreatedAt = new DateTime(2023, 5, 21, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6556),
+                            Deadline = new DateTime(2023, 5, 24, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6556),
                             Description = "Submit the expense report for reimbursement",
-                            IsHidden = false,
+                            Priority = 2,
                             Remind = false,
-                            Starred = true,
                             Status = 1,
                             Title = "Submit expense report",
                             ToDoListID = 2
@@ -183,12 +171,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2023, 2, 22, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4757),
-                            Deadline = new DateTime(2023, 3, 3, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4763),
+                            CreatedAt = new DateTime(2023, 5, 18, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6558),
+                            Deadline = new DateTime(2023, 5, 27, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6558),
                             Description = "Read the next chapter in the book club book",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = false,
-                            Starred = false,
                             Status = 0,
                             Title = "Read book",
                             ToDoListID = 3
@@ -196,12 +183,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2023, 2, 27, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4766),
-                            Deadline = new DateTime(2023, 2, 28, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4768),
+                            CreatedAt = new DateTime(2023, 5, 23, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6560),
+                            Deadline = new DateTime(2023, 5, 24, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6561),
                             Description = "Review the agenda and prepare notes for the meeting",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = true,
-                            Starred = false,
                             Status = 1,
                             Title = "Prepare for meeting",
                             ToDoListID = 2
@@ -209,12 +195,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2023, 2, 23, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4775),
-                            Deadline = new DateTime(2023, 3, 2, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4777),
+                            CreatedAt = new DateTime(2023, 5, 19, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6562),
+                            Deadline = new DateTime(2023, 5, 26, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6563),
                             Description = "Choose and purchase a gift for the upcoming birthday",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = false,
-                            Starred = false,
                             Status = 0,
                             Title = "Buy birthday gift",
                             ToDoListID = 3
@@ -222,12 +207,11 @@ namespace TODOListDomainModel.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedAt = new DateTime(2023, 2, 27, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4780),
-                            Deadline = new DateTime(2023, 3, 1, 10, 31, 28, 150, DateTimeKind.Utc).AddTicks(4785),
+                            CreatedAt = new DateTime(2023, 5, 23, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6565),
+                            Deadline = new DateTime(2023, 5, 25, 15, 4, 27, 528, DateTimeKind.Utc).AddTicks(6565),
                             Description = "Respond to the email from your coworker",
-                            IsHidden = false,
+                            Priority = 0,
                             Remind = false,
-                            Starred = false,
                             Status = 0,
                             Title = "Reply to email",
                             ToDoListID = 2
