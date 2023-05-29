@@ -39,3 +39,14 @@ cd ClientApp
 npm run start
 ```
 4. If the browser window does not open itself, go to `http://localhost:3000`
+
+## Roadmap
+- [x] Separate controllers into controllers and services
+- [ ] Separate Application project into Application and Services
+- [ ] Separate DomainModel project into DomainModel and infrastructure
+- [ ] Dockerize solution
+- [ ] Change `IdentityUser` to my own implementation
+- [ ] Change security system
+- [ ] Change reminder notification system
+- [ ] Redesign frontend
+- [ ] Turn solution into microservices (in separate repo)
