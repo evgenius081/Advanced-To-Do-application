@@ -1,4 +1,4 @@
-# To-Do Application
+# Advanced To-Do Application
 ToDo application created with **ASP.NET Web API** on the backend and **React** on the frontend. 
 
 ## Used technologies
@@ -46,7 +46,8 @@ npm run start
 - [ ] Separate DomainModel project into DomainModel and infrastructure
 - [ ] Dockerize solution
 - [ ] Change `IdentityUser` to my own implementation
+- [ ] Remake frontend to Angular and redesign it (in separate repo)
+- [ ] Add images to items and lists
 - [ ] Change security system
 - [ ] Change reminder notification system
-- [ ] Redesign frontend
 - [ ] Turn solution into microservices (in separate repo)
