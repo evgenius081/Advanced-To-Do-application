@@ -23,9 +23,9 @@ export function Home(){
             id: -1,
             title: "",
             isArchived: false,
-            notStarted: 0,
-            inProcess: 0,
-            completed: 0
+            itemsNotStarted: 0,
+            itemsInProcess: 0,
+            itemsCompleted: 0
         },
     ]);
 
@@ -154,7 +154,7 @@ export function ListElement(props){
     const handleShow = () => setShow(true);
 
     const list = props.list
-    let all = (list.inProcess + list.completed + list.notStarted)
+    let all = (list.itemsInProcess + list.itemsCompleted + list.itemsNotStarted)
     return (
         <article>
             <div className="list-title">
@@ -162,8 +162,8 @@ export function ListElement(props){
             </div>
             <div className="completed align-middle">
                 <div className="completed-bar">
-                    <div className="proc-completed-bar" style={{"width": (list.inProcess + list.completed) * 100 /(all === 0 ? 1 : all) + "%" }}></div>
-                    <div className="comp-completed-bar" style={{"width": (list.completed * 100)/(all === 0 ? 1 : all) + "%" }}></div>
+                    <div className="proc-completed-bar" style={{"width": (list.itemsInProcess + list.itemsCompleted) * 100 /(all === 0 ? 1 : all) + "%" }}></div>
+                    <div className="comp-completed-bar" style={{"width": (list.itemsCompleted * 100)/(all === 0 ? 1 : all) + "%" }}></div>
                 </div>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>

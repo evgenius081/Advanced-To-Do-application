@@ -20,7 +20,7 @@ export async function readItem(id, token){
 }
 
 export async function updateItem(item, token){
-    return await fetch(process.env.REACT_APP_ASP_LINK+"/items/"+item.id, {
+    return await fetch(process.env.REACT_APP_ASP_LINK+"/items", {
         method: "PUT",
         headers: {
             'Accept': 'application/json',

@@ -20,6 +20,7 @@ export function ViewList(){
     let navigate = useNavigate()
 
     const [list, setList] = useState({
+        id: -1,
         title: "",
         isArchived: false
     })
