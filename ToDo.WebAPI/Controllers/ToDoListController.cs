@@ -31,9 +31,21 @@ namespace ToDo.WebAPI.Controllers
         /// </summary>
         /// <returns>Http response with the list of all <see cref="ToDoList"/>.</returns>
         [HttpGet]
+        [Route("unarchived")]
         public ActionResult GetNotArchivedLists()
         {
             var notArchivedLists = this.toDoListService.GetNotArchivedLists();
+            return this.Ok(notArchivedLists);
+        }
+
+        /// <summary>
+        /// Handles request for getting all lists.
+        /// </summary>
+        /// <returns>Http response with the list of all <see cref="ToDoList"/>.</returns>
+        [HttpGet]
+        public ActionResult GetLists()
+        {
+            var notArchivedLists = this.toDoListService.GetAllLists();
             return this.Ok(notArchivedLists);
         }
 

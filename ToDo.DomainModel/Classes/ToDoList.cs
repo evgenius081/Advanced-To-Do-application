@@ -25,7 +25,7 @@ namespace ToDo.DomainModel.Classes
         [Required]
         [MinLength(5)]
         [MaxLength(50)]
-        public string Title { get; set; }
+        required public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether <see cref="ToDoList"/> is archived.
@@ -36,6 +36,6 @@ namespace ToDo.DomainModel.Classes
         /// Gets or sets list of tasks belonging to this list.
         /// </summary>
         [JsonIgnore]
-        public virtual ICollection<ToDoItem> Items { get; set; }
+        public virtual ICollection<ToDoItem> Items { get; set; } = new List<ToDoItem>();
     }
 }

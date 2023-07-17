@@ -4,7 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>ToDo.DomainModel</RootNamespace>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
-	  <NoWarn>$(NoWarn),1573,1591,1712, SA0001</NoWarn>
+	<Nullable>enable</Nullable>
+	<NoWarn>$(NoWarn),1573,1591,1712, SA0001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

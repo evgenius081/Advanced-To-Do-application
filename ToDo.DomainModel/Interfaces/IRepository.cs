@@ -36,7 +36,7 @@ namespace ToDo.DomainModel.Interfaces
         /// </summary>
         /// <param name="id">Wanted ToDo listID.</param>
         /// <returns>Found ToDo list object, null if there is no such.</returns>
-        public Task<TEntity> GetByID(int id);
+        public Task<TEntity?> GetByID(int id);
 
         /// <summary>
         /// Delete ToDo list object form database.

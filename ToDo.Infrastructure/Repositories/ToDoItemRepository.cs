@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ToDo.DomainModel.Classes;
-using ToDo.DomainModel.Context;
+using ToDo.Infrastructure.Context;
 using ToDo.DomainModel.Interfaces;
+using ToDo.Infrastructure.Interfaces;
 
-namespace ToDo.DomainModel.Repositories
+namespace ToDo.Infrastructure.Repositories
 {
     /// <summary>
     /// Repository for <see cref="ToDoItem"/> object in database.
@@ -45,7 +46,7 @@ namespace ToDo.DomainModel.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<ToDoItem> GetByID(int id)
+        public async Task<ToDoItem?> GetByID(int id)
         {
             return await this.context.Items.Include(i => i.TodoList).SingleOrDefaultAsync(i => i.Id == id);
         }

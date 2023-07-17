@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ToDo.DomainModel.Classes;
-using ToDo.DomainModel.Interfaces;
+using ToDo.Infrastructure.Interfaces;
 
-namespace ToDo.DomainModel.Context
+namespace ToDo.Infrastructure.Context
 {
     /// <summary>
     /// Application context class.
@@ -35,8 +35,6 @@ namespace ToDo.DomainModel.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ToDoList>().HasMany<ToDoItem>(l => l.Items).WithOne(i => i.TodoList);
-
-            modelBuilder.Seed();
         }
     }
 }

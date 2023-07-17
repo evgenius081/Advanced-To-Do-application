@@ -26,7 +26,7 @@ namespace ToDo.Services.Services
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentNullException">Thrown if list is null.</exception>
-        public async Task<ToDoList> AddList(ToDoList list)
+        public async Task<ToDoList?> AddList(ToDoList list)
         {
             if (list == null)
             {
@@ -40,7 +40,7 @@ namespace ToDo.Services.Services
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentException">Thrown if there is no such <see cref="ToDoList"/> in database.</exception>
-        public async Task<ToDoList> CopyList(int id)
+        public async Task<ToDoList?> CopyList(int id)
         {
             var list = await listRepository.GetByID(id) ??
                 throw new ArgumentException("there is no such list");
@@ -52,7 +52,7 @@ namespace ToDo.Services.Services
             });
             newList.Items = new List<ToDoItem>();
 
-            var items = list.Items.ToList();
+            var items = list.Items!.ToList();
 
             if (items.Any())
             {
@@ -90,14 +90,14 @@ namespace ToDo.Services.Services
                 Id = l.Id,
                 Title = l.Title,
                 IsArchived = l.IsArchived,
-                ItemsCompleted = l.Items.Where(i => i.Status == ItemStatus.Completed).Count(),
-                ItemsInProcess = l.Items.Where(i => i.Status == ItemStatus.InProcess).Count(),
-                ItemsNotStarted = l.Items.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+                ItemsCompleted = l.Items!.Where(i => i.Status == ItemStatus.Completed).Count(),
+                ItemsInProcess = l.Items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
+                ItemsNotStarted = l.Items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
             }).ToList();
         }
 
         /// <inheritdoc/>
-        public async Task<ToDoList> GetListByID(int id)
+        public async Task<ToDoList?> GetListByID(int id)
         {
             return await this.listRepository.GetByID(id);
         }
@@ -111,9 +111,24 @@ namespace ToDo.Services.Services
                 Id = l.Id,
                 Title = l.Title,
                 IsArchived = l.IsArchived,
-                ItemsCompleted = l.Items.Where(i => i.Status == ItemStatus.Completed).Count(),
-                ItemsInProcess = l.Items.Where(i => i.Status == ItemStatus.InProcess).Count(),
-                ItemsNotStarted = l.Items.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+                ItemsCompleted = l.Items!.Where(i => i.Status == ItemStatus.Completed).Count(),
+                ItemsInProcess = l.Items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
+                ItemsNotStarted = l.Items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+            }).ToList();
+        }
+
+        /// <inheritdoc/>
+        public List<ToDoListStatistics> GetAllLists()
+        {
+            var lists = listRepository.GetAll();
+            return lists.Select(l => new ToDoListStatistics
+            {
+                Id = l.Id,
+                Title = l.Title,
+                IsArchived = l.IsArchived,
+                ItemsCompleted = l.Items!.Where(i => i.Status == ItemStatus.Completed).Count(),
+                ItemsInProcess = l.Items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
+                ItemsNotStarted = l.Items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
             }).ToList();
         }
 

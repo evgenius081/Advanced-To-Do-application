@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ToDo.DomainModel\ToDo.DomainModel.csproj" />
+    <ProjectReference Include="..\ToDo.Infrastructure\ToDo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

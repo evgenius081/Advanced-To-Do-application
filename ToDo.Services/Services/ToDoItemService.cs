@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ToDo.Services.Interfaces;
 using ToDo.DomainModel.Classes;
 using ToDo.DomainModel.Interfaces;
-using ToDo.DomainModel.Repositories;
 
 namespace ToDo.Services.Services
 {
@@ -31,7 +30,7 @@ namespace ToDo.Services.Services
 
         /// <inheritdoc/>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="ToDoList"/> item is assigned to does not exist.</exception>
-        public async Task<ToDoItem> AddItem(ToDoItem item)
+        public async Task<ToDoItem?> AddItem(ToDoItem item)
         {
             var list = await listRepository.GetByID(item.ToDoListID);
             item.TodoList = list ?? throw new InvalidOperationException("There is no such list");
@@ -54,7 +53,7 @@ namespace ToDo.Services.Services
         }
 
         /// <inheritdoc/>
-        public async Task<ToDoItem> GetItem(int intemID)
+        public async Task<ToDoItem?> GetItem(int intemID)
         {
             return await itemRepository.GetByID(intemID);
         }
@@ -96,7 +95,7 @@ namespace ToDo.Services.Services
         /// <exception cref="ArgumentException">Thrown if item does not exist in database.</exception>
         /// <exception cref="InvalidOperationException">Thrown on attempt to change <see cref="ToDoList"/> this item is assigned
         ///  to.</exception>
-        public async Task<ToDoItem> UpdateItem(ToDoItem item)
+        public async Task<ToDoItem?> UpdateItem(ToDoItem item)
         {
             if (item == null)
             {

@@ -24,13 +24,13 @@ namespace ToDo.DomainModel.Classes
         [Required]
         [MinLength(5)]
         [MaxLength(50)]
-        public string Title { get; set; }
+        required public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets descirption of <see cref="ToDoList"/> item.
         /// </summary>
         [MaxLength(1000)]
-        public string Description { get; set; }
+        required public string Description { get; set; }
 
         /// <summary>
         /// Gets or sets date of creation of the <see cref="ToDoList"/>.
@@ -65,7 +65,7 @@ namespace ToDo.DomainModel.Classes
         /// Gets or sets <see cref="ToDoList"/> of ToDoList item it belongs to.
         /// </summary>
         [JsonIgnore]
-        public virtual ToDoList TodoList { get; set; }
+        required public virtual ToDoList TodoList { get; set; }
 
         /// <summary>
         /// Gets or sets ItemStatus of <see cref="ToDoList"/> completeness.

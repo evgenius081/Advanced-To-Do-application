@@ -9,9 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ToDo.DomainModel.Classes;
-using ToDo.DomainModel.Context;
 using ToDo.DomainModel.Interfaces;
-using ToDo.DomainModel.Repositories;
+using ToDo.Infrastructure.Context;
+using ToDo.Infrastructure.Interfaces;
+using ToDo.Infrastructure.Repositories;
 using ToDo.Services.Interfaces;
 using ToDo.Services.Services;
 using ToDo.WebAPI.Context;
@@ -89,6 +90,9 @@ namespace ToDo.WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                SeedData.EnsurePopulated(
+                    app.ApplicationServices.CreateScope()
+                    .ServiceProvider.GetRequiredService<ApplicationContext>());
             }
 
             app.UseHttpsRedirection();

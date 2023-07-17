@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ToDo.DomainModel.Classes;
 
-namespace ToDo.DomainModel.Interfaces
+namespace ToDo.Infrastructure.Interfaces
 {
     /// <summary>
     /// Interface for ApplicationContext.

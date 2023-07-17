@@ -30,7 +30,7 @@ export function Home(){
     ]);
 
     const getLists = useCallback(async () => {
-        await fetch(process.env.REACT_APP_ASP_LINK+"/lists",
+        await fetch(process.env.REACT_APP_ASP_LINK+"/lists/unarchived",
             {
                 headers: {
                     'Authorization': `Bearer ${token}`

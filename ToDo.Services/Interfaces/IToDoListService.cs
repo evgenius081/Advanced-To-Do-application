@@ -23,18 +23,24 @@ namespace ToDo.Services.Interfaces
         List<ToDoListStatistics> GetArchivedLists();
 
         /// <summary>
+        /// Gets all lists.
+        /// </summary>
+        /// <returns>List of all <see cref="ToDoList"/>.</returns>
+        List<ToDoListStatistics> GetAllLists();
+
+        /// <summary>
         /// Gets list by ID.
         /// </summary>
         /// <param name="listID">Id of list to be taken.</param>
         /// <returns>List if exists, null otherwise.</returns>
-        Task<ToDoList> GetListByID(int listID);
+        Task<ToDoList?> GetListByID(int listID);
 
         /// <summary>
         /// Creates a copy of a list with all its items.
         /// </summary>
         /// <param name="listID">Id of a list to be copied.</param>
         /// <returns>Copied list.</returns>
-        Task<ToDoList> CopyList(int listID);
+        Task<ToDoList?> CopyList(int listID);
 
         /// <summary>
         /// Updates given list in database.
@@ -48,7 +54,7 @@ namespace ToDo.Services.Interfaces
         /// </summary>
         /// <param name="list">List to insert.</param>
         /// <returns>Inserted list.</returns>
-        Task<ToDoList> AddList(ToDoList list);
+        Task<ToDoList?> AddList(ToDoList list);
 
         /// <summary>
         /// Deleted list from database.

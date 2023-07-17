@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ToDo.DomainModel.Classes;
-using ToDo.DomainModel.Context;
+using ToDo.Infrastructure.Context;
 
 namespace ToDo.WebAPI.Context
 {
