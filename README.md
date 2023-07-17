@@ -43,7 +43,7 @@ npm run start
 ## Roadmap
 - [x] ~~Separate controllers into controllers and services~~
 - [x] ~~Separate Application project into Application and Services~~
-- [ ] Separate DomainModel project into DomainModel and infrastructure
+- [x] ~~Separate DomainModel project into DomainModel and infrastructure~~
 - [ ] Dockerize solution
 - [ ] Change `IdentityUser` to my own implementation
 - [ ] Remake frontend to Angular and redesign it (in separate repo)
