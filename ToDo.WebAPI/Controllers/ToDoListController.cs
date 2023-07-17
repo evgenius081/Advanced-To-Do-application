@@ -88,7 +88,7 @@ namespace ToDo.WebAPI.Controllers
         [Route("copy/{id:int}")]
         public async Task<IActionResult> CopyList(int id)
         {
-            var newList = await this.CopyList(id);
+            var newList = await this.toDoListService.CopyList(id);
             return this.Ok(newList);
         }
 

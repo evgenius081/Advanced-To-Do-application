@@ -64,6 +64,7 @@ export function CreateItem(){
             }
             if (response.status === 400){
                 let data = await response.json()
+                console.log(data.errors.Title)
                 setErrors(data.errors.Title)
             }
             else if (response.status === 500){

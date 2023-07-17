@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -87,6 +88,14 @@ namespace ToDo.WebAPI
         /// <param name="env">Application environment.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var applicationContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationContext>();
+                applicationContext.Database.Migrate();
+                var identityContext = serviceScope.ServiceProvider.GetRequiredService<IdentityContext>();
+                identityContext.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

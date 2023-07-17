@@ -40,7 +40,7 @@ namespace ToDo.Services.Interfaces
         /// </summary>
         /// <param name="listID">Id of a list to be copied.</param>
         /// <returns>Copied list.</returns>
-        Task<ToDoList?> CopyList(int listID);
+        Task<ToDoListStatistics> CopyList(int listID);
 
         /// <summary>
         /// Updates given list in database.

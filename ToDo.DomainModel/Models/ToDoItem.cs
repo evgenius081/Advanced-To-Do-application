@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace ToDo.DomainModel.Classes
@@ -65,7 +66,7 @@ namespace ToDo.DomainModel.Classes
         /// Gets or sets <see cref="ToDoList"/> of ToDoList item it belongs to.
         /// </summary>
         [JsonIgnore]
-        required public virtual ToDoList TodoList { get; set; }
+        public virtual ToDoList? TodoList { get; set; }
 
         /// <summary>
         /// Gets or sets ItemStatus of <see cref="ToDoList"/> completeness.

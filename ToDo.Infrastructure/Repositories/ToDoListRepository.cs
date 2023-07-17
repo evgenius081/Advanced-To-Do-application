@@ -47,7 +47,7 @@ namespace ToDo.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<ToDoList?> GetByID(int id)
         {
-            return await this.context.ToDoLists.SingleOrDefaultAsync(l => l.Id == id);
+            return await this.context.ToDoLists.Include(l => l.Items).SingleOrDefaultAsync(l => l.Id == id);
         }
 
         /// <inheritdoc/>

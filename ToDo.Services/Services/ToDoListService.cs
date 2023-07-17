@@ -40,7 +40,7 @@ namespace ToDo.Services.Services
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentException">Thrown if there is no such <see cref="ToDoList"/> in database.</exception>
-        public async Task<ToDoList?> CopyList(int id)
+        public async Task<ToDoListStatistics> CopyList(int id)
         {
             var list = await listRepository.GetByID(id) ??
                 throw new ArgumentException("there is no such list");
@@ -50,7 +50,6 @@ namespace ToDo.Services.Services
                 Title = list.Title + " (Copy)",
                 IsArchived = list.IsArchived,
             });
-            newList.Items = new List<ToDoItem>();
 
             var items = list.Items!.ToList();
 
@@ -58,6 +57,7 @@ namespace ToDo.Services.Services
             {
                 foreach (var item in items)
                 {
+
                     await itemRepository.Insert(new ToDoItem
                     {
                         Title = item.Title,
@@ -73,7 +73,15 @@ namespace ToDo.Services.Services
                 }
             }
 
-            return newList;
+            return new ToDoListStatistics
+            {
+                Id = newList.Id,
+                Title = newList.Title,
+                IsArchived = newList.IsArchived,
+                ItemsCompleted = items!.Where(i => i.Status == ItemStatus.Completed).Count(),
+                ItemsInProcess = items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
+                ItemsNotStarted = items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+            };
         }
 
         /// <inheritdoc/>
