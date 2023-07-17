@@ -42,7 +42,7 @@ npm run start
 
 ## Roadmap
 - [x] ~~Separate controllers into controllers and services~~
-- [ ] Separate Application project into Application and Services
+- [x] ~~Separate Application project into Application and Services~~
 - [ ] Separate DomainModel project into DomainModel and infrastructure
 - [ ] Dockerize solution
 - [ ] Change `IdentityUser` to my own implementation
