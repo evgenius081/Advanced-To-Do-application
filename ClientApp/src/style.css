@@ -136,6 +136,11 @@ main a:hover{
     z-index: 1092
 }
 
+.user-link{
+    display: block;
+    padding: 6.75px 0
+}
+
 @media screen and (max-device-width: 1500px) {
     main{
         padding: 40px 20%;

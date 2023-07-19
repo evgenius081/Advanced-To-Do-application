@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿using ToDo.DomainModel.Interfaces;
+using ToDo.DomainModel.Models;
+using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
-using ToDo.DomainModel.Classes;
-using ToDo.DomainModel.Interfaces;
 
 namespace ToDo.Services.Services
 {
@@ -30,60 +26,65 @@ namespace ToDo.Services.Services
 
         /// <inheritdoc/>
         /// <exception cref="InvalidOperationException">Thrown if <see cref="ToDoList"/> item is assigned to does not exist.</exception>
-        public async Task<ToDoItem?> AddItem(ToDoItem item)
+        public async Task<ToDoItem?> AddItem(ToDoItemCreate dto)
         {
-            var list = await listRepository.GetByID(item.ToDoListID);
-            item.TodoList = list ?? throw new InvalidOperationException("There is no such list");
+            var list = await this.listRepository.GetByID(dto.ToDoListID);
+            _ = list ?? throw new InvalidOperationException("There is no such list");
 
-            await itemRepository.Insert(item);
+            var item = new ToDoItem()
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                CreatedAt = dto.CreatedAt,
+                Deadline = dto.Deadline,
+                Priority = dto.Priority,
+                Remind = dto.Remind,
+                Status = dto.Status,
+                ToDoListID = dto.ToDoListID,
+                TodoList = list,
+            };
 
-            return item;
+            return await this.itemRepository.InsertAsync(item);
         }
 
         /// <inheritdoc/>
         public void DeleteItem(int itemID)
         {
-            itemRepository.Delete(itemID);
-        }
-
-        /// <inheritdoc/>
-        public List<ToDoItem> GetAllItems()
-        {
-            return itemRepository.GetAll().ToList();
+            this.itemRepository.Delete(itemID);
         }
 
         /// <inheritdoc/>
         public async Task<ToDoItem?> GetItem(int intemID)
         {
-            return await itemRepository.GetByID(intemID);
+            return await this.itemRepository.GetByID(intemID);
         }
 
         /// <inheritdoc/>
         public List<ToDoItem> GetItemsByDate(DateTime date)
         {
-            return itemRepository.GetAll().Where(i => i.Deadline.Date == date).ToList();
+            return this.itemRepository.GetAll().Where(i => i.Deadline.Date == date).ToList();
         }
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentException">Thrown if there is no such list in database.</exception>
         public async Task<List<ToDoItem>> GetItemsByListID(int listID)
         {
-            _ = await listRepository.GetByID(listID) ??
+            _ = await this.listRepository.GetByID(listID) ??
                 throw new ArgumentException("There is no such list");
 
-            return itemRepository.GetAll().Where(i => i.ToDoListID == listID).ToList();
+            return this.itemRepository.GetAll().Where(i => i.ToDoListID == listID).ToList();
         }
 
         /// <inheritdoc/>
         public List<ToDoItem> GetItemsByPriority(Priority priority)
         {
-            return itemRepository.GetAll().Where(item => item.Priority == priority).ToList();
+            return this.itemRepository.GetAll().Where(item => item.Priority == priority).ToList();
         }
 
         /// <inheritdoc/>
         public List<ToDoItem> GetItemsForReminder()
         {
-            return itemRepository.GetAll().Where(i =>
+            return this.itemRepository.GetAll().Where(i =>
             i.Deadline.Subtract(DateTime.Now).TotalMinutes <= 60 &&
             i.Deadline.Subtract(DateTime.Now).TotalMinutes >= 0 &&
             i.Status != ItemStatus.Completed &&
@@ -95,26 +96,28 @@ namespace ToDo.Services.Services
         /// <exception cref="ArgumentException">Thrown if item does not exist in database.</exception>
         /// <exception cref="InvalidOperationException">Thrown on attempt to change <see cref="ToDoList"/> this item is assigned
         ///  to.</exception>
-        public async Task<ToDoItem?> UpdateItem(ToDoItem item)
+        public async Task<ToDoItem?> UpdateItem(ToDoItemUpdate dto)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item), "item cannot be null");
-            }
-
-            var foundItem = await itemRepository.GetByID(item.Id) ??
+            var foundItem = await this.itemRepository.GetByID(dto.Id) ??
                 throw new ArgumentException("there is no such item");
 
-            if (foundItem.ToDoListID != item.ToDoListID)
+            if (foundItem.ToDoListID != dto.ToDoListID)
             {
                 throw new InvalidOperationException("you cannot update ToDoList this item is assigned to");
             }
 
-            item.TodoList = foundItem.TodoList;
+            foundItem.Title = dto.Title;
+            foundItem.Description = dto.Description;
+            foundItem.Remind = dto.Remind;
+            foundItem.Status = dto.Status;
+            foundItem.CreatedAt = dto.CreatedAt;
+            foundItem.Deadline = dto.Deadline;
+            foundItem.Status = dto.Status;
+            foundItem.Priority = dto.Priority;
 
-            itemRepository.Update(item);
+            this.itemRepository.Update(foundItem);
 
-            return item;
+            return foundItem;
         }
     }
 }

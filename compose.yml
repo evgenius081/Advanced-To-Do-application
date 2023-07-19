@@ -23,7 +23,6 @@ services:
             context: .
         environment:
             - ConnectionStrings__ToDoConnection=Data Source=sqlserver;Database=tododatabase;User=SA;Password=P@55w0rd;TrustServerCertificate=true
-            - ConnectionStrings__IdentityConnection=Data Source=sqlserver;Database=todoidentitydatabase;User ID=SA;Password=P@55w0rd;TrustServerCertificate=true
             - Frontend=http://localhost:3000
             - SQLServer_path=http://sqlserver:1433
         ports:

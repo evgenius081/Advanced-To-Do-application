@@ -10,13 +10,12 @@ namespace ToDo.Services.DTOs
         /// <summary>
         /// Gets or sets unique ID of ToDo list.
         /// </summary>
-        public int Id { get; set; }
+        required public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets title of ToDo list. Is not nullable.
         /// </summary>
-        [Required]
-        public required string Title { get; set; }
+        required public string Title { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether <see cref="ToDoList"/> is archived.
@@ -26,16 +25,21 @@ namespace ToDo.Services.DTOs
         /// <summary>
         /// Gets or sets the number of items that has status <see cref="ItemStatus.NotStarted"/>.
         /// </summary>
-        public int ItemsNotStarted { get; set; }
+        required public int ItemsNotStarted { get; set; }
 
         /// <summary>
         /// Gets or sets the number of items that has status <see cref="ItemStatus.InProcess"/>.
         /// </summary>
-        public int ItemsInProcess { get; set; }
+        required public int ItemsInProcess { get; set; }
 
         /// <summary>
         /// Gets or sets the number of items that has status <see cref="ItemStatus.Completed"/>.
         /// </summary>
-        public int ItemsCompleted { get; set; }
+        required public int ItemsCompleted { get; set; }
+
+        /// <summary>
+        /// Gets or sets id of user this list belongs to.
+        /// </summary>
+        required public int UserID { get; set; }
     }
 }

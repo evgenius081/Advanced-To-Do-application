@@ -10,25 +10,25 @@ export function NavMenu(){
     let username = sessionStorage.getItem("todoUsername")
     let navigate = useNavigate()
     const [expanded, setExpanded] = useState(false);
-  async function logout(){
-      await fetch(process.env.REACT_APP_ASP_LINK+`/accounts/logout/${username}`,
-          {
-              headers: {
-                  'Authorization': `Bearer ${token}`
-              }
-          })
-          .then((response) => {
-              if (response.ok){
+  function logout(){
+      // await fetch(process.env.REACT_APP_ASP_LINK+`/accounts/logout/${username}`,
+      //     {
+      //         headers: {
+      //             'Authorization': `Bearer ${token}`
+      //         }
+      //     })
+      //     .then((response) => {
+      //         if (response.ok){
                   sessionStorage.setItem("todoJWT", "")
                   sessionStorage.setItem("todoUsername", "")
                   setToken("")
                   setUsername("")
                   navigate("/login")
-              }
-              else if (response.status === 500){
-                navigate("/error")
-            }
-          })
+          //     }
+          //     else if (response.status === 500){
+          //       navigate("/error")
+          //   }
+          // })
   }
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function NavMenu(){
                         <Link to="/todos/archived" className="nav-item nav-link active" onClick={() => setExpanded(false)}>Archived lists</Link>
                         <Link to="/items/today" className="nav-item nav-link active" onClick={() => setExpanded(false)}>Today</Link>
                         <Link to="/items/priority" className="nav-item nav-link active" onClick={() => setExpanded(false)}>Priority</Link>
-                        {token === "" ? "" : <Nav.Link className="nav-item nav-link logout active" onClick={() => {setExpanded(false); logout().then()}}>Logout</Nav.Link>}
+                        {token === "" ? "" : <Nav.Link className="nav-item nav-link logout active" onClick={() => {setExpanded(false); logout()}}>Logout</Nav.Link>}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

@@ -35,7 +35,7 @@ export function ViewList(){
             id: -1,
             title: "",
             remind: false,
-            isHidden: false,
+            priority: 1,
             status: 1,
             deadline: ""
         }]);
@@ -50,10 +50,10 @@ export function ViewList(){
                 if (response.ok) {
                     let data = await response.json()
                     setItems( data.sort((a, b) => {
-                        if ((a.isHidden && b.isHidden) || (!a.isHidden && !b.isHidden)){
+                        if ((a.priority === 0 && b.priority === 0) || (a.priority !== 0 && b.priority !== 0)){
                             return 0
                         }
-                        else if (a.isHidden){
+                        else if (a.priority === 0){
                             return 1
                         }
 
@@ -194,8 +194,8 @@ useEffect(() => {
             })
     }
 
-    async function changeHidden(item, newHidden){
-        item.isHidden = newHidden
+    async function changeHidden(item){
+        item.priority = item.priority === 0 ? 1 : 0
         await updateItem(item, token).then((response) => {
             if (response.ok){
                 let new_items = items.map(i => {
@@ -216,7 +216,7 @@ useEffect(() => {
 
     
     async function changePriority(item){
-        item.starred = !item.starred
+        item.priority = item.priority === 2 ? 1 : 2
         await updateItem(item, token).then((response) => {
             if (response.ok){
                 let new_items = items.map(i => {
@@ -235,8 +235,8 @@ useEffect(() => {
         })
     }
 
-    let hidden = showCompleted ? items.filter(item => item.isHidden) : items.filter(item => item.status !== 2 && item.isHidden)
-    let notHidden = showCompleted ? items.filter(item => !item.isHidden) : items.filter(item => item.status !== 2 && !item.isHidden)
+    let hidden = showCompleted ? items.filter(item => item.priority === 0) : items.filter(item => item.status !== 2 && item.priority === 0)
+    let notHidden = showCompleted ? items.filter(item => item.priority !== 0) : items.filter(item => item.status !== 2 && item.priority !== 0)
     return (
         <>
             <section className="view-list-header">
@@ -344,7 +344,7 @@ export function ItemElement(props) {
                 </Modal>
             <div className="item-status">
             <div className='item-starred' onClick={() => props.changePriority(item)}>
-                <FontAwesomeIcon style={item.starred ? {color: "#fdd835"} : {}} icon={ faStar} />
+                <FontAwesomeIcon style={item.priority === 2 ? {color: "#fdd835"} : {}} icon={ faStar} />
             </div>
                 <Dropdown  className="btn-group">
                     <Dropdown.Toggle type="button" className="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -380,7 +380,7 @@ export function ItemElement(props) {
                                 <Link tag={Link} className="edit-item" to={"/todos/"+props.todo+"/items/edit/"+item.id}>Edit</Link>
                             </Dropdown.ItemText>
                             <Dropdown.Toggle className="dropdown-item">
-                                <div className="show-item" onClick={() => props.changeHidden(item, !item.isHidden)}>{item.isHidden ? "Show" : "Hide"}</div>
+                                <div className="show-item" onClick={() => props.changeHidden(item)}>{item.priority === 0 ? "Show" : "Hide"}</div>
                             </Dropdown.Toggle>
                             <Dropdown.Toggle className="dropdown-item">
                                 <div className="remind-item" onClick={() => props.changeRemind(item)}>{!item.remind ? "Remind" : "No remind"}</div>

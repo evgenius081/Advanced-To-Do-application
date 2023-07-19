@@ -1,7 +1,7 @@
-﻿using ToDo.Services.DTOs;
+﻿using ToDo.DomainModel.Interfaces;
+using ToDo.DomainModel.Models;
+using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
-using ToDo.DomainModel.Classes;
-using ToDo.DomainModel.Interfaces;
 
 namespace ToDo.Services.Services
 {
@@ -12,28 +12,38 @@ namespace ToDo.Services.Services
     {
         private readonly IRepository<ToDoList> listRepository;
         private readonly IRepository<ToDoItem> itemRepository;
+        private readonly IUserRepository userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToDoListService"/> class.
         /// </summary>
         /// <param name="itemRepository">Repository for <see cref="ToDoItem"/>.</param>
         /// <param name="listRepository">Repository for <see cref="ToDoList"/>.</param>
-        public ToDoListService(IRepository<ToDoList> listRepository, IRepository<ToDoItem> itemRepository)
+        /// <param name="userRepository">Repository for <see cref="User"/>.</param>
+        public ToDoListService(IRepository<ToDoList> listRepository, IRepository<ToDoItem> itemRepository, IUserRepository userRepository)
         {
             this.listRepository = listRepository;
             this.itemRepository = itemRepository;
+            this.userRepository = userRepository;
         }
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentNullException">Thrown if list is null.</exception>
-        public async Task<ToDoList?> AddList(ToDoList list)
+        public async Task<ToDoList?> AddList(ToDoListCreate dto)
         {
-            if (list == null)
-            {
-                throw new ArgumentNullException(nameof(list), "list must not be null");
-            }
+            _ = dto ?? throw new ArgumentNullException(nameof(dto), "dto must not be null");
 
-            await listRepository.Insert(list);
+            var user = await this.userRepository.GetByID(dto.UserID) ?? throw new ArgumentException("There is no such user");
+
+            var list = new ToDoList()
+            {
+                Title = dto.Title,
+                IsArchived = dto.IsArchived,
+                UserID = dto.UserID,
+                User = user,
+            };
+
+            await this.listRepository.InsertAsync(list);
 
             return list;
         }
@@ -42,13 +52,15 @@ namespace ToDo.Services.Services
         /// <exception cref="ArgumentException">Thrown if there is no such <see cref="ToDoList"/> in database.</exception>
         public async Task<ToDoListStatistics> CopyList(int id)
         {
-            var list = await listRepository.GetByID(id) ??
+            var list = await this.listRepository.GetByID(id) ??
                 throw new ArgumentException("there is no such list");
 
-            var newList = await listRepository.Insert(new ToDoList
+            var newList = await this.listRepository.InsertAsync(new ToDoList
             {
                 Title = list.Title + " (Copy)",
                 IsArchived = list.IsArchived,
+                User = list.User,
+                UserID = list.UserID,
             });
 
             var items = list.Items!.ToList();
@@ -57,8 +69,7 @@ namespace ToDo.Services.Services
             {
                 foreach (var item in items)
                 {
-
-                    await itemRepository.Insert(new ToDoItem
+                    await this.itemRepository.InsertAsync(new ToDoItem
                     {
                         Title = item.Title,
                         Description = item.Description,
@@ -81,19 +92,20 @@ namespace ToDo.Services.Services
                 ItemsCompleted = items!.Where(i => i.Status == ItemStatus.Completed).Count(),
                 ItemsInProcess = items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
                 ItemsNotStarted = items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+                UserID = newList.UserID,
             };
         }
 
         /// <inheritdoc/>
         public void DeleteList(int id)
         {
-            listRepository.Delete(id);
+            this.listRepository.Delete(id);
         }
 
         /// <inheritdoc/>
         public List<ToDoListStatistics> GetArchivedLists()
         {
-            return listRepository.GetAll().Where(l => l.IsArchived).Select(l => new ToDoListStatistics
+            return this.listRepository.GetAll().Where(l => l.IsArchived).Select(l => new ToDoListStatistics
             {
                 Id = l.Id,
                 Title = l.Title,
@@ -101,6 +113,7 @@ namespace ToDo.Services.Services
                 ItemsCompleted = l.Items!.Where(i => i.Status == ItemStatus.Completed).Count(),
                 ItemsInProcess = l.Items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
                 ItemsNotStarted = l.Items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+                UserID = l.UserID,
             }).ToList();
         }
 
@@ -113,7 +126,7 @@ namespace ToDo.Services.Services
         /// <inheritdoc/>
         public List<ToDoListStatistics> GetNotArchivedLists()
         {
-            var lists = listRepository.GetAll();
+            var lists = this.listRepository.GetAll();
             return lists.Where(l => !l.IsArchived).Select(l => new ToDoListStatistics
             {
                 Id = l.Id,
@@ -122,13 +135,14 @@ namespace ToDo.Services.Services
                 ItemsCompleted = l.Items!.Where(i => i.Status == ItemStatus.Completed).Count(),
                 ItemsInProcess = l.Items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
                 ItemsNotStarted = l.Items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+                UserID = l.UserID,
             }).ToList();
         }
 
         /// <inheritdoc/>
         public List<ToDoListStatistics> GetAllLists()
         {
-            var lists = listRepository.GetAll();
+            var lists = this.listRepository.GetAll();
             return lists.Select(l => new ToDoListStatistics
             {
                 Id = l.Id,
@@ -137,13 +151,21 @@ namespace ToDo.Services.Services
                 ItemsCompleted = l.Items!.Where(i => i.Status == ItemStatus.Completed).Count(),
                 ItemsInProcess = l.Items!.Where(i => i.Status == ItemStatus.InProcess).Count(),
                 ItemsNotStarted = l.Items!.Where(i => i.Status == ItemStatus.NotStarted).Count(),
+                UserID = l.UserID,
             }).ToList();
         }
 
         /// <inheritdoc/>
-        public ToDoList UpdateList(ToDoList list)
+        public async Task<ToDoList> UpdateList(ToDoListUpdate dto)
         {
-            listRepository.Update(list);
+            _ = dto ?? throw new ArgumentNullException(nameof(dto));
+
+            var list = await this.listRepository.GetByID(dto.Id) ?? throw new ArgumentException("there is no such list");
+
+            list.Title = dto.Title;
+            list.IsArchived = dto.IsArchived;
+
+            this.listRepository.Update(list);
 
             return list;
         }

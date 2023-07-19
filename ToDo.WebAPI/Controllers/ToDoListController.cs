@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ToDo.DomainModel.Classes;
+using ToDo.DomainModel.Models;
+using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
 
 namespace ToDo.WebAPI.Controllers
@@ -16,14 +19,17 @@ namespace ToDo.WebAPI.Controllers
     public class ToDoListController : ControllerBase
     {
         private readonly IToDoListService toDoListService;
+        private readonly IHttpContextService httpContextService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToDoListController"/> class.
         /// </summary>
         /// <param name="toDoListService">Service for <see cref="ToDoList"/>.</param>
-        public ToDoListController(IToDoListService toDoListService)
+        /// <param name="httpContextService">Service for http context.</param>
+        public ToDoListController(IToDoListService toDoListService, IHttpContextService httpContextService)
         {
             this.toDoListService = toDoListService;
+            this.httpContextService = httpContextService;
         }
 
         /// <summary>
@@ -34,8 +40,9 @@ namespace ToDo.WebAPI.Controllers
         [Route("unarchived")]
         public ActionResult GetNotArchivedLists()
         {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
             var notArchivedLists = this.toDoListService.GetNotArchivedLists();
-            return this.Ok(notArchivedLists);
+            return this.Ok(notArchivedLists.Where(l => l.UserID == userID));
         }
 
         /// <summary>
@@ -45,8 +52,9 @@ namespace ToDo.WebAPI.Controllers
         [HttpGet]
         public ActionResult GetLists()
         {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
             var notArchivedLists = this.toDoListService.GetAllLists();
-            return this.Ok(notArchivedLists);
+            return this.Ok(notArchivedLists.Where(l => l.UserID == userID));
         }
 
         /// <summary>
@@ -57,8 +65,9 @@ namespace ToDo.WebAPI.Controllers
         [Route("archived")]
         public ActionResult GetArchivedLists()
         {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
             var archivedLists = this.toDoListService.GetArchivedLists();
-            return this.Ok(archivedLists);
+            return this.Ok(archivedLists.Where(l => l.UserID == userID));
         }
 
         /// <summary>
@@ -70,10 +79,16 @@ namespace ToDo.WebAPI.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> GetListByID(int id)
         {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
             var list = await this.toDoListService.GetListByID(id);
             if (list == null)
             {
                 return this.NotFound();
+            }
+
+            if (list.UserID != userID)
+            {
+                return this.Forbid("This list does not belong to you");
             }
 
             return this.Ok(list);
@@ -88,6 +103,12 @@ namespace ToDo.WebAPI.Controllers
         [Route("copy/{id:int}")]
         public async Task<IActionResult> CopyList(int id)
         {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+            if ((await this.toDoListService.GetListByID(id)).UserID != userID)
+            {
+                return this.Forbid("This list does not belong to you");
+            }
+
             var newList = await this.toDoListService.CopyList(id);
             return this.Ok(newList);
         }
@@ -98,25 +119,32 @@ namespace ToDo.WebAPI.Controllers
         /// <param name="list">Updated <see cref="ToDoList"/>.</param>
         /// <returns>BadRequest response if <see cref="ToDoList"/> is empty or <see cref="ToDoList.Id"/> in query and <see cref="ToDoList.Id"/> in object (or <see cref="ToDoList.Id"/> in found item and <see cref="ToDoList"/> in sent <see cref="ToDoList"/>) are different, NotFound response if there is no such <see cref="ToDoList"/>, Ok response with the updated <see cref="ToDoList"/>.</returns>
         [HttpPut]
-        public IActionResult UpdateList([FromBody] ToDoList list)
+        public async Task<IActionResult> UpdateList([FromBody] ToDoListUpdate list)
         {
-            if (this.ModelState.IsValid)
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+            if (list.UserID != userID)
             {
-                var updatedList = this.toDoListService.UpdateList(list);
-                return this.Ok(updatedList);
+                return this.Forbid("This list does not belong to you");
             }
 
-            return this.BadRequest("Invalid object provided.");
+            var updatedList = await this.toDoListService.UpdateList(list);
+            return this.Ok(updatedList);
         }
 
         /// <summary>
-        /// Handles request for inserting <see cref="ToDoList"/>.
+        /// Handles request for InsertAsyncing <see cref="ToDoList"/>.
         /// </summary>
-        /// <param name="list"><see cref="ToDoList"/> to be inserted.</param>
+        /// <param name="list"><see cref="ToDoList"/> to be InsertAsynced.</param>
         /// <returns>BadRequest response incase passed <see cref="ToDoList"/> is empty or Created response with created <see cref="ToDoList"/>.</returns>
         [HttpPost]
-        public async Task<IActionResult> AddList([FromBody] ToDoList list)
+        public async Task<IActionResult> AddList([FromBody] ToDoListCreate list)
         {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+            if (list.UserID != userID)
+            {
+                return this.Forbid("You cannot assign your list to the other user");
+            }
+
             var createdList = await this.toDoListService.AddList(list);
             return this.Created("todolists", createdList);
         }
@@ -128,10 +156,17 @@ namespace ToDo.WebAPI.Controllers
         /// <returns>NotFound response in case there is no such <see cref="ToDoList"/> or Accepted response in case it was successfully deleted.</returns>
         [HttpDelete]
         [Route("{id:int}")]
-        public IActionResult DeleteList(int id)
+        public async Task<IActionResult> DeleteList(int id)
         {
             try
             {
+                int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+                var list = await this.toDoListService.GetListByID(id);
+                if (list != null && list.UserID != userID)
+                {
+                    return this.Forbid("This list does not belong to you");
+                }
+
                 this.toDoListService.DeleteList(id);
                 return this.Accepted();
             }

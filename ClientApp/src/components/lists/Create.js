@@ -4,6 +4,7 @@ import './Create.css'
 import { Error } from "../Error";
 import { TokenContext } from "../../App";
 import {createList, readList} from "./listOperations";
+import jwt_decode from "jwt-decode";
 
 export function CreateList(){
     const [title, setTitle] = useState("");
@@ -28,7 +29,8 @@ export function CreateList(){
         e.preventDefault()
         let data = {
             title: title,
-            isArchived: archived
+            isArchived: archived,
+            userID: parseInt(jwt_decode(token).nameid)
         }
         await createList(data, token).then(async (response) => {
             if (response.ok){

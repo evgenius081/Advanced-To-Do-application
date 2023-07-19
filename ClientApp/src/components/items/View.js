@@ -15,6 +15,7 @@ export function ViewItem (){
     let { list_id, item_id } = useParams();
     let navigate = useNavigate()
     const { token, getReminded } = useContext(TokenContext);
+    const priorities = ["Hidden", "Standard", "High"]
     const statuses = ["Not started", "In process", "Completed"];
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -29,7 +30,7 @@ export function ViewItem (){
                 title: "<Pending>",
                 description: "",
                 status: 0,
-                isHidden: false,
+                priority: 1,
                 deadline: "",
                 createdAt: ""
             })
@@ -120,8 +121,8 @@ export function ViewItem (){
                 <div id="item-status-container">
                     <p>Status: <b id="item-status">{statuses[item.status]}</b></p>
                 </div>
-                <div id="item-hidden-container">
-                    <p>Hidden: <b id="item-hidden">{item.isHidden ? "yes" : "no"}</b></p>
+                <div id="item-priority-container">
+                    <p>Status: <b id="item-status">{priorities[item.priority]}</b></p>
                 </div>
                 <div id="item-reminded-container">
                     <p>Reminded: <b id="item-hidden">{item.remind ? "yes" : "no"}</b></p>

@@ -6,14 +6,21 @@ namespace ToDo.Services.Interfaces
     /// <summary>
     /// Service for account.
     /// </summary>
-    public interface IAccountService
+    public interface IUserService
     {
         /// <summary>
         /// Logins user in.
         /// </summary>
-        /// <param name="userLogin">DTO with username an dpassword.</param>
+        /// <param name="userLogin">DTO with username and password.</param>
         /// <returns>Token if user is logged in successfully, empty string otherwise.</returns>
         Task<string?> Login(UserLogin userLogin);
+
+        /// <summary>
+        /// Registers user.
+        /// </summary>
+        /// <param name="userLogin">DTO with username and password.</param>
+        /// <returns>Token if user is created and logged in successfully, empty string otherwise.</returns>
+        Task<string?> Register(UserLogin userLogin);
 
         /// <summary>
         /// Logs user out.

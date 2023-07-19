@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using ToDo.DomainModel.Classes;
-using ToDo.Infrastructure.Context;
+﻿using Microsoft.EntityFrameworkCore;
 using ToDo.DomainModel.Interfaces;
+using ToDo.DomainModel.Models;
 using ToDo.Infrastructure.Interfaces;
 
 namespace ToDo.Infrastructure.Repositories
@@ -74,7 +68,7 @@ namespace ToDo.Infrastructure.Repositories
                 throw new ArgumentException("ToDoListId and ToDoList.Id does not match.");
             }
 
-            if (!this.context.ToDoLists.Contains(item.TodoList))
+            if (!this.context.Lists.Contains(item.TodoList))
             {
                 throw new ArgumentException("ToDoItem is assigned to non-existing ToDoList.");
             }
@@ -95,7 +89,7 @@ namespace ToDo.Infrastructure.Repositories
         /// if <see cref="ToDoItem.ToDoListID"/> and <see cref="ToDoList.Id"/> does not match,
         /// if <see cref="ToDoItem"/> is assigned to non-existing <see cref="ToDoList"/>,
         /// if there is no such <see cref="ToDoItem"/> in database.</exception>
-        public Task<ToDoItem> Insert(ToDoItem item)
+        public Task<ToDoItem> InsertAsync(ToDoItem item)
         {
             if (item == null)
             {
@@ -112,7 +106,7 @@ namespace ToDo.Infrastructure.Repositories
                 throw new ArgumentException("ToDoListId and ToDoList.Id does not match.");
             }
 
-            if (!this.context.ToDoLists.Contains(item.TodoList))
+            if (!this.context.Lists.Contains(item.TodoList))
             {
                 throw new ArgumentException("ToDoItem is assigned to non-existing ToDoList.");
             }
@@ -122,15 +116,15 @@ namespace ToDo.Infrastructure.Repositories
                 throw new ArgumentException("ToDoItem is already in database.");
             }
 
-            return this.InsertAsync(item);
+            return this.InsertAsyncAsync(item);
         }
 
         /// <summary>
-        /// Method for async inserting to database if <see cref="ToDoItemRepository.Insert(ToDoItem)"/> checks passed.
+        /// Method for async InsertAsyncing to database if <see cref="ToDoItemRepository.InsertAsync(ToDoItem)"/> checks passed.
         /// </summary>
-        /// <param name="item"><see cref="ToDoItem"/> to be inserted.</param>
+        /// <param name="item"><see cref="ToDoItem"/> to be InsertAsynced.</param>
         /// <returns>Task.</returns>
-        private async Task<ToDoItem> InsertAsync(ToDoItem item)
+        private async Task<ToDoItem> InsertAsyncAsync(ToDoItem item)
         {
             await this.context.Items.AddAsync(item);
             this.context.SaveChanges();

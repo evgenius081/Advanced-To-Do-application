@@ -9,14 +9,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using ToDo.DomainModel.Classes;
 using ToDo.DomainModel.Interfaces;
+using ToDo.DomainModel.Models;
 using ToDo.Infrastructure.Context;
 using ToDo.Infrastructure.Interfaces;
 using ToDo.Infrastructure.Repositories;
 using ToDo.Services.Interfaces;
 using ToDo.Services.Services;
-using ToDo.WebAPI.Context;
 
 namespace ToDo.WebAPI
 {
@@ -49,10 +48,6 @@ namespace ToDo.WebAPI
             services.AddDbContext<IApplicationContext, ApplicationContext>(options =>
                 options.UseSqlServer(todoConnectionString));
 
-            var identityConnectionString = this.Configuration.GetConnectionString("IdentityConnection");
-            services.AddDbContext<IdentityContext>(options => options.UseSqlServer(identityConnectionString));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
-
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -74,9 +69,12 @@ namespace ToDo.WebAPI
             services.AddControllers();
             services.AddScoped<IRepository<ToDoList>, ToDoListRepository>();
             services.AddScoped<IRepository<ToDoItem>, ToDoItemRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IToDoItemService, ToDoItemService>();
             services.AddScoped<IToDoListService, ToDoListService>();
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IPasswordHasher, PasswordHasher>();
+            services.AddTransient<IHttpContextService, HttpContextService>();
 
             services.AddCors();
         }
@@ -92,8 +90,6 @@ namespace ToDo.WebAPI
             {
                 var applicationContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationContext>();
                 applicationContext.Database.Migrate();
-                var identityContext = serviceScope.ServiceProvider.GetRequiredService<IdentityContext>();
-                identityContext.Database.Migrate();
             }
 
             if (env.IsDevelopment())

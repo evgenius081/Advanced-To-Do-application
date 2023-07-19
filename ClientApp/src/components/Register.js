@@ -3,12 +3,12 @@ import {Link, useNavigate} from "react-router-dom";
 import {Error} from "./Error";
 import { TokenContext } from "../App";
 
-export function Login(){
+export function Register(){
     const [ password, setPassword ] = useState("")
     const [ errors, setErrors ] = useState([])
-    const [ username, setUsername ] = useState("")
     let navigate = useNavigate()
     const { setToken } = useContext(TokenContext);
+    const [ username, setUsername ] = useState("")
 
     async function submitHandler(e){
         e.preventDefault()
@@ -16,7 +16,7 @@ export function Login(){
             "login": username,
             "password": password
         }
-        await fetch(process.env.REACT_APP_ASP_LINK+"/users/login", {
+        await fetch(process.env.REACT_APP_ASP_LINK+"/users/register", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -56,7 +56,7 @@ export function Login(){
             </div>
             <Error errors={errors}/>
             <button type="submit" id="submit" className="btn btn-primary" onClick={(e) => submitHandler(e)}>Submit</button>
-            <Link to="/register" className="user-link">register</Link>
+            <Link to="/login" className="user-link">login</Link>
         </form>
     )
 }

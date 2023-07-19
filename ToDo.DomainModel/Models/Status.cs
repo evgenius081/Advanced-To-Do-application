@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ToDo.DomainModel.Classes
+namespace ToDo.DomainModel.Models
 {
     /// <summary>
     /// Represents possible statuses of <see cref="ToDoItem" />.

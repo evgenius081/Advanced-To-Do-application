@@ -10,11 +10,11 @@ namespace ToDo.Services.DTOs
         /// <summary>
         /// Gets or sets user login.
         /// </summary>
-        public required string Login { get; set; }
+        required public string Login { get; set; }
 
         /// <summary>
         /// Gets or sets user password.
         /// </summary>
-        public required string Password { get; set; }
+        required public string Password { get; set; }
     }
 }

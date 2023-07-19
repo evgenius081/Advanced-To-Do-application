@@ -11,6 +11,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Modal from 'react-bootstrap/Modal';
 import {TokenContext} from "../App";
 import {deleteList} from "./lists/listOperations";
+import jwt_decode from "jwt-decode";
 
 library.add(faEdit);
 
@@ -93,8 +94,9 @@ export function Home(){
             id: list.id,
             isArchived: true,
             title: list.title,
+            userID: parseInt(jwt_decode(token).nameid)
         }
-        await fetch(process.env.REACT_APP_ASP_LINK+"/lists/"+id, {
+        await fetch(process.env.REACT_APP_ASP_LINK+"/lists", {
             method: "PUT",
             headers: {
                 'Authorization': `Bearer ${token}`,

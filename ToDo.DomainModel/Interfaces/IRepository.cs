@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ToDo.DomainModel.Classes;
+using ToDo.DomainModel.Models;
 
 namespace ToDo.DomainModel.Interfaces
 {
@@ -13,33 +13,33 @@ namespace ToDo.DomainModel.Interfaces
     public interface IRepository<TEntity>
     {
         /// <summary>
-        /// Insert ToDo listobject to database.
+        /// InsertAsync object to database.
         /// </summary>
-        /// <param name="t">Object to be inserted into dataabse.</param>
+        /// <param name="t">Object to be InsertAsynced into dataabse.</param>
         /// <returns>Task becuase method is async.</returns>
-        public Task<TEntity> Insert(TEntity t);
+        public Task<TEntity> InsertAsync(TEntity t);
 
         /// <summary>
-        /// Update ToDo listobejct in databse.
+        /// Update obejct in databse.
         /// </summary>
         /// <param name="t">Object to be updated in database.</param>
         public void Update(TEntity t);
 
         /// <summary>
-        /// Gets all ToDo lists, marked as not hidden.
+        /// Gets all objects.
         /// </summary>
         /// <returns>List of objects in database.</returns>
         public IEnumerable<TEntity> GetAll();
 
         /// <summary>
-        /// Gets object by ID from datab.
+        /// Gets object by ID from database.
         /// </summary>
-        /// <param name="id">Wanted ToDo listID.</param>
-        /// <returns>Found ToDo list object, null if there is no such.</returns>
+        /// <param name="id">Wanted object's id.</param>
+        /// <returns>Found object, null if there is no such.</returns>
         public Task<TEntity?> GetByID(int id);
 
         /// <summary>
-        /// Delete ToDo list object form database.
+        /// Delete object form database.
         /// </summary>
         /// <param name="id">Id of object to be deleted from database.</param>
         public void Delete(int id);

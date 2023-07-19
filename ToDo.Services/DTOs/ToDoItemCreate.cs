@@ -1,24 +1,13 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using ToDo.DomainModel.Models;
 
-namespace ToDo.DomainModel.Models
+namespace ToDo.Services.DTOs
 {
     /// <summary>
-    /// Class representing ToDoList item in database.
+    /// DTO representing <see cref="ToDoItem"/> in the moment of creating.
     /// </summary>
-    public class ToDoItem
+    public class ToDoItemCreate
     {
-        /// <summary>
-        /// Gets or sets unique ID of <see cref="ToDoList"/> item.
-        /// </summary>
-        [Key]
-        [ScaffoldColumn(false)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         /// <summary>
         /// Gets or sets title of <see cref="ToDoList"/> item.
         /// </summary>
@@ -36,7 +25,6 @@ namespace ToDo.DomainModel.Models
         /// <summary>
         /// Gets or sets date of creation of the <see cref="ToDoList"/>.
         /// </summary>
-        [Required]
         required public DateTime CreatedAt { get; set; }
 
         /// <summary>
@@ -61,13 +49,6 @@ namespace ToDo.DomainModel.Models
         /// </summary>
         [Required]
         required public int ToDoListID { get; set; }
-
-        /// <summary>
-        /// Gets or sets <see cref="ToDoList"/> of ToDoList item it belongs to.
-        /// </summary>
-        [Required]
-        [JsonIgnore]
-        public virtual ToDoList? TodoList { get; set; }
 
         /// <summary>
         /// Gets or sets ItemStatus of <see cref="ToDoList"/> completeness.

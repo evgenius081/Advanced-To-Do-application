@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using ToDo.DomainModel.Classes;
+using ToDo.DomainModel.Models;
 
 namespace ToDo.Infrastructure.Interfaces
 {
@@ -17,7 +17,12 @@ namespace ToDo.Infrastructure.Interfaces
         /// <summary>
         /// Gets or sets set of <see cref="ToDoList"/> in database.
         /// </summary>
-        DbSet<ToDoList> ToDoLists { get; set; }
+        DbSet<ToDoList> Lists { get; set; }
+
+        /// <summary>
+        /// Gets or sets set of <see cref="User"/> in database.
+        /// </summary>
+        DbSet<User> Users { get; set; }
 
         /// <summary>
         /// Saves changes in database.

@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import { TokenContext } from "../../App";
 import {Error} from "../Error";
 import {readList, updateList} from "./listOperations";
+import jwt_decode from "jwt-decode";
 
 export function EditList() {
     const [title, setTitle] = useState("");
@@ -42,7 +43,8 @@ export function EditList() {
         let data = {
             id: parseInt(id),
             title: title,
-            isArchived: archived
+            isArchived: archived,
+            userID: parseInt(jwt_decode(token).nameid)
         }
         await updateList(data, token).then(async (response) => {
             if (response.ok){

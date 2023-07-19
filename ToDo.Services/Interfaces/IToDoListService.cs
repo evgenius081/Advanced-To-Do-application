@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
-using ToDo.DomainModel.Classes;
 
 namespace ToDo.Services.Interfaces
 {
@@ -45,16 +43,16 @@ namespace ToDo.Services.Interfaces
         /// <summary>
         /// Updates given list in database.
         /// </summary>
-        /// <param name="list">List to update.</param>
+        /// <param name="dto">List to update.</param>
         /// <returns>Updated list.</returns>
-        ToDoList UpdateList(ToDoList list);
+        Task<ToDoList> UpdateList(ToDoListUpdate dto);
 
         /// <summary>
-        /// Inserts list to database.
+        /// InsertAsyncs list to database.
         /// </summary>
-        /// <param name="list">List to insert.</param>
-        /// <returns>Inserted list.</returns>
-        Task<ToDoList?> AddList(ToDoList list);
+        /// <param name="dto">List to InsertAsync.</param>
+        /// <returns>InsertAsynced list.</returns>
+        Task<ToDoList?> AddList(ToDoListCreate dto);
 
         /// <summary>
         /// Deleted list from database.

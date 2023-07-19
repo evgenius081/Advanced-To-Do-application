@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ToDo.DomainModel.Classes;
+using ToDo.DomainModel.Models;
 using ToDo.Infrastructure.Interfaces;
 
 namespace ToDo.Infrastructure.Context
@@ -26,7 +26,12 @@ namespace ToDo.Infrastructure.Context
         /// <summary>
         /// Gets or sets set of <see cref="ToDoList"/>.
         /// </summary>
-        public virtual DbSet<ToDoList> ToDoLists { get; set; }
+        public virtual DbSet<ToDoList> Lists { get; set; }
+
+        /// <summary>
+        /// Gets or sets set of <see cref="User"/>.
+        /// </summary>
+        public virtual DbSet<User> Users { get; set; }
 
         /// <summary>
         /// Sets relations between entities and seeds data.

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import { Route, Routes} from "react-router-dom";
 import { Home } from './components/Home';
 import { NotFound } from './components/404'
@@ -9,13 +9,14 @@ import { EditList } from './components/lists/Edit';
 import { ViewItem } from './components/items/View';
 import { ViewList } from './components/lists/View';
 import { Login } from "./components/Login";
-import {NavMenu} from "./components/NavMenu";
+import { NavMenu } from "./components/NavMenu";
 import { Archived } from "./components/Archived";
-import {Footer} from "./components/Footer";
-import {Today} from "./components/Today";
-import {Reminder} from "./components/Reminder";
+import { Footer } from "./components/Footer";
+import { Today } from "./components/Today";
+import { Reminder } from "./components/Reminder";
 import { Priority } from './components/Priority';
 import { InternalError } from './components/500';
+import { Register } from './components/Register'
 
 export const TokenContext = React.createContext("");
 
@@ -51,6 +52,7 @@ export function App(){
                                 <Route exact path='/items/today' element={<Today />}/>
                                 <Route exact path='/items/priority' element={<Priority />}/>
                                 <Route exact path='/login' element={<Login />} />
+                                <Route exact path='/register' element={<Register />}/>
                                 <Route exact path='/todos/:id' element={<ViewList/>} />
                                 <Route exact path='/todos/edit/:id' element={<EditList />} />
                                 <Route exact path='/todos/create' element={<CreateList />}/>

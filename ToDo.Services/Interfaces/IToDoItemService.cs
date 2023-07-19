@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ToDo.DomainModel.Classes;
+using ToDo.DomainModel.Models;
+using ToDo.Services.DTOs;
 
 namespace ToDo.Services.Interfaces
 {
@@ -10,12 +11,6 @@ namespace ToDo.Services.Interfaces
     /// </summary>
     public interface IToDoItemService
     {
-        /// <summary>
-        /// Gets all items.
-        /// </summary>
-        /// <returns>List of all items.</returns>
-        List<ToDoItem> GetAllItems();
-
         /// <summary>
         /// Gets <see cref="ToDoItem"/> by <see cref="ToDoItem.Id"/>.
         /// </summary>
@@ -55,14 +50,14 @@ namespace ToDo.Services.Interfaces
         /// </summary>
         /// <param name="item">Item to be updated.</param>
         /// <returns>Updated item.</returns>
-        Task<ToDoItem?> UpdateItem(ToDoItem item);
+        Task<ToDoItem?> UpdateItem(ToDoItemUpdate dto);
 
         /// <summary>
         /// Adds <see cref="ToDoItem"/> to database.
         /// </summary>
         /// <param name="item">Item to be updated.</param>
         /// <returns>Added item with all fields.</returns>
-        Task<ToDoItem?> AddItem(ToDoItem item);
+        Task<ToDoItem?> AddItem(ToDoItemCreate dto);
 
         /// <summary>
         /// Deletes <see cref="ToDoItem"/> from database.

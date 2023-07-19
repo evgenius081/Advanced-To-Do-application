@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ToDo.DomainModel.Classes
+namespace ToDo.DomainModel.Models
 {
     /// <summary>
     /// Represents possible priorities for <see cref="ToDoItem"/>.
@@ -10,14 +10,14 @@ namespace ToDo.DomainModel.Classes
     public enum Priority
     {
         /// <summary>
-        /// Default status.
-        /// </summary>
-        Default,
-
-        /// <summary>
         /// Item is hidden.
         /// </summary>
         Low,
+
+        /// <summary>
+        /// Default status.
+        /// </summary>
+        Default,
 
         /// <summary>
         /// Item is starred.

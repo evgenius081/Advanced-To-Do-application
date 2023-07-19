@@ -22,7 +22,7 @@ const [ showHidden, setShowHidden ] = useState(true)
         {
             id: -1,
             title: "",
-            isHidden: false,
+            priority: 1,
             status: 0,
             deadline: ""
         }]);
@@ -37,10 +37,10 @@ const [ showHidden, setShowHidden ] = useState(true)
                 if (response.ok) {
                     let data = await response.json()
                     setItems( data.sort((a, b) => {
-                        if ((a.isHidden && b.isHidden) || (!a.isHidden && !b.isHidden)){
+                        if ((a.priority === 0 && b.priority === 0) || (a.priority !== 0 && b.priority !== 0)){
                             return 0
                         }
-                        else if (a.isHidden){
+                        else if (a.priority === 0){
                             return 1
                         }
 
@@ -83,7 +83,7 @@ useEffect(() => {
     }
 
     async function changePriority(item){
-        item.starred = !item.starred
+        item.priority = item.priority === 2 ? 1 : 2
         await updateItem(item, token).then((response) => {
             if (response.ok){
                 let new_items = items.map(i => {
@@ -124,8 +124,8 @@ useEffect(() => {
             })
     }
 
-    async function changeHidden(item, newHidden){
-        item.isHidden = newHidden
+    async function changeHidden(item){
+        item.priority = item.priority === 0 ? 1 : 0
         await updateItem(item, token).then((response) => {
             if (response.ok){
                 let new_items = items.map(i => {
@@ -159,7 +159,7 @@ useEffect(() => {
         })
     }
 
-    let hidden = showCompleted ? items.filter(item => item.isHidden) : items.filter(item => item.status !== 2 && item.isHidden)
+    let hidden = showCompleted ? items.filter(item => item.priority === 0) : items.filter(item => item.status !== 2 && item.priority === 0)
 
     return (
         <>
@@ -167,7 +167,7 @@ useEffect(() => {
                 <h2>Today</h2>
             </section>
             <section id="items">
-                {items.filter(item => (item.status !== 2 || (item.status === 2 && showCompleted)) && !item.isHidden).map(item => (
+                {items.filter(item => (item.status !== 2 || (item.status === 2 && showCompleted)) && item.priority !== 0).map(item => (
                     <ItemElement item={item} handleDelete={handleDelete} changePriority={changePriority} changeRemind={changeRemind} changeHidden={changeHidden} changeChecked={changeStatus} todo={item.toDoListID} key={items.indexOf(item)}/>
                 ))}
                 {(showHidden && (hidden.length !== 0)) ?

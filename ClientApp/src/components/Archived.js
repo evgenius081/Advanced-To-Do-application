@@ -6,6 +6,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import {TokenContext} from "../App";
 import {deleteList, updateList} from "./lists/listOperations";
 import {ListElement} from "./Home";
+import jwt_decode from "jwt-decode";
 
 
 export function Archived(){
@@ -19,7 +20,8 @@ export function Archived(){
                 isArchived: true,
                 notStarted: 0,
                 inProcess: 0,
-                completed: 0
+                completed: 0,
+                userID: -1
             },
         ]);
 
@@ -87,6 +89,7 @@ export function Archived(){
             id: list.id,
             isArchived: false,
             title: list.title,
+            userID: parseInt(jwt_decode(token).nameid)
         }
         await updateList(data, token).then((response) => {
             if (response.ok){
