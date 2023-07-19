@@ -39,15 +39,21 @@ cd ClientApp
 npm run start
 ```
 4. If the browser window does not open itself, go to `http://localhost:3000`
+### Docker
+There is also a possibility to run the entire solution in Docker. To do so, just run 
+```cmd
+docker compose up
+```
+in main folder and wait until all docker containers will be ready.
 
 ## Roadmap
 - [x] ~~Separate controllers into controllers and services~~
 - [x] ~~Separate Application project into Application and Services~~
 - [x] ~~Separate DomainModel project into DomainModel and infrastructure~~
-- [ ] Dockerize solution
+- [x] ~~Dockerize solution~~
 - [ ] Change `IdentityUser` to my own implementation
-- [ ] Remake frontend to Angular and redesign it (in separate repo)
-- [ ] Add images to items and lists
 - [ ] Change security system
 - [ ] Change reminder notification system
+- [ ] Remake frontend to Angular and redesign it (in separate repo)
+- [ ] Add images to items and lists
 - [ ] Turn solution into microservices (in separate repo)
