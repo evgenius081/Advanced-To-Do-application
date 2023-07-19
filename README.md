@@ -51,7 +51,7 @@ in main folder and wait until all docker containers will be ready.
 - [x] ~~Separate Application project into Application and Services~~
 - [x] ~~Separate DomainModel project into DomainModel and infrastructure~~
 - [x] ~~Dockerize solution~~
-- [ ] Change `IdentityUser` to my own implementation
+- [x] ~~Change `IdentityUser` to my own implementation~~
 - [ ] Change security system
 - [ ] Change reminder notification system
 - [ ] Remake frontend to Angular and redesign it (in separate repo)
