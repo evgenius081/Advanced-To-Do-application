@@ -1,13 +1,11 @@
-import React, {useContext, useState} from 'react'
+import React, {useState} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import {Error} from "./Error";
-import { TokenContext } from "../App";
 
 export function Register(){
     const [ password, setPassword ] = useState("")
     const [ errors, setErrors ] = useState([])
     let navigate = useNavigate()
-    const { setToken } = useContext(TokenContext);
     const [ username, setUsername ] = useState("")
 
     async function submitHandler(e){
@@ -26,10 +24,10 @@ export function Register(){
         })
             .then(async (response) => {
                 if (response.ok){
-                    let token = await response.json()
-                    setToken(token)
+                    let r = await response.json()
+                    sessionStorage.setItem("todoJWTRefresh", r.refreshToken);
                     sessionStorage.setItem("todoUsername", username)
-                    sessionStorage.setItem("todoJWT", token)
+                    sessionStorage.setItem("todoJWT", r.accessToken)
                     navigate("/")
                 }
                 else if (response.status === 400){

@@ -1,42 +1,51 @@
-import React, {useState, useEffect, useContext, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import { useNavigate } from "react-router-dom";
 import './Create.css'
 import { Error } from "../Error";
-import { TokenContext } from "../../App";
 import {createList, readList} from "./listOperations";
 import jwt_decode from "jwt-decode";
+import refresh from "../../tokenRefresh";
 
 export function CreateList(){
     const [title, setTitle] = useState("");
     const [archived, setArchived] = useState(false);
     const navigate = useNavigate();
     const [errors, setErrors] = useState([])
-    const { token } = useContext(TokenContext);
 
     const check = useCallback(async () => {
-        await readList(1, token).then(async (response) => {
-                if (response.status === 401){
+        
+        await readList(1).then(async (response) => {
+            if (response.status === 401){
+                if (await refresh()) {
+                    await check()
+                }else{
                     navigate("/login")
                 }
-            })
-    }, [token, navigate])
+            }
+        })
+    }, [navigate])
 
     useEffect(() => {
         check().then()
     }, [check])
 
     async function submitHandler(e){
+        let token = sessionStorage.getItem("todoJWT");
         e.preventDefault()
         let data = {
             title: title,
             isArchived: archived,
             userID: parseInt(jwt_decode(token).nameid)
         }
-        await createList(data, token).then(async (response) => {
+        await createList(data).then(async (response) => {
             if (response.ok){
                 navigate(-1)
             }else if (response.status === 401){
-                navigate("/login")
+                if (await refresh()) {
+                    await submitHandler(e)
+                }else{
+                    navigate("/login")
+                }
             }else if (response.status === 400){
                 let data = await response.json()
                 setErrors(await data.errors.Title)

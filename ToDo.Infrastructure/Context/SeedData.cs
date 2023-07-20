@@ -38,7 +38,12 @@ namespace ToDo.Infrastructure.Context
         /// <param name="context">Database context.</param>
         public static void Seed(ApplicationContext context)
         {
-            User user = new User() { Username = "admin", PasswordHash = "0P5Ru8CkrLbSnuC7710rwg==.u2nHQ0zJ2/bOY4s7dtP9KUONEjmDySRiEJU/tN0xr5c=" }; // password - P@55w0rd
+            User user = new User()
+            {
+                Username = "admin",
+                PasswordHash = "0P5Ru8CkrLbSnuC7710rwg==.u2nHQ0zJ2/bOY4s7dtP9KUONEjmDySRiEJU/tN0xr5c=",
+                RefreshTokenExpire = DateTime.UtcNow,
+            }; // password - P@55w0rd
             context.Users.Add(user);
             context.SaveChanges();
 

@@ -25,6 +25,8 @@ services:
             - ConnectionStrings__ToDoConnection=Data Source=sqlserver;Database=tododatabase;User=SA;Password=P@55w0rd;TrustServerCertificate=true
             - Frontend=http://localhost:3000
             - SQLServer_path=http://sqlserver:1433
+            - JWT__ValidIssuer=http://localhost:80
+            - JWT__ValidAudience=http://localhost:3000
         ports:
             - '5000:80' 
         networks:

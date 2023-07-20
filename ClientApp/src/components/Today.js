@@ -10,6 +10,7 @@ import {faEyeSlash} from "@fortawesome/free-regular-svg-icons";
 import {deleteItem, updateItem} from "./items/itemOperations";
 
 import { ItemElement} from "./lists/View";
+import refresh from "../tokenRefresh";
 
 export function Today(){
     let { id } = useParams();
@@ -26,9 +27,10 @@ const [ showHidden, setShowHidden ] = useState(true)
             status: 0,
             deadline: ""
         }]);
-    const { token, getReminded } = useContext(TokenContext);
+    const { getReminded } = useContext(TokenContext);
 
     const getItems = useCallback(async () => {
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/items/today",{
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -47,7 +49,11 @@ const [ showHidden, setShowHidden ] = useState(true)
                         return -1
                     }))
                 }else if (response.status === 401){
-                    navigate("/login")
+                    if (await refresh()){
+                        await getItems()
+                    }else{
+                        navigate("/login")
+                    }
                 }else if (response.status === 404){
                     navigate("/404")
                 }
@@ -55,7 +61,7 @@ const [ showHidden, setShowHidden ] = useState(true)
                     navigate("/error")
                 }
             })
-    }, [token, setItems, navigate])
+    }, [ setItems, navigate])
 
 useEffect(() => {
     getItems().then()
@@ -63,70 +69,22 @@ useEffect(() => {
 
     async function changeStatus(item, newStatus) {
         item.status = newStatus
-        await updateItem(item, token).then((response) => {
-            if (response.ok){
-                getReminded()
-                let new_items = items.map(i => {
-                    if (i.id === item.id){
-                        return item;
-                    }
-                    else{
-                        return i;
-                    }
-                })
-                setItems(new_items)
-            }
-            else if (response.status === 500){
-                navigate("/error")
-            }
-        })
+        await update(item)
     }
 
     async function changePriority(item){
         item.priority = item.priority === 2 ? 1 : 2
-        await updateItem(item, token).then((response) => {
-            if (response.ok){
-                let new_items = items.map(i => {
-                    if (i.id === item.id){
-                        return item;
-                    }
-                    else{
-                        return i;
-                    }
-                })
-                setItems(new_items)
-            }
-            else if (response.status === 500){
-                navigate("/error")
-            }
-        })
+        await update(item)
     }
 
     async function changeRemind(item){
         item.remind = !item.remind
-        await updateItem(item, token)
-            .then(async (response) => {
-                if (response.ok){
-                    getReminded()
-                    let new_items = items.map(i => {
-                        if (i.id === item.id){
-                            return item;
-                        }
-                        else{
-                            return i;
-                        }
-                    })
-                    setItems(new_items)
-                }
-                else if (response.status === 500){
-                    navigate("/error")
-                }
-            })
+        await update(item)
     }
 
-    async function changeHidden(item){
-        item.priority = item.priority === 0 ? 1 : 0
-        await updateItem(item, token).then((response) => {
+    async function update(item){
+        
+        await updateItem(item).then(async (response) => {
             if (response.ok){
                 let new_items = items.map(i => {
                     if (i.id === item.id){
@@ -141,11 +99,24 @@ useEffect(() => {
             else if (response.status === 500){
                 navigate("/error")
             }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    await update(item)
+                }else{
+                    navigate("/login")
+                }
+            }
         })
     }
 
+    async function changeHidden(item){
+        item.priority = item.priority === 0 ? 1 : 0
+        await update(item)
+    }
+
     async function handleDelete(id){
-    await deleteItem(id, token).then((response) => {
+        
+    await deleteItem(id).then(async (response) => {
             if (response.ok){
                 getReminded()
                 setItems(items.filter((list) => list.id !== id))
@@ -155,6 +126,13 @@ useEffect(() => {
             }
             else if (response.status === 500){
                 navigate("/error")
+            }
+            else if (response.status === 401){
+                if (await refresh()){
+                    await handleDelete(id)
+                }else{
+                    navigate("/login")
+                }
             }
         })
     }

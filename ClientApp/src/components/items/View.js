@@ -8,13 +8,14 @@ import { convertDate } from "../../dateConverter";
 import './View.css'
 import {TokenContext} from "../../App";
 import {deleteItem, readItem} from "./itemOperations";
-import {readList} from "../lists/listOperations";
 import Modal from "react-bootstrap/Modal";
+import refresh from "../../tokenRefresh";
+import {readList} from "../lists/listOperations";
 
 export function ViewItem (){
     let { list_id, item_id } = useParams();
     let navigate = useNavigate()
-    const { token, getReminded } = useContext(TokenContext);
+    const { getReminded } = useContext(TokenContext);
     const priorities = ["Hidden", "Standard", "High"]
     const statuses = ["Not started", "In process", "Completed"];
     const [show, setShow] = useState(false);
@@ -36,15 +37,20 @@ export function ViewItem (){
             })
 
     const getItem = useCallback(async () => {
-            await readItem(item_id, token).then(async (response) => {
+        
+            await readItem(item_id).then(async (response) => {
                 if (response.ok) {
                     let data = await response.json()
                     if (parseInt(list_id) !== data.toDoListID){
                         navigate("/notFound")
                     }
                     setItem(data)
-                } else if (response.status === 401){
-                    navigate("/login")
+                }else if (response.status === 401){
+                    if (await refresh()) {
+                        await getItem()
+                    }else{
+                        navigate("/login")
+                    }
                 } else if (response.status === 404){
                     navigate("/notFound")
                 }
@@ -52,16 +58,21 @@ export function ViewItem (){
                     navigate("/error")
                 }
             })
-    }, [item_id, navigate, list_id, token])
+    }, [item_id, navigate, list_id])
 
     const getList = useCallback(async () => {
-        await readList(list_id, token)
+        
+        await readList(list_id)
             .then(async (response) => {
                 if (response.ok) {
                     let data = await response.json()
                     setList(data)
                 }else if (response.status === 401){
-                    navigate("/login")
+                    if (await refresh()) {
+                        await getList()
+                    }else{
+                        navigate("/login")
+                    }
                 } else if (response.status === 404){
                     navigate("/notFound")
                 }
@@ -69,16 +80,24 @@ export function ViewItem (){
                     navigate("/error")
                 }
             })
-    }, [list_id, setList, navigate, token])
+    }, [list_id, setList, navigate])
 
     async function handleDelete(id){
-        await deleteItem(id, token).then((response) => {
+
+        await deleteItem(id).then(async (response) => {
             if (response.ok || response.status === 404){
                 getReminded()
                 navigate(-1)
             }
             else if (response.status === 500){
                 navigate("/error")
+            }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    await handleDelete(id)
+                }else{
+                    navigate("/login")
+                }
             }
         })
     }

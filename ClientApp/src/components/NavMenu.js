@@ -5,31 +5,20 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import './NavMenu.css';
 import { TokenContext } from "../App";
+
 export function NavMenu(){
-    const {  setUsername, token, setToken } = useContext(TokenContext);
+    const {  setUsername } = useContext(TokenContext);
     let username = sessionStorage.getItem("todoUsername")
     let navigate = useNavigate()
+    let token = sessionStorage.getItem("todoJWT");
     const [expanded, setExpanded] = useState(false);
-  function logout(){
-      // await fetch(process.env.REACT_APP_ASP_LINK+`/accounts/logout/${username}`,
-      //     {
-      //         headers: {
-      //             'Authorization': `Bearer ${token}`
-      //         }
-      //     })
-      //     .then((response) => {
-      //         if (response.ok){
-                  sessionStorage.setItem("todoJWT", "")
-                  sessionStorage.setItem("todoUsername", "")
-                  setToken("")
-                  setUsername("")
-                  navigate("/login")
-          //     }
-          //     else if (response.status === 500){
-          //       navigate("/error")
-          //   }
-          // })
-  }
+
+    function logout(){
+        sessionStorage.setItem("todoJWT", "")
+        sessionStorage.setItem("todoUsername", "")
+        setUsername("")
+        navigate("/login")
+    }
 
   useEffect(() => {
       if (username === ""){

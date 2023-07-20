@@ -1,9 +1,9 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import { TokenContext } from "../../App";
 import {Error} from "../Error";
 import {readList, updateList} from "./listOperations";
 import jwt_decode from "jwt-decode";
+import refresh from "../../tokenRefresh";
 
 export function EditList() {
     const [title, setTitle] = useState("");
@@ -11,10 +11,10 @@ export function EditList() {
     const [errors, setErrors] = useState([])
     const navigate = useNavigate();
     const { id } = useParams();
-    const { token } = useContext(TokenContext);
 
     const getData = useCallback(async () => {
-        await readList(id, token)
+        
+        await readList(id)
             .then(async (response) => {
                 if (response.ok){
                     let data = await response.json()
@@ -22,7 +22,11 @@ export function EditList() {
                     setArchived(data.isArchived)
                 }
                 else if (response.status === 401){
-                    navigate("login")
+                    if (await refresh()) {
+                        await getData()
+                    }else{
+                        navigate("/login")
+                    }
                 }
                 else if (response.status === 404){
                     navigate("/notFound")
@@ -32,13 +36,14 @@ export function EditList() {
                 }
 
             })
-    }, [id, token, setArchived, navigate, setTitle])
+    }, [id, setArchived, navigate, setTitle])
 
     useEffect(() => {
         getData().then()
     }, [getData])
 
     async function submitHandler(e){
+        let token = sessionStorage.getItem("todoJWT");
         e.preventDefault()
         let data = {
             id: parseInt(id),
@@ -46,11 +51,15 @@ export function EditList() {
             isArchived: archived,
             userID: parseInt(jwt_decode(token).nameid)
         }
-        await updateList(data, token).then(async (response) => {
+        await updateList(data).then(async (response) => {
             if (response.ok){
                 navigate(-1)
-            } else if (response.status === 401){
-                navigate("/login")
+            }else if (response.status === 401){
+                if (await refresh()) {
+                    await submitHandler(e)
+                }else{
+                    navigate("/login")
+                }
             }else if (response.status === 400){
                 let data = await response.json()
                 setErrors(await data.errors.Title)

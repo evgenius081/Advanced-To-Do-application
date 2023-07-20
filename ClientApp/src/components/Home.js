@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { faEllipsisV } from "@fortawesome/fontawesome-free-solid"
-
 import './Home.css'
 import 'font-awesome/css/font-awesome.min.css';
 import Dropdown from "react-bootstrap/Dropdown";
@@ -12,13 +11,14 @@ import Modal from 'react-bootstrap/Modal';
 import {TokenContext} from "../App";
 import {deleteList} from "./lists/listOperations";
 import jwt_decode from "jwt-decode";
+import refresh from "../tokenRefresh";
 
 library.add(faEdit);
 
 
 export function Home(){
     let navigate = useNavigate()
-    const { token, getReminded } = useContext(TokenContext);
+    const { getReminded } = useContext(TokenContext);
     const [lists, setLists] = useState( [
         {
             id: -1,
@@ -31,6 +31,7 @@ export function Home(){
     ]);
 
     const getLists = useCallback(async () => {
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/lists/unarchived",
             {
                 headers: {
@@ -42,21 +43,30 @@ export function Home(){
                     setLists(await response.json())
                 }
                 else if (response.status === 401){
-                    navigate("/login")
+                    if (await refresh()){
+                        await getLists()
+                    }else{
+                        navigate("/login")
+                    }
                 }
                 else if (response.status === 500){
                     navigate("/error")
                 }
             })
-    }, [setLists, navigate, token])
+    }, [setLists, navigate])
 
     async function handleDeleteList(id){
-        await deleteList(id, token).then((response) => {
+        
+        await deleteList(id).then(async (response) => {
             if (response.ok){
                 getReminded()
                 setLists(lists.filter((list) => list.id !== id))
             }else if (response.status === 401){
-                navigate("/login")
+                if (await refresh()){
+                    await handleDeleteList(id)
+                }else{
+                    navigate("/login")
+                }
             }
             else if(response.status === 404){
                 setLists(lists.filter((list) => list.id !== id))
@@ -68,6 +78,7 @@ export function Home(){
     }
 
     async function handleCopy(id){
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/lists/copy/"+id, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -85,10 +96,18 @@ export function Home(){
                 else if (response.status === 500){
                     navigate("/error")
                 }
+                else if (response.status === 401){
+                    if (await refresh()){
+                        await handleCopy(id)
+                    }else{
+                        navigate("/login")
+                    }
+                }
             })
     }
 
     async function handleArchive(id){
+        let token = sessionStorage.getItem("todoJWT");
         let list = lists.filter(list => list.id === id)[0]
         let data = {
             id: list.id,
@@ -104,11 +123,15 @@ export function Home(){
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
-        }).then((response) => {
+        }).then(async (response) => {
             if (response.ok){
                 setLists(lists.filter((list) => list.id !== id))
             }else if (response.status === 401){
-                navigate("/login")
+                if (await refresh()){
+                    await handleArchive(id)
+                }else{
+                    navigate("/login")
+                }
             }
             else if(response.status === 404){
                 setLists(lists.filter((list) => list.id !== id))

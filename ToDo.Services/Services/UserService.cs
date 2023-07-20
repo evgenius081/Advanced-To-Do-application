@@ -19,6 +19,7 @@ namespace ToDo.Services.Services
         private readonly IUserRepository userRepository;
         private readonly IConfiguration configuration;
         private readonly IPasswordHasher passwordHasher;
+        private readonly ITokenService tokenService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserService"/> class.
@@ -26,38 +27,48 @@ namespace ToDo.Services.Services
         /// <param name="userRepository">Repository for <see cref="User"/>.</param>
         /// <param name="passwordHasher">Service for hashing and verifing password.</param>
         /// <param name="configuration">Configuration.</param>
+        /// <param name="tokenService">Service for handling JWT tokens.</param>
         public UserService(
             IUserRepository userRepository,
             IConfiguration configuration,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            ITokenService tokenService)
         {
             this.userRepository = userRepository;
             this.configuration = configuration;
             this.passwordHasher = passwordHasher;
+            this.tokenService = tokenService;
         }
 
         /// <inheritdoc/>
-        public async Task<string?> Login(UserLogin userLogin)
+        public async Task<Token?> Login(UserLogin userLogin)
         {
             var user = await this.userRepository.GetByUsernameAsync(userLogin.Login);
 
             if (user == null || !this.passwordHasher.VerifyPassword(user.PasswordHash, userLogin.Password))
             {
-                return string.Empty;
+                return null;
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var seckey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.configuration.GetSection("JWT").Value!));
-            var signingCreds = new SigningCredentials(seckey, SecurityAlgorithms.HmacSha256Signature);
-            var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+            var authClaims = new List<Claim>()
             {
-                Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) }),
-                SigningCredentials = signingCreds,
-                Expires = DateTime.UtcNow.AddDays(1),
-            });
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
-            var tokenString = tokenHandler.WriteToken(token);
-            return tokenString;
+            var token = this.tokenService.CreateToken(authClaims);
+            var refreshToken = this.tokenService.GenerateRefreshToken();
+
+            _ = int.TryParse(this.configuration.GetSection("JWT:RefreshTokenValidityInDays").Value!, out int refreshTokenValidityInDays);
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpire = DateTime.Now.AddDays(refreshTokenValidityInDays);
+
+            this.userRepository.Update(user);
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            return new Token() { AccessToken = tokenString, RefreshToken = refreshToken };
         }
 
         /// <inheritdoc/>
@@ -67,35 +78,28 @@ namespace ToDo.Services.Services
         }
 
         /// <inheritdoc/>
-        public async Task<string?> Register(UserLogin userLogin)
+        public async Task<User?> Register(UserLogin userLogin)
         {
+            if (userLogin == null)
+            {
+                throw new ArgumentNullException(nameof(userLogin));
+            }
+
             var user = await this.userRepository.GetByUsernameAsync(userLogin.Login);
 
-            if (user != null || userLogin == null)
+            if (user != null)
             {
-                return string.Empty;
+                return null;
             }
 
             var newUser = new User()
             {
                 Username = userLogin.Login,
                 PasswordHash = this.passwordHasher.HashPassword(userLogin.Password),
+                RefreshTokenExpire = DateTime.UtcNow.AddDays(1),
             };
 
-            newUser = await this.userRepository.InsertAsync(newUser);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var seckey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.configuration.GetSection("JWT").Value!));
-            var signingCreds = new SigningCredentials(seckey, SecurityAlgorithms.HmacSha256Signature);
-            var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.NameIdentifier, newUser.Id.ToString()) }),
-                SigningCredentials = signingCreds,
-                Expires = DateTime.UtcNow.AddDays(1),
-            });
-
-            var tokenString = tokenHandler.WriteToken(token);
-            return tokenString;
+            return await this.userRepository.InsertAsync(newUser);
         }
     }
 }

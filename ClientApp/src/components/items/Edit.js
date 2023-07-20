@@ -7,6 +7,7 @@ import { TokenContext } from "../../App";
 import './Create.css'
 import {useParams} from "react-router-dom";
 import {readItem, updateItem} from "./itemOperations";
+import refresh from "../../tokenRefresh";
 
 export function EditItem(){
     let { list_id, item_id } = useParams();
@@ -21,13 +22,17 @@ export function EditItem(){
     const [errors, setErrors] = useState([])
     const priorities = ["Hidden", "Standard", "High"]
     const [priority, setPriority] = useState(1)
-    const { token, getReminded } = useContext(TokenContext);
+    const { getReminded } = useContext(TokenContext);
 
     const getItem = useCallback(async () => {
-    await readItem(item_id, token)
+    await readItem(item_id)
         .then(async (response) => {
             if (response.status === 401){
-                navigate("/login")
+                if (await refresh()) {
+                    await getItem()
+                }else{
+                    navigate("/login")
+                }
             }
             else if (response.status === 404){
                 navigate("/notFound")
@@ -50,7 +55,7 @@ export function EditItem(){
             }
             
         })
-    }, [setDeadline, setStatus, setDescription, setPriority, setTitle, setItem, navigate, token, item_id, list_id])
+    }, [setDeadline, setStatus, setDescription, setPriority, setTitle, setItem, navigate, item_id, list_id])
 
     useEffect(() =>{
         getItem().then();
@@ -69,9 +74,13 @@ export function EditItem(){
             priority: priority,
             toDoListID: item.toDoListID
         }
-        await updateItem(data, token).then(async (response) => {
+        await updateItem(data).then(async (response) => {
             if (response.status === 401){
-                navigate("/login")
+                if (await refresh()) {
+                    await sendData(e)
+                }else{
+                    navigate("/login")
+                }
             }
             else if (response.ok){
                 await getReminded()

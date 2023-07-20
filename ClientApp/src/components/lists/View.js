@@ -12,6 +12,7 @@ import {deleteItem, updateItem} from "../items/itemOperations";
 import {deleteList} from "./listOperations";
 import Toast from 'react-bootstrap/Toast'
 import { ToastContainer } from 'react-bootstrap';
+import refresh from "../../tokenRefresh";
 
 const statuses = ["Not started", "In process", "Completed"]
 
@@ -39,14 +40,14 @@ export function ViewList(){
             status: 1,
             deadline: ""
         }]);
-    const { token, getReminded } = useContext(TokenContext);
+    const { getReminded } = useContext(TokenContext);
 
     const getItems = useCallback(async () => {
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/items/list/"+id,{
                 headers: {
                     'Authorization': `Bearer ${token}`
-                }})
-            .then(async (response) => {
+                }}).then(async (response) => {
                 if (response.ok) {
                     let data = await response.json()
                     setItems( data.sort((a, b) => {
@@ -60,7 +61,11 @@ export function ViewList(){
                         return -1
                     }))
                 }else if (response.status === 401){
-                    navigate("/login")
+                    if (await refresh()){
+                        await getItems
+                    }else{
+                        navigate("/login")
+                    }
                 }else if (response.status === 404){
                     navigate("/404")
                 }
@@ -68,9 +73,10 @@ export function ViewList(){
                     navigate("/error")
                 }
             })
-    }, [id, token, setItems, navigate])
+    }, [id, setItems, navigate])
 
     const getList = useCallback(async () => {
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/lists/"+id,
             {
                 headers: {
@@ -83,7 +89,11 @@ export function ViewList(){
                     setList(data)
                 }
                 else if (response.status === 401){
-                    navigate("login")
+                    if (await refresh()) {
+                        await getList()
+                    }else{
+                        navigate("/login")
+                    }
                 }
                 else if (response.status === 404){
                     navigate("/notFound")
@@ -92,7 +102,7 @@ export function ViewList(){
                     navigate("/error")
                 }
             })
-    }, [id, token, setList, navigate])
+    }, [id, setList, navigate])
 
     const [showMessage, setShowMessage] = useState(false);
 
@@ -102,8 +112,9 @@ useEffect(() => {
 }, [getItems, getList]);
 
     async function changeStatus(item, newStatus) {
+        
         item.status = newStatus
-        await updateItem(item, token).then((response) => {
+        await updateItem(item).then(async (response) => {
             if (response.ok){
                 getReminded()
                 let new_items = items.map(i => {
@@ -119,11 +130,19 @@ useEffect(() => {
             else if (response.status === 500){
                 navigate("/error")
             }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    await changeStatus(item, newStatus)
+                }else{
+                    navigate("/login")
+                }
+            }
         })
     }
 
     async function handleDeleteItem(id){
-        await deleteItem(id, token).then((response) => {
+        
+        await deleteItem(id).then(async (response) => {
             if (response.ok){
                 getReminded()
                 setItems(items.filter((list) => list.id !== id))
@@ -133,12 +152,20 @@ useEffect(() => {
             }
             else if (response.status === 500){
                 navigate("/error")
+            }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    await handleDeleteItem(id)
+                }else{
+                    navigate("/login")
+                }
             }
         })
     }
 
     async function handleDeleteList(id){
-        await deleteList(id, token).then((response) => {
+        
+        await deleteList(id).then(async (response) => {
             if (response.ok){
                 getReminded()
                 navigate("/")
@@ -149,10 +176,18 @@ useEffect(() => {
             else if (response.status === 500){
                 navigate("/error")
             }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    await handleDeleteList(id)
+                }else{
+                    navigate("/login")
+                }
+            }
         })
     }
 
     async function handleCopy(){
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/lists/copy/"+id, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -169,12 +204,20 @@ useEffect(() => {
                 else if (response.status === 500){
                     navigate("/error")
                 }
+                else if (response.status === 401){
+                    if (await refresh()) {
+                        await handleCopy()
+                    }else{
+                        navigate("/login")
+                    }
+                }
             })
     }
 
     async function changeRemind(item){
+        
         item.remind = !item.remind
-        await updateItem(item, token)
+        await updateItem(item)
             .then(async (response) => {
                 if (response.ok){
                     getReminded()
@@ -191,12 +234,21 @@ useEffect(() => {
                 else if (response.status === 500){
                     navigate("/error")
                 }
+                else if (response.status === 401){
+                    if (await refresh()) {
+                        item.remind = !item.remind
+                        await changeRemind(item)
+                    }else{
+                        navigate("/login")
+                    }
+                }
             })
     }
 
     async function changeHidden(item){
+        
         item.priority = item.priority === 0 ? 1 : 0
-        await updateItem(item, token).then((response) => {
+        await updateItem(item).then(async (response) => {
             if (response.ok){
                 let new_items = items.map(i => {
                     if (i.id === item.id){
@@ -210,14 +262,23 @@ useEffect(() => {
             }
             else if (response.status === 500){
                 navigate("/error")
+            }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    item.priority = item.priority === 0 ? 1 : 0
+                    await changeHidden(item)
+                }else{
+                    navigate("/login")
+                }
             }
         })
     }
 
     
     async function changePriority(item){
+        
         item.priority = item.priority === 2 ? 1 : 2
-        await updateItem(item, token).then((response) => {
+        await updateItem(item).then(async (response) => {
             if (response.ok){
                 let new_items = items.map(i => {
                     if (i.id === item.id){
@@ -231,6 +292,14 @@ useEffect(() => {
             }
             else if (response.status === 500){
                 navigate("/error")
+            }
+            else if (response.status === 401){
+                if (await refresh()) {
+                    item.priority = item.priority === 2 ? 1 : 2
+                    await changePriority(item)
+                }else{
+                    navigate("/login")
+                }
             }
         })
     }

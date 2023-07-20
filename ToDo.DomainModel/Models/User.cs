@@ -40,5 +40,16 @@ namespace ToDo.DomainModel.Models
         /// </summary>
         [JsonIgnore]
         public virtual ICollection<ToDoList> Lists { get; set; } = new List<ToDoList>();
+
+        /// <summary>
+        /// Gets or sets refresh token.
+        /// </summary>
+        public string? RefreshToken { get; set; }
+
+        /// <summary>
+        /// Gets or sets refresh token expiration date and time.
+        /// </summary>
+        [Required]
+        required public DateTime RefreshTokenExpire { get; set; }
     }
 }

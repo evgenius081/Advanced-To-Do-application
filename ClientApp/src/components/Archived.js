@@ -7,12 +7,12 @@ import {TokenContext} from "../App";
 import {deleteList, updateList} from "./lists/listOperations";
 import {ListElement} from "./Home";
 import jwt_decode from "jwt-decode";
+import refresh from "../tokenRefresh";
 
 
 export function Archived(){
     let navigate = useNavigate()
-    const { token, getReminded } = useContext(TokenContext);
-
+    const { getReminded } = useContext(TokenContext);
         const [lists, setLists] = useState( [
             {
                 id: -1,
@@ -26,6 +26,7 @@ export function Archived(){
         ]);
 
     const getLists = useCallback(async () => {
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/lists/archived",
             {
                 headers: {
@@ -37,21 +38,30 @@ export function Archived(){
                     setLists(await response.json())
                 }
                 else if (response.status === 401){
-                    navigate("/login")
+                    if (await refresh()){
+                        await getLists()
+                    }else{
+                        navigate("/login")
+                    }
                 }
                 else if (response.status === 500){
                     navigate("/error")
                 }
             })
-    }, [setLists, navigate, token])
+    }, [setLists, navigate])
 
     async function handleDeleteList(id){
-        await deleteList(id, token).then((response) => {
+        
+        await deleteList(id).then(async (response) => {
             if (response.ok){
                 getReminded()
                setLists(lists.filter((list) => list.id !== id))
             }else if (response.status === 401){
-                navigate("/login")
+                if (await refresh()){
+                    await handleDeleteList(id)
+                }else{
+                    navigate("/login")
+                }
             }
             else if(response.status === 404){
                 setLists(lists.filter((list) => list.id !== id))
@@ -63,6 +73,7 @@ export function Archived(){
     }
 
     async function handleCopy(id){
+        let token = sessionStorage.getItem("todoJWT");
         await fetch(process.env.REACT_APP_ASP_LINK+"/lists/copy/"+id, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -80,10 +91,18 @@ export function Archived(){
                 else if (response.status === 500){
                     navigate("/error")
                 }
+                else if (response.status === 401){
+                    if (await refresh()){
+                        await handleCopy(id)
+                    }else{
+                        navigate("/login")
+                    }
+                }
             })
     }
 
     async function handleDearchive(id){
+        let token = sessionStorage.getItem("todoJWT");
         let list = lists.filter(list => list.id === id)[0]
         let data = {
             id: list.id,
@@ -91,11 +110,15 @@ export function Archived(){
             title: list.title,
             userID: parseInt(jwt_decode(token).nameid)
         }
-        await updateList(data, token).then((response) => {
+        await updateList(data).then(async (response) => {
             if (response.ok){
                 setLists(lists.filter((list) => list.id !== id))
             }else if (response.status === 401){
-                navigate("/login")
+                if (await refresh()){
+                    await handleDearchive(id)
+                }else{
+                    navigate("/login")
+                }
             }
             else if(response.status === 404){
                 setLists(lists.filter((list) => list.id !== id))

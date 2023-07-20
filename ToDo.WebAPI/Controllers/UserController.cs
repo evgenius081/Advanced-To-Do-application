@@ -35,10 +35,10 @@ namespace ToDo.WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLogin bodyUser)
         {
-            var tokenString = await this.userService.Login(bodyUser);
-            if (!string.IsNullOrEmpty(tokenString))
+            var token = await this.userService.Login(bodyUser);
+            if (token != null)
             {
-                return this.Ok(tokenString);
+                return this.Ok(token);
             }
 
             return this.BadRequest("Wrong username or password");
@@ -54,20 +54,21 @@ namespace ToDo.WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] UserLogin bodyUser)
         {
-            var tokenString = await this.userService.Register(bodyUser);
-            try
-            {
-                if (!string.IsNullOrEmpty(tokenString))
-                {
-                    return this.Ok(tokenString);
-                }
+            var user = await this.userService.Register(bodyUser);
 
+            if (user == null)
+            {
                 return this.BadRequest("User with this username already exists");
             }
-            catch (ArgumentException ex)
+
+            var token = await this.userService.Login(bodyUser);
+
+            if (token != null)
             {
-                return this.BadRequest($"{ex.Message}");
+                return this.Ok(token);
             }
+
+            return this.BadRequest("User registered, but login failed. Try again later.");
         }
     }
 }

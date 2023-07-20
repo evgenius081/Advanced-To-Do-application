@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 
 namespace ToDo.Services.Interfaces
@@ -13,14 +13,14 @@ namespace ToDo.Services.Interfaces
         /// </summary>
         /// <param name="userLogin">DTO with username and password.</param>
         /// <returns>Token if user is logged in successfully, empty string otherwise.</returns>
-        Task<string?> Login(UserLogin userLogin);
+        Task<Token?> Login(UserLogin userLogin);
 
         /// <summary>
         /// Registers user.
         /// </summary>
         /// <param name="userLogin">DTO with username and password.</param>
         /// <returns>Token if user is created and logged in successfully, empty string otherwise.</returns>
-        Task<string?> Register(UserLogin userLogin);
+        Task<User?> Register(UserLogin userLogin);
 
         /// <summary>
         /// Logs user out.

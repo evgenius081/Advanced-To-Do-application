@@ -1,14 +1,12 @@
-import React, {useContext, useState} from 'react'
+import React, {useState} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import {Error} from "./Error";
-import { TokenContext } from "../App";
 
 export function Login(){
-    const [ password, setPassword ] = useState("")
+    const [ password, setPassword ] = useState("P@55w0rd")
     const [ errors, setErrors ] = useState([])
-    const [ username, setUsername ] = useState("")
+    const [ username, setUsername ] = useState("admin")
     let navigate = useNavigate()
-    const { setToken } = useContext(TokenContext);
 
     async function submitHandler(e){
         e.preventDefault()
@@ -16,6 +14,7 @@ export function Login(){
             "login": username,
             "password": password
         }
+
         await fetch(process.env.REACT_APP_ASP_LINK+"/users/login", {
             method: "POST",
             headers: {
@@ -26,10 +25,10 @@ export function Login(){
         })
             .then(async (response) => {
                 if (response.ok){
-                    let token = await response.json()
-                    setToken(token)
+                    let data = await response.json()
                     sessionStorage.setItem("todoUsername", username)
-                    sessionStorage.setItem("todoJWT", token)
+                    sessionStorage.setItem("todoJWT", data.accessToken)
+                    sessionStorage.setItem("todoJWTRefresh", data.refreshToken)
                     navigate("/")
                 }
                 else if (response.status === 400){

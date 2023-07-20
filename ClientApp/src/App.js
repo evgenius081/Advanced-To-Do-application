@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Route, Routes} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import { Home } from './components/Home';
 import { NotFound } from './components/404'
 import { CreateItem } from './components/items/Create';
@@ -17,31 +17,38 @@ import { Reminder } from "./components/Reminder";
 import { Priority } from './components/Priority';
 import { InternalError } from './components/500';
 import { Register } from './components/Register'
+import refresh from "./tokenRefresh";
 
 export const TokenContext = React.createContext("");
 
 export function App(){
     //                                 I'll burn in hell for that, sorry :(
-    const [token, setToken] = useState(sessionStorage.getItem("todoJWT"))
     const [username, setUsername] = useState("")
     const [reminded, setReminded] = useState([])
+    const navigate = useNavigate()
 
     const getReminded = useCallback(async () => {
         await fetch(process.env.REACT_APP_ASP_LINK+"/items/remind", {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${sessionStorage.getItem("todoJWT")}`
             }
         }).then(async (response) => {
             if (response.ok){
                 let data = await response.json()
                 setReminded(data)
+            }else if (response.status === 401){
+                if (await refresh()) {
+                    await getReminded()
+                }else{
+                    navigate("/login")
+                }
             }
         })
-    }, [token])
+    }, [navigate])
 
         return (
             <>
-                    <TokenContext.Provider value={{ getReminded: getReminded, token: token, setToken: setToken, username: username, setUsername: setUsername, reminded: reminded, setReminded: setReminded}}>
+                    <TokenContext.Provider value={{ getReminded: getReminded, username: username, setUsername: setUsername, reminded: reminded, setReminded: setReminded}}>
                         <Reminder />
                         <NavMenu/>
                         <main>

@@ -3,11 +3,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ToDo.DomainModel.Interfaces;
 using ToDo.DomainModel.Models;
@@ -52,6 +52,7 @@ namespace ToDo.WebAPI
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(
                x =>
                {
@@ -60,9 +61,12 @@ namespace ToDo.WebAPI
                    x.TokenValidationParameters = new TokenValidationParameters
                    {
                        ValidateIssuerSigningKey = true,
-                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Configuration.GetSection("JWT").Value)),
-                       ValidateAudience = false,
-                       ValidateIssuer = false,
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Configuration.GetSection("JWT:Secret").Value)),
+                       ValidateAudience = true,
+                       ValidAudience = this.Configuration.GetSection("JWT:ValidAudience").Value!,
+                       ValidateIssuer = true,
+                       ValidIssuer = this.Configuration.GetSection("JWT:ValidIssuer").Value!,
+                       ClockSkew = TimeSpan.Zero,
                    };
                });
 
@@ -73,6 +77,7 @@ namespace ToDo.WebAPI
             services.AddScoped<IToDoItemService, ToDoItemService>();
             services.AddScoped<IToDoListService, ToDoListService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IPasswordHasher, PasswordHasher>();
             services.AddTransient<IHttpContextService, HttpContextService>();
 

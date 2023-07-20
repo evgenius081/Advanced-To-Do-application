@@ -7,6 +7,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import { TokenContext } from "../../App";
 import {readList} from "../lists/listOperations";
 import {createItem} from "./itemOperations";
+import refresh from "../../tokenRefresh";
 
 export function CreateItem(){
     let { list_id } = useParams();
@@ -22,13 +23,18 @@ export function CreateItem(){
     const [reminded, setReminded] = useState(false)
     const [priority, setPriority] = useState(1)
     const [errors, setErrors] = useState([]);
-    const { token, getReminded } = useContext(TokenContext);
+    const { getReminded } = useContext(TokenContext);
+    
 
     const checkList = useCallback(async () => {
-        await readList(list_id, token)
-            .then((response) => {
+        await readList(list_id)
+            .then(async (response) => {
                 if (response.status === 401){
-                    navigate("login")
+                    if (await refresh()) {
+                        await checkList()
+                    }else{
+                        navigate("/login")
+                    }
                 }
                 else if (response.status === 404){
                     navigate("/notFound")
@@ -37,7 +43,7 @@ export function CreateItem(){
                     navigate("/error")
                 }
             })
-    }, [navigate, list_id, token])
+    }, [navigate, list_id])
 
     useEffect(() => {
         checkList().then()
@@ -56,7 +62,7 @@ export function CreateItem(){
             toDoListID: parseInt(list_id)
         }
 
-        await createItem(data, token).then(async (response) => {
+        await createItem(data).then(async (response) => {
             if (response.ok){
                 getReminded()
                 navigate(-1)
@@ -67,6 +73,12 @@ export function CreateItem(){
             }
             else if (response.status === 500){
                 navigate("/error")
+            }else if (response.status === 401){
+                if (await refresh()) {
+                    await sendData(e)
+                }else{
+                    navigate("/login")
+                }
             }
         })
     }

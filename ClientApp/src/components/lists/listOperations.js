@@ -1,4 +1,5 @@
-export async function createList(list, token){
+export async function createList(list){
+    let token = sessionStorage.getItem("todoJWT");
     return await fetch(process.env.REACT_APP_ASP_LINK+"/lists", {
         method: "POST",
         headers: {
@@ -10,7 +11,8 @@ export async function createList(list, token){
     })
 }
 
-export async function readList(id, token){
+export async function readList(id){
+    let token = sessionStorage.getItem("todoJWT");
     return await fetch(process.env.REACT_APP_ASP_LINK+"/lists/"+id,
         {
             headers: {
@@ -19,7 +21,8 @@ export async function readList(id, token){
         })
 }
 
-export async function updateList(list, token){
+export async function updateList(list){
+    let token = sessionStorage.getItem("todoJWT");
     return await fetch(process.env.REACT_APP_ASP_LINK+"/lists", {
         method: "PUT",
         headers: {
@@ -31,7 +34,8 @@ export async function updateList(list, token){
     })
 }
 
-export async function deleteList(id, token){
+export async function deleteList(id){
+    let token = sessionStorage.getItem("todoJWT");
     return await fetch(process.env.REACT_APP_ASP_LINK+"/lists/"+id, {
         headers: {
             'Authorization': `Bearer ${token}`
