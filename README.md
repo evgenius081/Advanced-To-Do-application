@@ -52,8 +52,8 @@ in main folder and wait until all docker containers will be ready.
 - [x] ~~Separate DomainModel project into DomainModel and infrastructure~~
 - [x] ~~Dockerize solution~~
 - [x] ~~Change `IdentityUser` to my own implementation~~
-- [ ] Change security system
+- [x] ~~Change security system~~
+- [ ] Remake frontend to Angular and redesign it (in separate branch)
 - [ ] Change reminder notification system
-- [ ] Remake frontend to Angular and redesign it (in separate repo)
 - [ ] Add images to items and lists
 - [ ] Turn solution into microservices (in separate repo)
