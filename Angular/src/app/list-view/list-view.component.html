@@ -13,10 +13,6 @@
         <fa-icon [icon]="faBoxArchive" [class.archived]="list.isArchived"></fa-icon>
         <span>{{list.isArchived ? "Dearchive" : "Archive"}}</span>
       </button>
-      <button mat-menu-item (click)="changeShowHidden()">
-        <fa-icon [icon]="showHidden ? faEyeSlash : faEye"></fa-icon>
-        <span>{{showHidden ? "Hide tertiary tasks" : "Show tertiary tasks"}}</span>
-      </button>
       <button mat-menu-item>
         <fa-icon class="delete" [icon]="faTrash"></fa-icon>
         <span>Delete</span>
@@ -35,23 +31,10 @@
         class="list"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)">
-        <div *ngIf="(getNotStartedNotHiddenItems().length != 0) ||
-        (getNotStartedHiddenItems().length != 0 && showHidden)">
-          <app-item-view *ngFor="let item of getNotStartedNotHiddenItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
-          <div *ngIf="showHidden">
-            <div class="separator" *ngIf="showHidden && getNotStartedHiddenItems().length != 0">
-              <hr/>
-              <p>Hidden</p>
-              <hr />
-            </div>
-            <app-item-view *ngFor="let item of getNotStartedHiddenItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
-          </div>
+        <div *ngIf="getNotStartedItems().length != 0">
+          <app-item-view *ngFor="let item of getNotStartedItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
         </div>
-        <p class="empty-container" *ngIf="(getNotStartedNotHiddenItems().length == 0
-        && getNotStartedHiddenItems().length == 0) ||
-        (getNotStartedNotHiddenItems().length == 0
-        && getNotStartedHiddenItems().length != 0
-        && !showHidden)">Nothing here yet</p>
+        <p class="empty-container" *ngIf="getNotStartedItems().length == 0">Nothing here yet</p>
       </div>
     </div>
     <div class="container">
@@ -64,23 +47,10 @@
         class="list"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)">
-        <div *ngIf="(getInProcessNotHiddenItems().length != 0) ||
-        (getInProcessHiddenItems().length != 0 && showHidden)">
-          <app-item-view *ngFor="let item of getInProcessNotHiddenItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
-          <div *ngIf="showHidden">
-            <div class="separator" *ngIf="showHidden && getInProcessHiddenItems().length != 0">
-              <hr/>
-              <p>Hidden</p>
-              <hr />
-            </div>
-            <app-item-view *ngFor="let item of getInProcessHiddenItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
-          </div>
+        <div *ngIf="getInProcessItems().length != 0">
+          <app-item-view *ngFor="let item of getInProcessItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
         </div>
-        <p class="empty-container" *ngIf="(getInProcessNotHiddenItems().length == 0
-        && getInProcessHiddenItems().length == 0) ||
-        (getInProcessNotHiddenItems().length == 0
-        && getInProcessHiddenItems().length != 0
-        && !showHidden)">Nothing here yet</p>
+        <p class="empty-container" *ngIf="getInProcessItems().length == 0">Nothing here yet</p>
       </div>
     </div>
     <div class="container">
@@ -93,23 +63,10 @@
         class="list"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)">
-        <div *ngIf="(getCompletedNotHiddenItems().length != 0) ||
-        (getCompletedHiddenItems().length != 0 && showHidden)">
-          <app-item-view *ngFor="let item of getCompletedNotHiddenItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
-          <div *ngIf="showHidden">
-            <div class="separator" *ngIf="showHidden && getCompletedHiddenItems().length != 0">
-              <hr/>
-              <p>Hidden</p>
-              <hr />
-            </div>
-            <app-item-view *ngFor="let item of getCompletedHiddenItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
-          </div>
+        <div *ngIf="getCompletedItems().length != 0">
+          <app-item-view *ngFor="let item of getCompletedItems()" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
         </div>
-        <p class="empty-container" *ngIf="(getCompletedNotHiddenItems().length == 0
-        && getCompletedHiddenItems().length == 0) ||
-        (getCompletedNotHiddenItems().length == 0
-        && getCompletedHiddenItems().length != 0
-        && !showHidden)">Nothing here yet</p>
+        <p class="empty-container" *ngIf="getCompletedItems().length == 0">Nothing here yet</p>
       </div>
     </div>
   </div>

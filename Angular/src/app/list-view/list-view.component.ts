@@ -66,46 +66,12 @@ export class ListViewComponent {
     return this.items.filter(item => item.status == 0)
   }
 
-  getNotStartedHiddenItems(){
-    return this.items.filter(item => item.status == 0)
-      .filter(item => item.priority == 0)
-  }
-
-  getNotStartedNotHiddenItems(){
-    return this.items.filter(item => item.status == 0)
-      .filter(item => item.priority != 0)
-  }
-
   getInProcessItems(){
     return this.items.filter(item => item.status == 1)
   }
 
-  getInProcessNotHiddenItems(){
-    return this.items.filter(item => item.status == 1)
-      .filter(item => item.priority != 0)
-  }
-
-  getInProcessHiddenItems(){
-    return this.items.filter(item => item.status == 1)
-      .filter(item => item.priority == 0)
-  }
-
   getCompletedItems(){
     return this.items.filter(item => item.status == 2)
-  }
-
-  getCompletedNotHiddenItems(){
-    return this.items.filter(item => item.status == 2)
-      .filter(item => item.priority != 0)
-  }
-
-  getCompletedHiddenItems(){
-    return this.items.filter(item => item.status == 2)
-      .filter(item => item.priority == 0)
-  }
-
-  changeShowHidden(){
-    this.showHidden = !this.showHidden
   }
 
   drop(event: CdkDragDrop<TodoItem[]>) {
@@ -124,7 +90,7 @@ export class ListViewComponent {
       this.itemService.updateItem(item).subscribe(item => newItem = item)
       this.getItems()
       this.completedItems = this.getCompletedItems();
-      this.inProcessItems = this.getInProcessHiddenItems();
+      this.inProcessItems = this.getInProcessItems();
       this.notStartedItems = this.getNotStartedItems()
     }
   }
