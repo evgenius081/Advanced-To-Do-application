@@ -1,0 +1,121 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$primary-background-color: #181820;
+$secondary-background-color: #21212B;
+$tertiary-background-color: #272732;
+$accent-color: #F27C22;
+$text-color: #ffffff;
+$red: #f44336;
+$green: #43a047;
+$yellow: #fdd835;
+$grey: #9a9a9a;
+$regular-text-font: OpenSauce;
+$thin-text-font: OpenSauceThin;
+$bold-text-font: OpenSauseBold;
+$regular-text-size: 18px;
+
+$theme-primary: mat.define-palette(mat.$indigo-palette);
+$theme-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$theme-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$theme: mat.define-light-theme((
+  color: (
+    primary: $theme-primary,
+    accent: $theme-accent,
+    warn: $theme-warn,
+  ),
+  typography: mat.define-typography-config(),
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($theme);
+
+@font-face {
+  font-family: "OpenSauce";
+  src:
+    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "OpenSauceBold";
+  src:
+    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "OpenSauceThin";
+  src:
+    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-Light.ttf");
+}
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: OpenSauce, "Helvetica Neue", sans-serif;
+  background: $primary-background-color;
+  color: $text-color;
+  font-size: $regular-text-size
+}
+
+.accent{
+  color: $accent-color;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: $primary-background-color;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $text-color;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  background-clip: content-box;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $accent-color;
+}
+
+.mat-mdc-menu-panel{
+  background-color: $tertiary-background-color !important;
+}
+
+.mat-mdc-menu-item{
+  color: $text-color;
+}
+
+.mat-mdc-menu-content .mat-mdc-menu-item .mdc-list-item__primary-text{
+  font-family: $thin-text-font !important;
+  letter-spacing: normal !important;
+}
+
+section .mat-expansion-panel-body{
+  padding: 0 16px 16px 16px;
+  color: $text-color;
+  font-size: 14px;
+  font-family: $regular-text-font;
+}

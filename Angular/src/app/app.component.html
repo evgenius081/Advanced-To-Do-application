@@ -1,0 +1,9 @@
+<mat-sidenav-container>
+  <mat-sidenav *ngIf="isLoggedIn" opened mode="side">
+    <h1>To<span class="accent">Do</span> app.</h1>
+    <app-side-menu></app-side-menu>
+  </mat-sidenav>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</mat-sidenav-container>

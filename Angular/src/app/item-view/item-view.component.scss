@@ -1,0 +1,58 @@
+@import "../../style.scss";
+
+mat-expansion-panel-header{
+  font-family: $regular-text-font;
+  font-size: 16px;
+  padding: 0 16px;
+}
+
+.mat-expansion-panel{
+  border: none;
+  background-color: $tertiary-background-color;
+}
+
+.mat-expansion-panel:hover{
+  background-color: $secondary-background-color;
+}
+
+.mat-expansion-panel-header-title{
+  color: $text-color;
+}
+
+.mat-expansion-panel-body{
+  color: $text-color;
+  background-color: $tertiary-background-color;
+}
+
+p{
+  vertical-align: middle;
+}
+
+.completed, .in-process, .not-started{
+  margin-right: 10px;
+  font-size: 10px;
+  line-height: 10px;
+  vertical-align: middle;
+}
+
+.completed{
+  color: $accent-color;
+}
+
+.in-process{
+  color: $text-color;
+}
+
+.not-started{
+  color: $secondary-background-color;
+}
+
+.completed-title{
+  text-decoration: line-through;
+  color: $grey;
+}
+
+mat-panel-title fa-icon{
+  color: $grey;
+  margin-right: 10px;
+}

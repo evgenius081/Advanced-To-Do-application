@@ -1,0 +1,28 @@
+<ul>
+  <li><a routerLink="/today"><fa-icon [icon]="faClock"/> Today</a></li>
+  <li><a routerLink="/primary"><fa-icon [icon]="faStar"/> High priority</a></li>
+  <li *ngFor="let list of lists | callback:findNotArchived">
+    <app-side-menu-list-element [list]="list"></app-side-menu-list-element>
+  </li>
+  <li>
+    <a routerLink="/lists/create" class="create-item">
+    <fa-icon [icon]="faPlus"/>
+ New collection
+    </a>
+  </li>
+  <li class="expand">
+    <mat-expansion-panel hideToggle (click)="click()">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <fa-icon [icon]="faBoxArchive"/> Archive
+        </mat-panel-title>
+        <mat-icon>{{icon  ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</mat-icon>
+      </mat-expansion-panel-header>
+      <ul>
+        <li *ngFor="let list of lists | callback:findArchived">
+          <app-side-menu-list-element [list]="list"></app-side-menu-list-element>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+  </li>
+</ul>

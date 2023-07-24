@@ -1,0 +1,33 @@
+@import "../style.scss";
+
+mat-sidenav {
+  width: 250px;
+  height: 100%;
+  background: $secondary-background-color;
+}
+
+.mat-drawer{
+  background: $secondary-background-color;
+  color: $text-color
+}
+
+.mat-drawer-container{
+  background: $primary-background-color;
+  color: $text-color
+}
+
+mat-sidenav-container{
+  height: 100%;
+}
+
+h1{
+  font-family: $bold-text-font, sans-serif;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+  font-size: 32px;
+  padding: 16px 16px 0 16px
+}
+
+main{
+  height: 100%
+}
