@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef } from "@angular/core";
 import {ListService} from "../services/list.service";
 import {TodoList} from "../classes/todo-list";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -9,23 +9,27 @@ import {TodoItem} from "../classes/todo-item";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import { MatDialog } from "@angular/material/dialog";
 import { ChoiceDialogComponent } from "../choice-dialog/choice-dialog.component";
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
+import { ListTitleEditorComponent } from "../list-title-editor/list-title-editor.component";
 
 @Component({
   selector: 'app-list-view',
   templateUrl: './list-view.component.html',
   styleUrls: ['./list-view.component.scss']
 })
+
 export class ListViewComponent {
   id: number = 0;
   list?: TodoList;
-  items: TodoItem[] = []
-  notStartedItems: TodoItem[] = []
-  inProcessItems: TodoItem[] = []
-  completedItems: TodoItem[] = []
+  items: TodoItem[] = [];
+  notStartedItems: TodoItem[] = [];
+  inProcessItems: TodoItem[] = [];
+  completedItems: TodoItem[] = [];
   faPenToSquare = faPenToSquare;
   faTrash = faTrash;
   faCopy = faCopy;
   faBoxArchive = faBoxArchive;
+  editMode = false;
 
   constructor(private listService: ListService,
               private route: ActivatedRoute,
@@ -35,7 +39,7 @@ export class ListViewComponent {
     route.params.subscribe((params) => {
       this.id = params["id"];
       this.getList(this.id);
-      this.getItems()
+      this.getItems();
       this.completedItems = this.getCompletedItems();
       this.inProcessItems = this.getInProcessItems();
       this.notStartedItems = this.getNotStartedItems()
@@ -44,16 +48,24 @@ export class ListViewComponent {
 
   ngOnInit(): void {
     this.getList(this.id);
-    this.getItems()
+    this.getItems();
     this.completedItems = this.getCompletedItems();
     this.inProcessItems = this.getInProcessItems();
     this.notStartedItems = this.getNotStartedItems()
   }
 
+  changeEditMode(value: boolean){
+    this.editMode = value;
+  }
+
+  changeTitle(value: string){
+    this.list!.title = value;
+  }
+
   getList(id: number): void{
-    this.listService.getList(id).subscribe(list => this.list = list)
+    this.listService.getList(id).subscribe(list => this.list = list);
     if (this.list == undefined){
-      document.location.href = "not-found"
+      this.router.navigate(["not-found"]);
     }
   }
 
@@ -70,24 +82,24 @@ export class ListViewComponent {
 
   getItems(){
     this.itemService.getItemsByListID(this.id)
-      .subscribe(items => this.items = items)
+      .subscribe(items => this.items = items);
   }
 
   getNotStartedItems(){
-    return this.items.filter(item => item.status == 0)
+    return this.items.filter(item => item.status == 0);
   }
 
   getInProcessItems(){
-    return this.items.filter(item => item.status == 1)
+    return this.items.filter(item => item.status == 1);
   }
 
   getCompletedItems(){
-    return this.items.filter(item => item.status == 2)
+    return this.items.filter(item => item.status == 2);
   }
 
   handleArchive(){
-    this.list!.isArchived = !this.list!.isArchived
-    this.listService.updateList(this.list!)
+    this.list!.isArchived = !this.list!.isArchived;
+    this.listService.updateList(this.list!);
   }
 
   drop(event: CdkDragDrop<TodoItem[]>) {
@@ -100,17 +112,17 @@ export class ListViewComponent {
         event.previousIndex,
         event.currentIndex,
       );
-      let item = ((event.item.data as unknown) as TodoItem)
-      let status = Number(event.container.id.slice(-1))
+      let item = ((event.item.data as unknown) as TodoItem);
+      let status = Number(event.container.id.slice(-1));
       if (status == 0 || status == 1 || status == 2){
-        item.status = status
+        item.status = status;
       }
       let newItem: TodoItem | undefined;
-      this.itemService.updateItem(item).subscribe(item => newItem = item)
-      this.getItems()
+      this.itemService.updateItem(item).subscribe(item => newItem = item);
+      this.getItems();
       this.completedItems = this.getCompletedItems();
       this.inProcessItems = this.getInProcessItems();
-      this.notStartedItems = this.getNotStartedItems()
+      this.notStartedItems = this.getNotStartedItems();
     }
   }
 }

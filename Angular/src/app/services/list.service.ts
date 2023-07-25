@@ -65,6 +65,7 @@ export class ListService {
       {id: listToUpdate.id, title: listToUpdate.title, isArchived: listToUpdate.isArchived,
       userID: listToUpdate.userID, itemsCompleted: listStat!.itemsCompleted, itemsInProcess: listStat!.itemsInProcess,
       itemsNotStarted: listStat!.itemsNotStarted}
+    return new Observable<void>();
   }
 
   deleteList(id: number){

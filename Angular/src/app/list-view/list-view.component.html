@@ -1,7 +1,16 @@
 <section *ngIf="list" id="list">
   <header>
-    <h2>{{list.title}}<button><fa-icon [icon]="faPenToSquare"></fa-icon></button></h2>
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+    <h2 *ngIf="!editMode">{{list.title}}<button (click)="changeEditMode(true)">
+      <fa-icon [icon]="faPenToSquare"></fa-icon></button></h2>
+    <app-list-title-editor *ngIf="editMode" [list]="list" [title]="list.title"
+                           [type]="1" [editMode]="editMode"
+                           (editModeEvent)="changeEditMode($event)"
+    (editTitleEvent)="changeTitle($event)"></app-list-title-editor>
+<!--    <div id="title-container" *ngIf="editMode">-->
+<!--      <input [(ngModel)]="list.title" (keyup)="onChange($event)" placeholder="Enter title">-->
+<!--      <button type="submit" (click)="handleSubmit($event)" [disabled]="disabled">Submit</button>-->
+<!--    </div>-->
+    <button *ngIf="!editMode" mat-icon-button [matMenuTriggerFor]="menu" aria-label="List menu opening button">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" yPosition="below">

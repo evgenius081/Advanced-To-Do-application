@@ -26,6 +26,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ValidationMessageComponent } from './validation-message/validation-message.component';
 import { ListCreateComponent } from './list-create/list-create.component';
 import { ChoiceDialogComponent } from './choice-dialog/choice-dialog.component';
+import { ListTitleEditorComponent } from './list-title-editor/list-title-editor.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ChoiceDialogComponent } from './choice-dialog/choice-dialog.component';
     ItemViewComponent,
     ValidationMessageComponent,
     ListCreateComponent,
-    ChoiceDialogComponent
+    ChoiceDialogComponent,
+    ListTitleEditorComponent,
   ],
   imports: [
     BrowserModule,
