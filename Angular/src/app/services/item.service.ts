@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {TodoItem} from "../classes/todo-item";
-import {of} from "rxjs";
+import { Observable, of } from "rxjs";
 import { ListService } from "./list.service";
 import { TodoItemCreate } from "../classes/todo-item-create";
 
@@ -53,5 +53,6 @@ items: TodoItem[] = [
 
   deleteItem(id: number){
     this.items.splice(this.items.indexOf(this.items.find(item => item.id == id)!), 1)
+    return new Observable<void>();
   }
 }

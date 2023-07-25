@@ -3,8 +3,8 @@ export interface TodoItemCreate{
   description?: string,
   createdAt: string,
   deadline: string,
-  priority: number,
+  priority: 0 | 1 | 2,
   remind: boolean,
-  status: number,
+  status: 0 | 1 | 2,
   toDoListID: number
 }

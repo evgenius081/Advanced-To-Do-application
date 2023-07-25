@@ -13,7 +13,7 @@
         <fa-icon [icon]="faBoxArchive" [class.archived]="list.isArchived"></fa-icon>
         <span>{{list.isArchived ? "Dearchive" : "Archive"}}</span>
       </button>
-      <button mat-menu-item (click)="handleDelete()">
+      <button mat-menu-item (click)="openDialog()">
         <fa-icon class="delete" [icon]="faTrash"></fa-icon>
         <span>Delete</span>
       </button>

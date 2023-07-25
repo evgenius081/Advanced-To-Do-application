@@ -6,6 +6,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppRoutingModule } from './app-routing/app-routing.module'
 import { MatMenuModule } from "@angular/material/menu";
 import { FormsModule } from "@angular/forms";
+import {MatDialog, MatDialogRef, MatDialogModule} from "@angular/material/dialog";
 
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component'
@@ -24,6 +25,7 @@ import { ItemViewComponent } from './item-view/item-view.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ValidationMessageComponent } from './validation-message/validation-message.component';
 import { ListCreateComponent } from './list-create/list-create.component';
+import { ChoiceDialogComponent } from './choice-dialog/choice-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { ListCreateComponent } from './list-create/list-create.component';
     ListViewComponent,
     ItemViewComponent,
     ValidationMessageComponent,
-    ListCreateComponent
+    ListCreateComponent,
+    ChoiceDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ import { ListCreateComponent } from './list-create/list-create.component';
     AppRoutingModule,
     MatMenuModule,
     DragDropModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

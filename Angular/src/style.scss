@@ -150,3 +150,12 @@ input[type="checkbox"]::before {
 input[type="checkbox"]:checked::before {
   transform: scale(1);
 }
+
+app-choice-dialog{
+  background-color: $secondary-background-color;
+  color: $text-color
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface{
+  background-color: $secondary-background-color !important;
+}
