@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {TodoItem} from "../classes/todo-item";
 import {of} from "rxjs";
+import { ListService } from "./list.service";
+import { TodoItemCreate } from "../classes/todo-item-create";
 
 @Injectable({
   providedIn: 'root'
@@ -24,11 +26,11 @@ items: TodoItem[] = [
   constructor() { }
 
   getItemsByListID(listID: number){
-  return of(this.items.filter(item => item.toDoListID == listID))
+    return of(this.items.filter(item => item.toDoListID == listID))
   }
 
   getItem(id: number){
-  return of(this.items.find(item => item.id == id))
+    return of(this.items.find(item => item.id == id))
   }
 
   updateItem(itemToUpdate: TodoItem){
@@ -38,5 +40,18 @@ items: TodoItem[] = [
       this.items[id] = itemToUpdate;
     }
     return of(itemToUpdate)
+  }
+
+  createItem(item: TodoItemCreate){
+    let id = this.items.length == 0 ? 1 : this.items.slice(-1)[0].id + 1;
+    let newItem: TodoItem = {id: id, title: item.title, description: item.description,
+      priority: item.priority, remind: item.remind, status:item.status,
+      createdAt: item.createdAt, deadline: item.deadline, toDoListID: item.toDoListID}
+    this.items.push(newItem)
+    return of(newItem)
+  }
+
+  deleteItem(id: number){
+    this.items.splice(this.items.indexOf(this.items.find(item => item.id == id)!), 1)
   }
 }

@@ -9,11 +9,11 @@
         <fa-icon [icon]="faCopy"></fa-icon>
         <span>Clone</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item (click)="handleArchive()">
         <fa-icon [icon]="faBoxArchive" [class.archived]="list.isArchived"></fa-icon>
         <span>{{list.isArchived ? "Dearchive" : "Archive"}}</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item (click)="handleDelete()">
         <fa-icon class="delete" [icon]="faTrash"></fa-icon>
         <span>Delete</span>
       </button>

@@ -19,7 +19,7 @@
         <mat-icon>{{icon  ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</mat-icon>
       </mat-expansion-panel-header>
       <ul>
-        <li *ngFor="let list of lists | callback:findArchived">
+        <li *ngFor="let list of lists | callback:findArchived" class="inner-item">
           <app-side-menu-list-element [list]="list"></app-side-menu-list-element>
         </li>
       </ul>

@@ -10,6 +10,10 @@ a{
   transition: all 0.4s ease;
 }
 
+.inner-item a{
+  margin: 24px 0;
+}
+
 a:hover{
   background: $tertiary-background-color;
 }

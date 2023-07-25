@@ -116,3 +116,11 @@ app-side-menu-list-element{
   height: 50px;
   display: block
 }
+
+.inner-item app-side-menu-list-element{
+  margin: 24px 0;
+}
+
+.inner-item:first-child app-side-menu-list-element{
+  margin-top: -10px;
+}

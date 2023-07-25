@@ -1,0 +1,14 @@
+@import "../../style.scss";
+
+div{
+  display: flex;
+  margin-bottom: 20px;
+}
+
+fa-icon, p{
+  color: $red;
+}
+
+fa-icon{
+  margin-right: 20px;
+}

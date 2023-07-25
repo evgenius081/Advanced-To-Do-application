@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {ListService} from "../services/list.service";
 import {TodoList} from "../classes/todo-list";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from '@angular/common';
 import {faPenToSquare, faTrash, faCopy, faBoxArchive, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {ItemService} from "../services/item.service";
@@ -20,17 +20,14 @@ export class ListViewComponent {
   notStartedItems: TodoItem[] = []
   inProcessItems: TodoItem[] = []
   completedItems: TodoItem[] = []
-  showHidden = false;
   faPenToSquare = faPenToSquare;
   faTrash = faTrash;
   faCopy = faCopy;
   faBoxArchive = faBoxArchive;
-  faEye = faEye;
-  faEyeSlash = faEyeSlash;
 
   constructor(private listService: ListService,
               private route: ActivatedRoute,
-              private location: Location,
+              private router: Router,
               private itemService: ItemService) {
     route.params.subscribe((params) => {
       this.id = params["id"];
@@ -72,6 +69,16 @@ export class ListViewComponent {
 
   getCompletedItems(){
     return this.items.filter(item => item.status == 2)
+  }
+
+  handleArchive(){
+    this.list!.isArchived = !this.list!.isArchived
+    this.listService.updateList(this.list!)
+  }
+
+  handleDelete(){
+    this.listService.deleteList(this.list!.id).subscribe()
+    this.router.navigate(["/"])
   }
 
   drop(event: CdkDragDrop<TodoItem[]>) {
