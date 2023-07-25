@@ -6,15 +6,11 @@
                            [type]="1" [editMode]="editMode"
                            (editModeEvent)="changeEditMode($event)"
     (editTitleEvent)="changeTitle($event)"></app-list-title-editor>
-<!--    <div id="title-container" *ngIf="editMode">-->
-<!--      <input [(ngModel)]="list.title" (keyup)="onChange($event)" placeholder="Enter title">-->
-<!--      <button type="submit" (click)="handleSubmit($event)" [disabled]="disabled">Submit</button>-->
-<!--    </div>-->
     <button *ngIf="!editMode" mat-icon-button [matMenuTriggerFor]="menu" aria-label="List menu opening button">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" yPosition="below">
-      <button mat-menu-item>
+      <button mat-menu-item (click)="handleCopy()">
         <fa-icon [icon]="faCopy"></fa-icon>
         <span>Clone</span>
       </button>

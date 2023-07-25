@@ -125,4 +125,8 @@ export class ListViewComponent {
       this.notStartedItems = this.getNotStartedItems();
     }
   }
+
+  handleCopy(){
+    this.listService.copyList(this.id).subscribe()
+  }
 }
