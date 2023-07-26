@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { ListService } from "../services/list.service";
-import { TodoList } from "../classes/todo-list";
+import { ListService } from "../../services/list.service";
+import { TodoList } from "../../classes/todo-list";
 import { Router } from "@angular/router";
 
 @Component({

@@ -1,16 +1,13 @@
-import { Component, forwardRef } from "@angular/core";
-import {ListService} from "../services/list.service";
-import {TodoList} from "../classes/todo-list";
+import { Component } from "@angular/core";
+import {ListService} from "../../services/list.service";
+import {TodoList} from "../../classes/todo-list";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from '@angular/common';
-import {faPenToSquare, faTrash, faCopy, faBoxArchive, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
-import {ItemService} from "../services/item.service";
-import {TodoItem} from "../classes/todo-item";
+import {faPenToSquare, faTrash, faCopy, faBoxArchive, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {ItemService} from "../../services/item.service";
+import {TodoItem} from "../../classes/todo-item";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import { MatDialog } from "@angular/material/dialog";
-import { ChoiceDialogComponent } from "../choice-dialog/choice-dialog.component";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
-import { ListTitleEditorComponent } from "../list-title-editor/list-title-editor.component";
+import { ChoiceDialogComponent } from "../../choice-dialog/choice-dialog.component";
 
 @Component({
   selector: 'app-list-view',
@@ -29,7 +26,10 @@ export class ListViewComponent {
   faTrash = faTrash;
   faCopy = faCopy;
   faBoxArchive = faBoxArchive;
+  faPlus = faPlus;
   editMode = false;
+  createItem = false;
+
 
   constructor(private listService: ListService,
               private route: ActivatedRoute,
@@ -42,7 +42,7 @@ export class ListViewComponent {
       this.getItems();
       this.completedItems = this.getCompletedItems();
       this.inProcessItems = this.getInProcessItems();
-      this.notStartedItems = this.getNotStartedItems()
+      this.notStartedItems = this.getNotStartedItems();
     });
   }
 
@@ -51,7 +51,25 @@ export class ListViewComponent {
     this.getItems();
     this.completedItems = this.getCompletedItems();
     this.inProcessItems = this.getInProcessItems();
-    this.notStartedItems = this.getNotStartedItems()
+    this.notStartedItems = this.getNotStartedItems();
+  }
+
+  addItem(value: TodoItem){
+    this.items.push(value)
+    if (value.status == 0){
+      this.notStartedItems.push(value)
+      this.listService.updateStats(value.toDoListID, 1, 0, 0)
+    } else if (value.status == 1){
+      this.inProcessItems.push(value)
+      this.listService.updateStats(value.toDoListID, 0, 1, 0)
+    }else if (value.status == 2){
+      this.completedItems.push(value)
+      this.listService.updateStats(value.toDoListID, 0, 0, 1)
+    }
+  }
+
+  changeItemCreate(value: boolean){
+    this.createItem = value
   }
 
   changeEditMode(value: boolean){
@@ -114,19 +132,33 @@ export class ListViewComponent {
       );
       let item = ((event.item.data as unknown) as TodoItem);
       let status = Number(event.container.id.slice(-1));
+      if (item.status == 0){
+        this.listService.updateStats(item.toDoListID, -1, 0, 0)
+      } else if (item.status == 1){
+        this.listService.updateStats(item.toDoListID, 0, -1, 0)
+      }else if (item.status == 2){
+        this.listService.updateStats(item.toDoListID, 0, 0, -1)
+      }
       if (status == 0 || status == 1 || status == 2){
         item.status = status;
       }
       let newItem: TodoItem | undefined;
       this.itemService.updateItem(item).subscribe(item => newItem = item);
-      this.getItems();
-      this.completedItems = this.getCompletedItems();
-      this.inProcessItems = this.getInProcessItems();
-      this.notStartedItems = this.getNotStartedItems();
+      if (newItem!.status == 0){
+        this.listService.updateStats(newItem!.toDoListID, 1, 0, 0)
+      } else if (newItem!.status == 1){
+        this.listService.updateStats(newItem!.toDoListID, 0, 1, 0)
+      }else if (newItem!.status == 2){
+        this.listService.updateStats(newItem!.toDoListID, 0, 0, 1)
+      }
     }
   }
 
   handleCopy(){
     this.listService.copyList(this.id).subscribe()
+  }
+
+  handleCreateItem(){
+    this.createItem = true;
   }
 }

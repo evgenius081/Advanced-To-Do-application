@@ -14,16 +14,16 @@ export class ListService {
     {id: 1, title: "House things aaaaaaaa",
       isArchived: false,
       userID: 1,
-      itemsNotStarted: 3,
-      itemsInProcess: 2,
-      itemsCompleted: 1},
+      itemsNotStarted: 2,
+      itemsInProcess: 0,
+      itemsCompleted: 0},
     {id: 2,
       title: "Work things",
       isArchived: false,
       userID: 1,
-      itemsNotStarted: 2,
-      itemsInProcess: 1,
-      itemsCompleted: 3},
+      itemsNotStarted: 1,
+      itemsInProcess: 4,
+      itemsCompleted: 0},
     {id: 3,
       title: "Being adult",
       isArchived: true,
@@ -89,6 +89,21 @@ export class ListService {
       itemsInProcess: listStat!.itemsInProcess,
       itemsNotStarted: listStat!.itemsNotStarted}
     return new Observable<void>();
+  }
+
+  updateStats(id: number, notStarted: -1 | 0 | 1, inProcess: -1 | 0 | 1, completed: -1 | 0 | 1){
+    let list = this.listsWithStat.find(list => list.id == id)
+    if (list != undefined){
+      this.listsWithStat[this.listsWithStat.indexOf(list)] = {
+        id: list.id,
+        title: list.title,
+        isArchived: list.isArchived,
+        userID: list.userID,
+        itemsCompleted: list.itemsCompleted + completed,
+        itemsNotStarted: list.itemsNotStarted + notStarted,
+        itemsInProcess: list.itemsInProcess + inProcess
+      }
+    }
   }
 
   deleteList(id: number){

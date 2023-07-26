@@ -2,7 +2,7 @@
 
 h2{
   font-size: 18px;
-  font-family: $regular-text-font;
+  font-family: $regular-text-font, Roboto, sans-serif;
   font-weight: normal;
 }
 
@@ -55,7 +55,7 @@ mat-expansion-panel-header{
   line-height: 30px;
   color: $text-color;
   font-size: 18px;
-  font-family: $regular-text-font;
+  font-family: $regular-text-font, Roboto, sans-serif;
   height: 50px
 }
 

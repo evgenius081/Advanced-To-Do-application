@@ -8,4 +8,5 @@ import {TodoListWithStatistics} from "../../classes/todo-list-with-statistics";
 })
 export class SideMenuListElementComponent {
   @Input() list?: TodoListWithStatistics;
+    protected readonly Number = Number;
 }

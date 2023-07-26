@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {TodoItem} from "../classes/todo-item";
+import {TodoItem} from "../../classes/todo-item";
 import {faGripVertical} from "@fortawesome/free-solid-svg-icons";
 
 @Component({

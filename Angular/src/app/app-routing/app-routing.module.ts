@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from "@angular/router";
 import {InternalErrorComponent} from "../internal-error/internal-error.component";
 import {NotFoundComponent} from "../not-found/not-found.component";
-import {ListViewComponent} from "../list-view/list-view.component";
-import { ListCreateComponent } from "../list-create/list-create.component";
+import {ListViewComponent} from "../list/list-view/list-view.component";
+import { ListCreateComponent } from "../list/list-create/list-create.component";
 
 const routes: Routes = [
   { path: 'lists/create', component: ListCreateComponent },

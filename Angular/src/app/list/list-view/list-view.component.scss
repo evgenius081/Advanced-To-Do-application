@@ -1,4 +1,4 @@
-@import "../../style.scss";
+@import "../../../style.scss";
 
 section#list{
   width: 100%;
@@ -79,6 +79,30 @@ section#hidden-items, section#not-hidden-items{
   justify-content: space-between;
 }
 
+.add-task{
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  background: $primary-background-color;
+  border: 2px solid $grey;
+  color: $grey;
+  width: 100%;
+  margin: 15px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 0 10px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.add-task:hover{
+  background-color: $secondary-background-color;
+}
+
+.add-task fa-icon{
+  margin-right: 10px;
+}
+
 app-item-view{
   display: block;
   min-height: 48px;
@@ -91,25 +115,6 @@ app-item-view{
 
 .list{
   min-height: 50px;
-}
-
-.separator{
-  display: flex;
-  width: 90%;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 5%;
-  height: 48px;
-}
-
-.separator hr{
-  width: 43%;
-  border: 1px solid $text-color;
-}
-
-.separator p{
-  margin-bottom: 0;
-  font-size: 18px;
 }
 
 .mat-expansion-panel-body{

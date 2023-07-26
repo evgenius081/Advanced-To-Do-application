@@ -5,8 +5,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AppRoutingModule } from './app-routing/app-routing.module'
 import { MatMenuModule } from "@angular/material/menu";
-import { FormsModule } from "@angular/forms";
-import {MatDialog, MatDialogRef, MatDialogModule} from "@angular/material/dialog";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSelectModule } from "@angular/material/select";
+import { NgxMatDatetimePickerModule } from "@angular-material-components/datetime-picker";
+import { NgxMatMomentModule } from "@angular-material-components/moment-adapter"
+import { MatInputModule } from "@angular/material/input"
 
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component'
@@ -20,13 +24,15 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CallbackPipe } from './callback.pipe';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatIconModule } from "@angular/material/icon";
-import { ListViewComponent } from './list-view/list-view.component';
-import { ItemViewComponent } from './item-view/item-view.component';
+import { ListViewComponent } from './list/list-view/list-view.component';
+import { ItemViewComponent } from './item/item-view/item-view.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ValidationMessageComponent } from './validation-message/validation-message.component';
-import { ListCreateComponent } from './list-create/list-create.component';
+import { ListCreateComponent } from './list/list-create/list-create.component';
 import { ChoiceDialogComponent } from './choice-dialog/choice-dialog.component';
-import { ListTitleEditorComponent } from './list-title-editor/list-title-editor.component';
+import { ListTitleEditorComponent } from './list/list-title-editor/list-title-editor.component';
+import { ItemCreateComponent } from './item/item-create/item-create.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   declarations: [
@@ -42,6 +48,7 @@ import { ListTitleEditorComponent } from './list-title-editor/list-title-editor.
     ListCreateComponent,
     ChoiceDialogComponent,
     ListTitleEditorComponent,
+    ItemCreateComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,7 +67,13 @@ import { ListTitleEditorComponent } from './list-title-editor/list-title-editor.
     MatMenuModule,
     DragDropModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+    NgxMatDatetimePickerModule,
+    MatDatepickerModule,
+    NgxMatMomentModule,
+    ReactiveFormsModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

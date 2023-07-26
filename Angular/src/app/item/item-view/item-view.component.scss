@@ -1,7 +1,7 @@
-@import "../../style.scss";
+@import "../../../style.scss";
 
 mat-expansion-panel-header{
-  font-family: $regular-text-font;
+  font-family: $regular-text-font, Roboto, sans-serif;
   font-size: 16px;
   padding: 0 16px;
 }

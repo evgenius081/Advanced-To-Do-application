@@ -1,4 +1,4 @@
-@import "../../style.scss";
+@import "../../../style.scss";
 
 #title-container{
   width: 100%;
@@ -14,7 +14,7 @@
   border-radius: 10px;
   color: $text-color;
   font-size: 18px;
-  font-family: $regular-text-font;
+  font-family: $regular-text-font, Roboto, sans-serif;
   width: calc(100% - 100px);
   padding: 5px 8px;
   outline: none
@@ -24,7 +24,7 @@
   width: 80px;
   height: 40px;
   color: $text-color;
-  font-family: $regular-text-font;
+  font-family: $regular-text-font, Roboto, sans-serif;
   background-color: $primary-background-color;
   border: 2px solid $tertiary-background-color;
   border-radius: 10px;
