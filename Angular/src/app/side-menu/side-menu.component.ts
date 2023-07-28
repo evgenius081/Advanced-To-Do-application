@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import {TodoList} from "../classes/todo-list";
-import { faStar, faClock, faBoxArchive, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { faStar, faClock, faBoxArchive, faPlus, faRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import {TodoListWithStatistics} from "../classes/todo-list-with-statistics";
 import {ListService} from "../services/list.service";
+import {UserService} from "../services/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-side-menu',
@@ -14,10 +15,13 @@ export class SideMenuComponent {
   faClock = faClock
   faBoxArchive = faBoxArchive
   faPlus = faPlus
+  faRightFromBracket = faRightFromBracket
   icon = false
   lists: TodoListWithStatistics[] = [];
 
-  constructor (private listService: ListService){
+  constructor (private listService: ListService,
+               private userService: UserService,
+               private router: Router){
 
   }
 
@@ -39,5 +43,10 @@ export class SideMenuComponent {
 
   findArchived(list: TodoListWithStatistics): boolean{
     return list.isArchived
+  }
+
+  handleLogout(){
+    this.userService.logout()
+    this.router.navigate(["/login"])
   }
 }

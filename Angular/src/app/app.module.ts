@@ -37,6 +37,8 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {SelectableTextDirective} from "./directives/selectable-text.directive";
 import { TodayComponent } from './today/today.component';
 import { HighPriorityComponent } from './high-priority/high-priority.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import { HighPriorityComponent } from './high-priority/high-priority.component';
     ItemCreateComponent,
     SelectableTextDirective,
     TodayComponent,
-    HighPriorityComponent
+    HighPriorityComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

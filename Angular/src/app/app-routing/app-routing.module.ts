@@ -7,16 +7,21 @@ import {ListViewComponent} from "../list/list-view/list-view.component";
 import { ListCreateComponent } from "../list/list-create/list-create.component";
 import {TodayComponent} from "../today/today.component";
 import {HighPriorityComponent} from "../high-priority/high-priority.component";
+import {LoginComponent} from "../login/login.component";
+import {RegisterComponent} from "../register/register.component";
+import {AuthGuard} from "./auth-guard";
 
 const routes: Routes = [
-  { path: '', component: TodayComponent },
-  { path: 'today', component: TodayComponent},
-  { path: 'primary', component: HighPriorityComponent},
-  { path: 'lists/create', component: ListCreateComponent },
-  { path: 'lists/:id', component: ListViewComponent },
-  { path: 'error', component: InternalErrorComponent },
-  { path: 'not-found', component: NotFoundComponent },
-  { path: '**', component: NotFoundComponent }
+  { path: '', component: TodayComponent, canActivate: [AuthGuard] },
+  { path: 'today', component: TodayComponent, canActivate: [AuthGuard] },
+  { path: 'primary', component: HighPriorityComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'lists/create', component: ListCreateComponent,canActivate: [AuthGuard] },
+  { path: 'lists/:id', component: ListViewComponent, canActivate: [AuthGuard] },
+  { path: 'error', component: InternalErrorComponent, canActivate: [AuthGuard] },
+  { path: 'not-found', component: NotFoundComponent, canActivate: [AuthGuard] },
+  { path: '**', component: NotFoundComponent, canActivate: [AuthGuard] }
 ];
 
 

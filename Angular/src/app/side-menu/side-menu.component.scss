@@ -8,6 +8,7 @@ h2{
 
 ul{
   padding: 0;
+  margin-bottom: 40px;
 }
 
 fa-icon{
@@ -30,6 +31,7 @@ li a{
   height: 50px;
   padding: 10px 16px;
   transition: all 0.4s ease;
+  position: relative;
 }
 
 li a:hover{
@@ -123,4 +125,28 @@ app-side-menu-list-element{
 
 .inner-item:first-child app-side-menu-list-element{
   margin-top: -10px;
+}
+
+.logout{
+  position: absolute;
+  width: 104px;
+  bottom: 10px;
+  padding: 10px;
+  left: calc(50% - 52px);
+  background-color: $secondary-background-color;
+  color: $grey;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.logout:hover{
+  background-color: $tertiary-background-color;
+}
+
+.logout fa-icon{
+  color: $grey;
 }

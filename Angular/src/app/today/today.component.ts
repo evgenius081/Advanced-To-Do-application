@@ -3,6 +3,7 @@ import {TodoItem} from "../classes/todo-item";
 import {ListService} from "../services/list.service";
 import {ItemService} from "../services/item.service";
 import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import {UserService} from "../services/user.service";
 
 @Component({
   selector: 'app-today',
@@ -12,13 +13,13 @@ import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 export class TodayComponent {
   items: TodoItem[] = [];
   itemsToShow: TodoItem[] = [];
-  username: string = "admin";
   showCompleted = false
   faEye = faEye
   faEyeSlash = faEyeSlash
 
   constructor(private listService: ListService,
-              private itemService: ItemService) {
+              private itemService: ItemService,
+              public userService: UserService) {
   }
 
   ngOnInit(): void {
