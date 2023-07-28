@@ -165,4 +165,14 @@ items: TodoItem[] = [
     this.items.splice(this.items.indexOf(this.items.find(item => item.id == id)!), 1)
     return new Observable<void>();
   }
+
+  getTodayItems(){
+    return of(this.items.filter(item =>
+      new Date(item.deadline).toLocaleDateString() == new Date().toLocaleDateString()
+    ));
+  }
+
+  getPrimaryItems(){
+    return of(this.items.filter(item => item.priority == 2))
+  }
 }

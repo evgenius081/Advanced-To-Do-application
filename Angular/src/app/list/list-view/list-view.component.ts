@@ -29,7 +29,6 @@ export class ListViewComponent {
   faPlus = faPlus;
   editMode = false;
   createItem = false;
-  canDrag = false
 
 
   constructor(private listService: ListService,
@@ -54,11 +53,6 @@ export class ListViewComponent {
   deleteItem(id: number){
     this.items.splice(this.items.indexOf(this.items.find(item => item.id == id)!), 1)
     this.updateLists()
-  }
-
-  changeCanDrag(value: boolean){
-    console.log(value)
-    this.canDrag = value;
   }
 
   updateLists(){
@@ -88,7 +82,6 @@ export class ListViewComponent {
 
     changeEditMode(value: boolean){
       this.editMode = value;
-      this.canDrag = value;
     }
 
   changeTitle(value: string){

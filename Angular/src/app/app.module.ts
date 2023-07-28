@@ -35,6 +35,8 @@ import { ListTitleEditorComponent } from './list/list-title-editor/list-title-ed
 import { ItemCreateComponent } from './item/item-create/item-create.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {SelectableTextDirective} from "./directives/selectable-text.directive";
+import { TodayComponent } from './today/today.component';
+import { HighPriorityComponent } from './high-priority/high-priority.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import {SelectableTextDirective} from "./directives/selectable-text.directive";
     ChoiceDialogComponent,
     ListTitleEditorComponent,
     ItemCreateComponent,
-    SelectableTextDirective
+    SelectableTextDirective,
+    TodayComponent,
+    HighPriorityComponent
   ],
   imports: [
     BrowserModule,

@@ -49,6 +49,7 @@ export class ItemViewComponent {
     this.item!.priority = this.item!.priority == 1 ? 2 : 1;
     this.itemService.updateItem(this.item!).subscribe()
     this.itemChangedPriority.emit(this.item!.priority)
+    this.itemChanged.emit(this.item!)
   }
 
   faPenToSquare = faPenToSquare;

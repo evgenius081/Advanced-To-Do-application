@@ -2,6 +2,24 @@
 
 @include mat.core();
 
+@font-face {
+  font-family: "OpenSauce";
+  src:
+    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: "OpenSauceBold";
+  src:
+    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "OpenSauceThin";
+  src:
+    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-Light.ttf");
+}
+
 $primary-background-color: #181820;
 $secondary-background-color: #21212B;
 $tertiary-background-color: #272732;
@@ -13,7 +31,7 @@ $yellow: #fdd835;
 $grey: #9a9a9a;
 $regular-text-font: OpenSauce;
 $thin-text-font: OpenSauceThin;
-$bold-text-font: OpenSauseBold;
+$bold-text-font: OpenSauceBold;
 $regular-text-size: 18px;
 
 $theme-primary: mat.define-palette(mat.$indigo-palette);
@@ -37,24 +55,6 @@ $theme: mat.define-light-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($theme);
-
-@font-face {
-  font-family: "OpenSauce";
-  src:
-    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-Regular.ttf");
-}
-
-@font-face {
-  font-family: "OpenSauceBold";
-  src:
-    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-ExtraBold.ttf");
-}
-
-@font-face {
-  font-family: "OpenSauceThin";
-  src:
-    url("fonts/Open-Sauce-Sans/TTF/OpenSauceSans-Light.ttf");
-}
 
 *{
   box-sizing: border-box;

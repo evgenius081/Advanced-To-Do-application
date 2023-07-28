@@ -3,6 +3,7 @@
                        hideToggle
                        #panel
                        cdkDrag [cdkDragData]="item"
+                       [cdkDragDisabled]="!canDrag"
   [cdkDragRootElement]='"app-item-view"'>
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -17,7 +18,6 @@
           <mat-icon>more_vert</mat-icon>
         </button>
       </mat-panel-title>
-<!--      <mat-icon class="toggle-button" (click)="click()">{{icon  ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>-->
     </mat-expansion-panel-header>
     <p selectableText *ngIf="item.description">{{item.description}}</p>
     <mat-menu #menu="matMenu" yPosition="below">
@@ -30,11 +30,11 @@
         <span>Delete</span>
       </button>
     </mat-menu>
-    <p selectableText class="deadline" *ngIf="deadline && Math.round((deadline.getTime() - today.getTime())/MILLIS_PER_DAY) > 0">
+    <p selectableText class="deadline" *ngIf="deadline && (deadline.getTime() - today.getTime())/MILLIS_PER_DAY > 0">
       <fa-icon [icon]="faBell" *ngIf="item.remind" class="remind"></fa-icon>Deadline:
       {{Math.round((deadline.getTime() - today.getTime())/MILLIS_PER_DAY) > 1 ?
         "in " + Math.round((deadline.getTime() - today.getTime())/MILLIS_PER_DAY) + " days" : "today"}} at
-      {{deadline.getHours()}}:{{deadline.getMinutes()}} </p>
+      {{deadline.getHours()}}:{{deadline.getMinutes() < 10 ? "0"+deadline.getMinutes() : deadline.getMinutes()}} </p>
   </mat-expansion-panel>
   <app-item-create *ngIf="item && editMode"
                    [title]="item.title"

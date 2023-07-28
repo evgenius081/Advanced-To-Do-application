@@ -1,0 +1,19 @@
+<section id="list">
+  <header>
+    <h2>High priority tasks</h2>
+    <button (click)="handleShowCompleted()"><fa-icon [icon]="showCompleted ? faEyeSlash : faEye"></fa-icon>{{showCompleted ? "Hide completed" : "Show completed"}}</button>
+  </header>
+  <div class="container">
+    <div class="list">
+      <div *ngIf="items.length != 0">
+        <app-item-view *ngFor="let item of itemsToShow"
+                       [item]="item"
+                       (itemDeletedEvent)="deleteItem($event)"
+                       [canDrag]="false"
+                       (itemChanged)="changeItem($event)">
+        </app-item-view>
+      </div>
+      <p class="empty-container" *ngIf="items.length == 0">Now you can deal with less prior tasks.</p>
+    </div>
+  </div>
+</section>
