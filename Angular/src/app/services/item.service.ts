@@ -58,7 +58,7 @@ items: TodoItem[] = [
     title: "Reply to email",
     description: "Respond to the email from your coworker",
     createdAt: new Date(new Date().getTime() - (1000 * 60 * 60 * 24)).toISOString(),
-    deadline: new Date(new Date().getTime() + (1000 * 60 * 60)*2).toISOString(),
+    deadline: new Date(new Date().getTime() + (1000 * 60 * 60  * 24)*2).toISOString(),
     toDoListID: 2,
     status: 0,
     remind: false,

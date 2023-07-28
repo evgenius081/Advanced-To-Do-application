@@ -120,6 +120,10 @@ section .mat-expansion-panel-body{
   font-family: $regular-text-font, Roboto, sans-serif;
 }
 
+.mat-expansion-panel-body{
+  position: relative;
+}
+
 input[type="checkbox"]{
   -webkit-appearance: none;
   appearance: none;
@@ -305,5 +309,9 @@ button.mat-calendar-period-button.mdc-button.mat-mdc-button.mat-unthemed.mat-mdc
 
 .mat-mdc-icon-button{
   color: $text-color !important;
+}
+
+.mat-content.mat-content-hide-toggle{
+  margin-right: 0 !important;
 }
 

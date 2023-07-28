@@ -12,18 +12,5 @@ import { ItemService } from "../services/item.service";
 })
 export class ChoiceDialogComponent {
   constructor(public dialogRef: MatDialogRef<ChoiceDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              private listService: ListService,
-              private itemService: ItemService,
-              private router: Router) {}
-
-  handleDelete(){
-    if (this.data.type == 0){
-      this.listService.deleteList(this.data.id).subscribe()
-      this.router.navigate(["/"])
-    }
-    else{
-      this.itemService.deleteItem(this.data.id).subscribe()
-    }
-  }
+              @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 }

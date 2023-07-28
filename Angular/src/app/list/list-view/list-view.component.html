@@ -6,7 +6,7 @@
                            [type]="1" [editMode]="editMode"
                            (editModeEvent)="changeEditMode($event)"
     (editTitleEvent)="changeTitle($event)"></app-list-title-editor>
-    <button *ngIf="!editMode" mat-icon-button [matMenuTriggerFor]="menu" aria-label="List menu opening button">
+    <button *ngIf="!editMode" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Collection menu opening button">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" yPosition="below">
@@ -47,7 +47,13 @@
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)">
         <div *ngIf="notStartedItems.length != 0">
-          <app-item-view *ngFor="let item of notStartedItems" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
+          <app-item-view *ngFor="let item of notStartedItems"
+                         [item]="item"
+                         (itemChangedPriority)="itemChangedPriority($event)"
+                         (itemDeletedEvent)="deleteItem($event)"
+                         [canDrag]="true"
+                         (itemChanged)="changeItem($event)">
+          </app-item-view>
         </div>
         <p class="empty-container" *ngIf="notStartedItems.length == 0">Nothing here yet</p>
       </div>
@@ -63,7 +69,12 @@
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)">
         <div *ngIf="inProcessItems.length != 0">
-          <app-item-view *ngFor="let item of inProcessItems" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
+          <app-item-view *ngFor="let item of inProcessItems"
+                         [item]="item"
+                         (itemChangedPriority)="itemChangedPriority($event)"
+                         (itemDeletedEvent)="deleteItem($event)"
+                         [canDrag]="true"
+                         (itemChanged)="changeItem($event)"></app-item-view>
         </div>
         <p class="empty-container" *ngIf="inProcessItems.length == 0">Nothing here yet</p>
       </div>
@@ -79,7 +90,12 @@
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)">
         <div *ngIf="completedItems.length != 0">
-          <app-item-view *ngFor="let item of completedItems" [cdkDragData]="item" [item]="item" cdkDrag></app-item-view>
+          <app-item-view *ngFor="let item of completedItems"
+                         [item]="item"
+                         (itemChangedPriority)="itemChangedPriority($event)"
+                         (itemDeletedEvent)="deleteItem($event)"
+                         [canDrag]="true"
+                         (itemChanged)="changeItem($event)"></app-item-view>
         </div>
         <p class="empty-container" *ngIf="completedItems.length == 0">Nothing here yet</p>
       </div>

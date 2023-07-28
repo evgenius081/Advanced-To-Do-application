@@ -11,6 +11,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { NgxMatDatetimePickerModule } from "@angular-material-components/datetime-picker";
 import { NgxMatMomentModule } from "@angular-material-components/moment-adapter"
 import { MatInputModule } from "@angular/material/input"
+import { CommonModule  } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component'
@@ -33,6 +34,7 @@ import { ChoiceDialogComponent } from './choice-dialog/choice-dialog.component';
 import { ListTitleEditorComponent } from './list/list-title-editor/list-title-editor.component';
 import { ItemCreateComponent } from './item/item-create/item-create.component';
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import {SelectableTextDirective} from "./directives/selectable-text.directive";
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
     ChoiceDialogComponent,
     ListTitleEditorComponent,
     ItemCreateComponent,
+    SelectableTextDirective
   ],
   imports: [
     BrowserModule,
@@ -73,7 +76,8 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
     MatDatepickerModule,
     NgxMatMomentModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

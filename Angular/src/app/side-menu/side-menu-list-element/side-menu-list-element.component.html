@@ -11,7 +11,7 @@
   [showUnits]="false"
   ></circle-progress>
   <circle-progress *ngIf="list.itemsInProcess != 0 || list.itemsCompleted != 0"
-    [percent]="((list.itemsInProcess + list.itemsCompleted) * 100)/(list.itemsNotStarted + list.itemsInProcess + list.itemsCompleted)"
+    [percent]="Math.round((list.itemsInProcess + list.itemsCompleted) * 100)/(list.itemsNotStarted + list.itemsInProcess + list.itemsCompleted)"
     [radius]="8"
     [outerStrokeWidth]="3"
     [showInnerStroke]="false"
@@ -22,7 +22,7 @@
     [showUnits]="false"
   ></circle-progress>
   <circle-progress *ngIf="list.itemsCompleted != 0"
-    [percent]="(list.itemsCompleted * 100)/(list.itemsNotStarted + list.itemsInProcess + list.itemsCompleted)"
+    [percent]="Math.round((list.itemsCompleted * 100)/(list.itemsNotStarted + list.itemsInProcess + list.itemsCompleted))"
     [radius]="8"
     [outerStrokeWidth]="3"
     [showInnerStroke]="false"
