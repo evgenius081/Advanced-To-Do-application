@@ -36,9 +36,13 @@ cd ClientApp
 ```
 3. Run
 ```cmd
+npm install
+```
+4. Run
+```cmd
 npm run start
 ```
-4. If the browser window does not open itself, go to `http://localhost:3000`
+5. If the browser window does not open itself, go to `http://localhost:3000`
 ### Docker
 There is also a possibility to run the entire solution in Docker. To do so, just run 
 ```cmd
