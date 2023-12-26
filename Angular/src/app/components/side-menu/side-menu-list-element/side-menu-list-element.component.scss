@@ -1,0 +1,46 @@
+@import "../../../../style.scss";
+
+a {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  padding: 10px 16px;
+  color: $text-color;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.inner-item a {
+  margin: 24px 0;
+}
+
+a:hover {
+  background: $tertiary-background-color;
+}
+
+.inner {
+  width: 112%;
+  height: 50px;
+  font-size: 18px;
+  font-family: $regular-text-font, Roboto, sans-serif;
+}
+
+p {
+  padding: 0;
+  margin: 0 0 0 36px;
+  display: block;
+  max-width: calc(100% - 36px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+circle-progress {
+  height: 32px;
+  width: 32px;
+  display: block;
+  margin-right: 0;
+  position: absolute;
+  margin-left: -8px;
+}

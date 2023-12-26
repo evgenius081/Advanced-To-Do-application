@@ -1,16 +1,21 @@
-import { Directive, HostListener, AfterViewInit, ElementRef } from '@angular/core';
+import {
+  Directive,
+  HostListener,
+  AfterViewInit,
+  ElementRef,
+} from '@angular/core';
 
 @Directive({
-  selector: '[selectableText]'
+  selector: '[selectableText]',
 })
 export class SelectableTextDirective implements AfterViewInit {
-  constructor(private elementRef: ElementRef) { }
+  constructor(private elementRef: ElementRef) {}
 
-  @HostListener('mousedown', [ '$event' ]) onMouseDown($event: Event): void {
+  @HostListener('mousedown', ['$event']) onMouseDown($event: Event): void {
     $event.stopPropagation();
   }
 
-  @HostListener('touchstart', [ '$event' ]) onTouchStart($event: Event): void {
+  @HostListener('touchstart', ['$event']) onTouchStart($event: Event): void {
     $event.stopPropagation();
   }
 

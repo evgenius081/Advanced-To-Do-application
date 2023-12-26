@@ -1,0 +1,10 @@
+<div id="container">
+  <app-list-title-editor
+    [isArchived]="isArchived"
+    [type]="0"
+  ></app-list-title-editor>
+  <div id="archived-container">
+    <input type="checkbox" id="archived" [(ngModel)]="isArchived" />
+    <label for="archived">Archived</label>
+  </div>
+</div>

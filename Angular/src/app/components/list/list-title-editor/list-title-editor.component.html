@@ -1,0 +1,16 @@
+<div id="title-container">
+  <input
+    [(ngModel)]="title"
+    (keyup)="onChange($event)"
+    placeholder="Enter title"
+  />
+  <button type="submit" (click)="handleSubmit($event)" [disabled]="disabled">
+    Submit
+  </button>
+</div>
+<div id="validation-messages-container">
+  <app-validation-message
+    [message]="message"
+    *ngFor="let message of validationMessages"
+  ></app-validation-message>
+</div>

@@ -6,28 +6,28 @@ mat-sidenav {
   background: $secondary-background-color;
 }
 
-.mat-drawer{
+.mat-drawer {
   background: $secondary-background-color;
-  color: $text-color
+  color: $text-color;
 }
 
-.mat-drawer-container{
+.mat-drawer-container {
   background: $primary-background-color;
-  color: $text-color
+  color: $text-color;
 }
 
-mat-sidenav-container{
+mat-sidenav-container {
   height: 100%;
 }
 
-h1{
+h1 {
   font-family: $bold-text-font, sans-serif;
   font-weight: bold;
   margin: 0 0 20px 0;
   font-size: 32px;
-  padding: 16px 16px 0 16px
+  padding: 16px 16px 0 16px;
 }
 
-main{
-  height: 100%
+main {
+  height: 100%;
 }

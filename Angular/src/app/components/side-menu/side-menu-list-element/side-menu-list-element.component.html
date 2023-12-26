@@ -1,0 +1,50 @@
+<a
+  routerLink="/lists/{{ list.id }}"
+  [class.inner]="list.isArchived"
+  *ngIf="list"
+>
+  <circle-progress
+    [percent]="100"
+    [radius]="8"
+    [outerStrokeWidth]="3"
+    [showInnerStroke]="false"
+    [outerStrokeColor]="'#272732'"
+    [animation]="false"
+    [showTitle]="false"
+    [showSubtitle]="false"
+    [showUnits]="false"
+  ></circle-progress>
+  <circle-progress
+    *ngIf="list.itemsInProcess != 0 || list.itemsCompleted != 0"
+    [percent]="
+      Math.round((list.itemsInProcess + list.itemsCompleted) * 100) /
+      (list.itemsNotStarted + list.itemsInProcess + list.itemsCompleted)
+    "
+    [radius]="8"
+    [outerStrokeWidth]="3"
+    [showInnerStroke]="false"
+    [outerStrokeColor]="'#ffffff'"
+    [animation]="false"
+    [showTitle]="false"
+    [showSubtitle]="false"
+    [showUnits]="false"
+  ></circle-progress>
+  <circle-progress
+    *ngIf="list.itemsCompleted != 0"
+    [percent]="
+      Math.round(
+        (list.itemsCompleted * 100) /
+          (list.itemsNotStarted + list.itemsInProcess + list.itemsCompleted)
+      )
+    "
+    [radius]="8"
+    [outerStrokeWidth]="3"
+    [showInnerStroke]="false"
+    [outerStrokeColor]="'#F27C22'"
+    [animation]="false"
+    [showTitle]="false"
+    [showSubtitle]="false"
+    [showUnits]="false"
+  ></circle-progress>
+  <p>{{ list.title }}</p>
+</a>

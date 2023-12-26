@@ -28,11 +28,12 @@
     "ng-circle-progress": "^1.7.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.0.4",
-    "@angular/cli": "~16.0.4",
+    "@angular/cli": "^16.2.11",
     "@angular/compiler-cli": "^16.0.0",
     "@types/jasmine": "~4.3.0",
     "jasmine-core": "~4.6.0",

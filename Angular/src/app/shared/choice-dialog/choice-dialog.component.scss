@@ -1,0 +1,38 @@
+@import "../../../style.scss";
+
+h1 {
+  color: $text-color !important;
+  font-family: $thin-text-font !important;
+  padding: 0 24px 20px 24px;
+}
+
+div {
+  color: $text-color !important;
+}
+
+.buttons {
+  padding: 0 24px 20px 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons button {
+  height: 40px;
+  font-size: 16px;
+  border: 2px solid $tertiary-background-color;
+  border-radius: 10px;
+  font-family: $regular-text-font, Roboto, sans-serif;
+  background-color: $secondary-background-color;
+  color: $text-color;
+  width: 60px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.buttons button:hover {
+  background-color: $tertiary-background-color;
+}
+
+.buttons button:first-child {
+  margin-right: 20px;
+}

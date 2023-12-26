@@ -1,0 +1,93 @@
+<section id="container">
+  <header>
+    <h3>{{ type == 0 ? "Creating task" : "Updating task" }}</h3>
+    <fa-icon [icon]="faXmark" (click)="handleClose()"></fa-icon>
+  </header>
+  <div class="title-container">
+    <input
+      [(ngModel)]="title"
+      (keyup)="onChange($event)"
+      placeholder="Enter title"
+      required
+    />
+    <div id="validation-messages-container">
+      <app-validation-message
+        [message]="message"
+        *ngFor="let message of validationMessages"
+      ></app-validation-message>
+    </div>
+  </div>
+  <div class="description-container">
+    <textarea
+      [(ngModel)]="description"
+      placeholder="Enter description (optional)"
+    ></textarea>
+  </div>
+  <div class="selections">
+    <div class="priority-container">
+      <label>Priority</label>
+      <mat-form-field>
+        <mat-select [(ngModel)]="priority">
+          <mat-option
+            *ngFor="let priority of priorities"
+            [value]="priorities.indexOf(priority)"
+          >
+            {{ priority }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="status-container">
+      <label>Status</label>
+      <mat-form-field>
+        <mat-select [(ngModel)]="status">
+          <mat-option
+            *ngFor="let statusName of statuses"
+            [value]="statuses.indexOf(statusName)"
+          >
+            {{ statusName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="datetime-container">
+    <label for="datetime-input">Deadline</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="datetime-input"
+        [ngxMatDatetimePicker]="picker"
+        placeholder="Choose a date"
+        [formControl]="dateControl"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="$any(picker)"
+      ></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker
+        #picker
+        [showSpinners]="true"
+        [showSeconds]="false"
+        [stepHour]="1"
+        [stepMinute]="1"
+        [stepSecond]="1"
+        [touchUi]="false"
+        [enableMeridian]="false"
+        [disableMinute]="false"
+        [hideTime]="false"
+      >
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+    <div id="remind-container">
+      <input type="checkbox" id="remind" [(ngModel)]="remind" />
+      <label for="remind">Remind hour before</label>
+    </div>
+  </div>
+  <div class="button-container">
+    <button class="cancel" (click)="handleClose()">Cancel</button>
+    <button type="submit" [disabled]="disabled" (click)="handleSubmit($event)">
+      Save
+    </button>
+  </div>
+</section>
