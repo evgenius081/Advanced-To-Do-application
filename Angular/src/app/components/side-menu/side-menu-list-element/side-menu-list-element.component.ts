@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TodoListWithStatistics } from '../../../shared/classes/todo-list-with-statistics';
+import { TodoListWithStatistics } from '../../../shared/classes/list/todo-list-with-statistics';
 
 @Component({
   selector: 'app-side-menu-list-element',

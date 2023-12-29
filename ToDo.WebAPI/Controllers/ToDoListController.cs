@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
@@ -20,16 +21,19 @@ namespace ToDo.WebAPI.Controllers
     {
         private readonly IToDoListService toDoListService;
         private readonly IHttpContextService httpContextService;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToDoListController"/> class.
         /// </summary>
         /// <param name="toDoListService">Service for <see cref="ToDoList"/>.</param>
         /// <param name="httpContextService">Service for http context.</param>
-        public ToDoListController(IToDoListService toDoListService, IHttpContextService httpContextService)
+        /// <param name="logger">Logger.</param>
+        public ToDoListController(IToDoListService toDoListService, IHttpContextService httpContextService, ILogger<ToDoListController> logger)
         {
             this.toDoListService = toDoListService;
             this.httpContextService = httpContextService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -53,8 +57,8 @@ namespace ToDo.WebAPI.Controllers
         public ActionResult GetLists()
         {
             int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
-            var notArchivedLists = this.toDoListService.GetAllLists();
-            return this.Ok(notArchivedLists.Where(l => l.UserID == userID));
+            var lists = this.toDoListService.GetAllLists();
+            return this.Ok(lists.Where(l => l.UserID == userID));
         }
 
         /// <summary>
@@ -71,6 +75,45 @@ namespace ToDo.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Handles request for getting all not archived <see cref="ToDoListStatistics"/>.
+        /// </summary>
+        /// <returns>Http response with the list of all <see cref="ToDoListStatistics"/>.</returns>
+        [HttpGet]
+        [Route("unarchived/details")]
+        public ActionResult GetNotArchivedListsWithDetails()
+        {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+            var notArchivedLists = this.toDoListService.GetNotArchivedListsWithDetails();
+            return this.Ok(notArchivedLists.Where(l => l.UserID == userID));
+        }
+
+        /// <summary>
+        /// Handles request for getting all lists.
+        /// </summary>
+        /// <returns>Http response with the list of all <see cref="ToDoListStatistics"/>.</returns>
+        [HttpGet]
+        [Route("details")]
+        public ActionResult GetListsWithDetails()
+        {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+            var lists = this.toDoListService.GetAllListsWithDetails();
+            return this.Ok(lists.Where(l => l.UserID == userID));
+        }
+
+        /// <summary>
+        /// Handles request for getting archived <see cref="ToDoListStatistics"/>.
+        /// </summary>
+        /// <returns>Http response with the list of archived <see cref="ToDoListStatistics"/>.</returns>
+        [HttpGet]
+        [Route("archived/details")]
+        public ActionResult GetArchivedListsWithDetails()
+        {
+            int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
+            var archivedLists = this.toDoListService.GetArchivedListsWithDetails();
+            return this.Ok(archivedLists.Where(l => l.UserID == userID));
+        }
+
+        /// <summary>
         /// Handles request for getting <see cref="ToDoList"/> by specified <see cref="ToDoList.Id"/>.
         /// </summary>
         /// <param name="id"><see cref="ToDoList.Id"/> to be searched by.</param>
@@ -83,7 +126,7 @@ namespace ToDo.WebAPI.Controllers
             var list = await this.toDoListService.GetListByID(id);
             if (list == null)
             {
-                return this.NotFound();
+                return this.NotFound("List not found");
             }
 
             if (list.UserID != userID)

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from './shared/services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,16 @@ import { UserService } from './shared/services/user.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(public userService: UserService) {}
+  private subscription: Subscription;
+
+  constructor(private userService: UserService) {
+    this.isLoggedIn = this.userService.isLoggedIn;
+    this.subscription = this.userService.isLoggedIn$.subscribe((i) => this.isLoggedIn = i);
+  }
   title = 'ToDo Application';
+  isLoggedIn: boolean = false;
+
+  ngOnDestroy() {
+     this.subscription.unsubscribe();
+   }
 }

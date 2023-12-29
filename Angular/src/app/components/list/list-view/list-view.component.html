@@ -10,7 +10,7 @@
       *ngIf="editMode"
       [list]="list"
       [title]="list.title"
-      [type]="1"
+      [type]="'update'"
       [editMode]="editMode"
       (editModeEvent)="changeEditMode($event)"
       (editTitleEvent)="changeTitle($event)"
@@ -50,8 +50,8 @@
     *ngIf="createItem"
     (itemEvent)="addItem($event)"
     (createItemEvent)="changeItemCreate($event)"
-    [type]="0"
-    [listID]="this.list!.id"
+    [type]="'create'"
+    [listID]="this.list.id"
   >
   </app-item-create>
   <div cdkDropListGroup>

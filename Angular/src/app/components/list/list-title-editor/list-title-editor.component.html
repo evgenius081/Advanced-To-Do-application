@@ -1,7 +1,7 @@
 <div id="title-container">
   <input
     [(ngModel)]="title"
-    (keyup)="onChange($event)"
+    (keyup)="handleChange($event)"
     placeholder="Enter title"
   />
   <button type="submit" (click)="handleSubmit($event)" [disabled]="disabled">

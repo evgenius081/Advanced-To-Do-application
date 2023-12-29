@@ -9,9 +9,12 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { CustomNgxDatetimeAdapter } from '../../../shared/classes/custom-ngx-datetime-adapter';
 import { ItemService } from '../../../shared/services/item.service';
-import { TodoItem } from '../../../shared/classes/todo-item';
+import { TodoItem } from '../../../shared/classes/item/todo-item';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ListService } from '../../../shared/services/list.service';
+import { ItemStatus } from 'src/app/shared/enums/item-status';
+import { ItemPriority } from 'src/app/shared/enums/item-priority';
+import { TodoItemCreate } from 'src/app/shared/classes/item/todo-item-create';
 
 const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
   parse: {
@@ -39,21 +42,22 @@ const CUSTOM_DATE_FORMATS: NgxMatDateFormats = {
   ],
 })
 export class ItemCreateComponent {
-  @Input() id?: number;
-  @Input() createdAt?: string;
-  @Input() title?: string = '';
+  @Input() id: number = -1;
+  @Input() createdAt: string = '';
+  @Input() title: string = '';
   @Input() description?: string = '';
-  @Input() status?: 0 | 1 | 2 = 0;
-  @Input() priority?: 0 | 1 = 0;
-  @Input() remind?: boolean = false;
-  @Input() listID?: number = 0;
-  @Input() type: 0 | 1 = 0;
-  @Input() deadline?: string;
-  oldStatus: 0 | 1 | 2 = 0;
+  @Input() status: ItemStatus = ItemStatus.NOT_STARTED;
+  @Input() priority: ItemPriority = ItemPriority.STANDARD;
+  @Input() remind: boolean = false;
+  @Input() listID: number = -1;
+  @Input() type: 'create' | 'update' = 'create';
+  @Input() deadline: string = '';
+  componentTitle: string = this.type === "create" ? "Creating task" : "Updating task";
   faXmark = faXmark;
   disabled = true;
   validationMessages: string[] = [];
   statuses: string[] = ['Not started', 'In process', 'Completed'];
+  prevStatus: ItemStatus = ItemStatus.NOT_STARTED;
   priorities: string[] = ['Standard', 'High'];
   validationExpressions: [RegExp, string][] = [
     [new RegExp('.+'), 'Title must be at least one symbol long'],
@@ -70,91 +74,82 @@ export class ItemCreateComponent {
   @Output() createItemEvent = new EventEmitter<boolean>();
   @Output() itemEvent = new EventEmitter<TodoItem>();
 
-  constructor(
-    private itemService: ItemService,
-    private listService: ListService
-  ) {}
+  constructor(private itemService: ItemService, private listService: ListService) {}
 
-  checkTitle() {
+  isTitleValid(): boolean {
     this.validationMessages = [];
     this.validationExpressions.map((exp) => {
       if (!exp[0].test(this.title!)) {
         this.validationMessages.push(exp[1]);
       }
     });
-    this.disabled = this.validationMessages.length != 0;
+    return this.validationMessages.length === 0;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dateControl = new FormControl(
       this.deadline ? new Date(this.deadline) : new Date()
     );
-    if (this.type == 1) {
-      this.checkTitle();
-    }
-    this.oldStatus = this.status!;
+    this.disabled = !this.isTitleValid();
+    this.prevStatus = this.status;
   }
 
-  onChange(e: Event) {
-    this.checkTitle();
+  onChange(e: Event): void {
+    this.disabled = !this.isTitleValid();
   }
 
-  handleSubmit(e: Event) {
+  createItem(): void {
+    const createdItem: TodoItemCreate = {
+      title: this.title,
+      description: this.description,
+      createdAt: new Date().toISOString(),
+      deadline: this.dateControl.getRawValue()!.toISOString(),
+      remind: this.remind,
+      status: this.status,
+      priority: this.priority,
+      toDoListID: this.listID,
+    };
+    this.itemService.createItem(createdItem).subscribe((i) => {
+      const item: TodoItem = i as TodoItem;
+      this.listService.updateStats(item.toDoListID, item.status, 1);
+      this.createItemEvent.emit(false);
+      this.itemEvent.emit(item);
+    });
+  }
+
+  updateItem(): void {
+    const updatedItem: TodoItem = {
+      id: this.id,
+      title: this.title!,
+      description: this.description,
+      createdAt: this.createdAt,
+      deadline: this.dateControl.getRawValue()!.toISOString(),
+      remind: this.remind,
+      status: this.status,
+      priority: this.priority,
+      toDoListID: this.listID,
+    };
+    this.itemService.updateItem(updatedItem).subscribe((i) => {
+      const item: TodoItem = i as TodoItem;
+      this.listService.updateStats(item.toDoListID, item.status, 1);
+      this.listService.updateStats(item.toDoListID, this.prevStatus, -1);
+      this.createItemEvent.emit(false); 
+      this.itemEvent.emit(item);
+    });
+  }
+
+  notifyAboutItemChange(updatedItem: TodoItem): void {
+
+  }
+
+  handleSubmit(e: Event): void {
     e.preventDefault();
-    this.checkTitle();
-    if (this.validationMessages.length == 0 && this.type == 0) {
-      let item: TodoItem;
-      this.itemService
-        .createItem({
-          title: this.title!,
-          description: this.description,
-          createdAt: new Date().toISOString(),
-          deadline: this.dateControl!.getRawValue()!.toISOString(),
-          remind: this.remind!,
-          status: this.status!,
-          priority: this.priority! == 0 ? 1 : this.priority! == 1 ? 2 : 1,
-          toDoListID: this.listID!,
-        })
-        .subscribe((i) => (item = i));
-      this.createItemEvent.emit(false);
-      this.itemEvent.emit(item!);
-    } else if (this.validationMessages.length == 0 && this.type == 1) {
-      let item: TodoItem;
-      if (this.oldStatus == 0) {
-        this.listService.updateStats(this.listID!, -1, 0, 0);
-      }
-      if (this.oldStatus == 1) {
-        this.listService.updateStats(this.listID!, 0, -1, 0);
-      }
-      if (this.oldStatus == 2) {
-        this.listService.updateStats(this.listID!, 0, 0, -1);
-      }
-
-      if (this.status == 0) {
-        this.listService.updateStats(this.listID!, 1, 0, 0);
-      }
-      if (this.status == 1) {
-        this.listService.updateStats(this.listID!, 0, 1, 0);
-      }
-      if (this.status == 2) {
-        this.listService.updateStats(this.listID!, 0, 0, 1);
-      }
-
-      this.itemService
-        .updateItem({
-          id: this.id!,
-          title: this.title!,
-          description: this.description,
-          createdAt: this.createdAt!,
-          deadline: this.dateControl!.getRawValue()!.toISOString(),
-          remind: this.remind!,
-          status: this.status!,
-          priority: this.priority! == 0 ? 1 : this.priority! == 1 ? 2 : 1,
-          toDoListID: this.listID!,
-        })
-        .subscribe((i) => (item = i));
-      this.createItemEvent.emit(false);
-      this.itemEvent.emit(item!);
+    const validationResult: boolean = this.isTitleValid();
+    this.disabled = !validationResult;
+    if (validationResult && this.type == 'create') {
+      this.createItem();
+    } else if (validationResult && this.type == 'update') {
+      this.updateItem();
     }
   }
 

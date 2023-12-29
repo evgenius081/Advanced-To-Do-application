@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TodoList } from '../../../shared/classes/todo-list';
+import { TodoList } from '../../../shared/classes/list/todo-list';
 import { ListService } from '../../../shared/services/list.service';
 import { Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/services/token.service';
+import { TodoListCreate } from 'src/app/shared/classes/list/todo-list-create';
 
 @Component({
   selector: 'app-list-title-editor',
@@ -10,10 +12,15 @@ import { Router } from '@angular/router';
 })
 export class ListTitleEditorComponent {
   @Input() title: string = '';
-  @Input() isArchived?: boolean;
-  @Input() type: 0 | 1 = 0;
-  @Input() list?: TodoList;
-  @Input() editMode?: boolean;
+  @Input() isArchived: boolean = false;
+  @Input() type: 'create' | 'update' = 'create';
+  @Input() list: TodoList = {
+    id: -1,
+    isArchived: false,
+    title: '',
+    userID: -1,
+  };
+  @Input() editMode: boolean = false;
   disabled = true;
   validationMessages: string[] = [];
   validationExpressions: [RegExp, string][] = [
@@ -28,59 +35,63 @@ export class ListTitleEditorComponent {
   @Output() editModeEvent = new EventEmitter<boolean>();
   @Output() editTitleEvent = new EventEmitter<string>();
 
-  constructor(private listService: ListService, private router: Router) {}
+  constructor(
+    private listService: ListService,
+    private router: Router,
+    private tokenService: TokenService
+  ) {}
 
-  ngOnInit() {
-    if (this.type == 1) {
-      this.validationMessages = [];
-      this.validationExpressions.map((exp) => {
-        if (!exp[0].test(this.title)) {
-          this.validationMessages.push(exp[1]);
-        }
-      });
-      this.disabled = this.validationMessages.length != 0;
-    }
+  ngOnInit(): void {
+    this.disabled = !this.isTitleValid();
   }
 
-  onChange(e: Event) {
+  isTitleValid(): boolean {
     this.validationMessages = [];
     this.validationExpressions.map((exp) => {
       if (!exp[0].test(this.title)) {
         this.validationMessages.push(exp[1]);
       }
     });
-    this.disabled = this.validationMessages.length != 0;
+    return this.validationMessages.length === 0;
   }
 
-  handleSubmit(e: Event) {
-    e.preventDefault();
-    this.validationMessages = [];
-    this.validationExpressions.map((exp) => {
-      if (!exp[0].test(this.title)) {
-        this.validationMessages.push(exp[1]);
-      }
-    });
-    if (this.validationMessages.length == 0 && this.type == 0) {
-      let createdList: TodoList;
-      this.listService
-        .createList({
-          title: this.title,
-          isArchived: this.isArchived!,
-          userID: 1,
-        })
-        .subscribe((l) => (createdList = l));
-      this.router.navigate([`lists/${createdList!.id}`]);
-    } else if (this.validationMessages.length == 0 && this.type == 1) {
-      this.listService
-        .updateList({
-          id: this.list!.id,
-          title: this.title,
-          isArchived: this.isArchived!,
-          userID: this.list!.userID,
-        })
-        .subscribe();
+  handleChange(e: Event): void {
+    this.disabled = !this.isTitleValid();
+  }
+
+  createList(): void {
+    const userId: number | undefined = this.tokenService.getUserIdFromToken();
+    const createdList: TodoListCreate = {
+      isArchived: this.isArchived,
+      title: this.title,
+      userID: userId === undefined ? -1 : userId,
+    };
+    this.listService
+      .createList(createdList)
+      .subscribe((l) => this.router.navigate([`lists/${(l as TodoList).id}`]));
+  }
+
+  updateList(): void {
+    const updatedList: TodoList = {
+      id: this.list.id,
+      isArchived: this.list.isArchived,
+      title: this.title,
+      userID: this.list.userID,
+    };
+    this.listService.updateList(updatedList).subscribe(() => {
       this.editModeEvent.emit(false);
       this.editTitleEvent.emit(this.title);
+    });
+  }
+
+  handleSubmit(e: Event): void {
+    e.preventDefault();
+    const validationResult: boolean = this.isTitleValid();
+    this.disabled = validationResult;
+    if (validationResult && this.type === "create") {
+      this.createList();
+    } else if (validationResult && this.type === "update") {
+      this.updateList();
     }
   }
 }

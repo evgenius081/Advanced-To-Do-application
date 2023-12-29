@@ -82,6 +82,8 @@ namespace ToDo.WebAPI
             services.AddTransient<IHttpContextService, HttpContextService>();
 
             services.AddCors();
+
+            services.AddLogging();
         }
 
         /// <summary>

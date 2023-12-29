@@ -1,4 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserLogin } from 'src/app/shared/classes/user/user-login';
+import { UserService } from 'src/app/shared/services/user.service';
+import { TokenService } from 'src/app/shared/services/token.service';
+import { Token } from 'src/app/shared/classes/token';
+import { TokenType } from 'src/app/shared/enums/token-type';
 
 @Component({
   selector: 'app-register',
@@ -6,6 +12,8 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
+  constructor (private userService: UserService, private tokenService: TokenService, private router: Router) {}
+
   @Input() login: string = '';
   @Input() password: string = '';
   @Input() repeatPassword: string = '';
@@ -71,8 +79,18 @@ export class RegisterComponent {
     this.checkLogin(event);
     this.checkPassword(event);
     this.checkRepeatPassword(event);
-    if (!this.disabled) {
-      console.log({ login: this.login, password: this.password });
+    if (!this.disabled){
+      const userLogin: UserLogin = {login: this.login, password: this.password};
+      this.userService.register(userLogin).subscribe(() => {
+        this.userService.login(userLogin).subscribe((t) => {
+          const token: Token = t as Token;
+          this.tokenService.writeToken(token.accessToken, TokenType.ACCESS);
+          this.tokenService.writeToken(token.refreshToken, TokenType.REFRESH);
+          this.userService.isLoggedIn$.next(true);
+          this.userService.username$.next(this.tokenService.getUserNameFromToken());
+          this.router.navigate(['']);
+        })
+      });
     }
   }
 }

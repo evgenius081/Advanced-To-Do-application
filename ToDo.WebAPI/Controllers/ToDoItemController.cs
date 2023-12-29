@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
@@ -20,6 +21,7 @@ namespace ToDo.WebAPI.Controllers
         private readonly IToDoItemService toDoItemService;
         private readonly IToDoListService toDoListService;
         private readonly IHttpContextService httpContextService;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToDoItemController"/> class.
@@ -27,11 +29,17 @@ namespace ToDo.WebAPI.Controllers
         /// <param name="toDoItemService">Service for <see cref="ToDoItem"/>.</param>
         /// <param name="httpContextService">Service for http context.</param>
         /// <param name="toDoListService">Service for <see cref="ToDoList"/>.</param>
-        public ToDoItemController(IToDoItemService toDoItemService, IHttpContextService httpContextService, IToDoListService toDoListService)
+        /// <param name="logger">Logger.</param>
+        public ToDoItemController(
+            IToDoItemService toDoItemService,
+            IHttpContextService httpContextService,
+            IToDoListService toDoListService,
+            ILogger<ToDoItemController> logger)
         {
             this.toDoItemService = toDoItemService;
             this.httpContextService = httpContextService;
             this.toDoListService = toDoListService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -43,7 +51,14 @@ namespace ToDo.WebAPI.Controllers
         [Route("list/{id:int}")]
         public async Task<IActionResult> GetItemsByListID(int id)
         {
-            if ((await this.toDoListService.GetListByID(id)).UserID != this.httpContextService.GetIdByContextUser(this.HttpContext.User))
+            var list = await this.toDoListService.GetListByID(id);
+
+            if (list == null)
+            {
+                return this.NotFound("List not found");
+            }
+
+            if (list.UserID != this.httpContextService.GetIdByContextUser(this.HttpContext.User))
             {
                 return this.BadRequest("This list does not belong to you.");
             }
@@ -83,11 +98,11 @@ namespace ToDo.WebAPI.Controllers
         /// </summary>
         /// <returns>Ok response with all <see cref="ToDoItem"/> that have <see cref="ToDoItem.Starred"/> set.</returns>
         [HttpGet]
-        [Route("starred")]
+        [Route("primary")]
         public ActionResult GetStarred()
         {
             int userID = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
-            var starredItems = this.toDoItemService.GetItemsByPriority(Priority.Top);
+            var starredItems = this.toDoItemService.GetItemsByPriority(Priority.High);
             return this.Ok(starredItems.Where(i => i.TodoList.UserID == userID));
         }
 
@@ -183,6 +198,7 @@ namespace ToDo.WebAPI.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
+            this.logger.LogInformation($"deleted item with id {id}");
             if ((await this.toDoItemService.GetItem(id)).TodoList.UserID != this.httpContextService.GetIdByContextUser(this.HttpContext.User))
             {
                 return this.BadRequest("This list does not belong to you.");

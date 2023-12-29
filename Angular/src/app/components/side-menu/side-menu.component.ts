@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, effect } from '@angular/core';
 import {
   faStar,
   faClock,
@@ -6,7 +6,7 @@ import {
   faPlus,
   faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
-import { TodoListWithStatistics } from '../../shared/classes/todo-list-with-statistics';
+import { TodoListWithStatistics } from '../../shared/classes/list/todo-list-with-statistics';
 import { ListService } from '../../shared/services/list.service';
 import { UserService } from '../../shared/services/user.service';
 import { Router } from '@angular/router';
@@ -25,11 +25,21 @@ export class SideMenuComponent {
   icon = false;
   lists: TodoListWithStatistics[] = [];
 
+
   constructor(
     private listService: ListService,
     private userService: UserService,
     private router: Router
-  ) {}
+  ) {
+    this.userService.username$.subscribe((u) => {
+      if (u !== undefined){
+        this.getLists();
+      }
+    })
+    effect(() => {
+      this.lists = this.listService.listChangedSignal$();
+    })
+  }
 
   click() {
     this.icon = !this.icon;

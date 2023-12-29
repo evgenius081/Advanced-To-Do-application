@@ -39,6 +39,8 @@ import { TodayComponent } from './components/today/today.component';
 import { HighPriorityComponent } from './components/high-priority/high-priority.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ApiInterceptor } from './shared/services/http-interceptor';
 
 @NgModule({
   declarations: [
@@ -86,8 +88,11 @@ import { RegisterComponent } from './components/auth/register/register.component
     ReactiveFormsModule,
     MatInputModule,
     CommonModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

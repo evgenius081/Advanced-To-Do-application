@@ -1,179 +1,180 @@
-import { Injectable } from '@angular/core';
-import { TodoList } from '../classes/todo-list';
-import { Observable, of } from 'rxjs';
-import { TodoListWithStatistics } from '../classes/todo-list-with-statistics';
-import { ItemService } from './item.service';
-import { TodoItem } from '../classes/todo-item';
-import { TodoListCreate } from '../classes/todo-list-create';
+import { Injectable, Signal, WritableSignal, signal } from '@angular/core';
+import { TodoList } from '../classes/list/todo-list';
+import { Observable, of, catchError, tap } from 'rxjs';
+import { TodoListWithStatistics } from '../classes/list/todo-list-with-statistics';
+import { TodoListCreate } from '../classes/list/todo-list-create';
+import { TokenService } from './token.service';
+import { Router } from '@angular/router';
+import { HttpService } from './http.service';
+import { UserService } from './user.service';
+import { TokenType } from '../enums/token-type';
+import { ItemStatus } from '../enums/item-status';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ListService {
-  listsWithStat: TodoListWithStatistics[] = [
-    {
-      id: 1,
-      title: 'House things aaaaaaaa',
-      isArchived: false,
-      userID: 1,
-      itemsNotStarted: 2,
-      itemsInProcess: 0,
-      itemsCompleted: 0,
-    },
-    {
-      id: 2,
-      title: 'Work things',
-      isArchived: false,
-      userID: 1,
-      itemsNotStarted: 1,
-      itemsInProcess: 4,
-      itemsCompleted: 0,
-    },
-    {
-      id: 3,
-      title: 'Being adult',
-      isArchived: true,
-      userID: 1,
-      itemsNotStarted: 3,
-      itemsInProcess: 1,
-      itemsCompleted: 2,
-    },
-  ];
+  constructor(
+    private tokenService: TokenService,
+    private httpService: HttpService,
+    private userService: UserService
+  ) {}
 
-  lists: TodoList[] = [
-    { id: 1, title: 'House things aaaaaaaa', isArchived: false, userID: 1 },
-    { id: 2, title: 'Work things', isArchived: false, userID: 1 },
-    { id: 3, title: 'Being adult', isArchived: true, userID: 1 },
-  ];
+  dummyTodoListWithStatistics: TodoListWithStatistics = {
+    id: -1,
+    isArchived: false,
+    title: '',
+    userID: -1,
+    itemsCompleted: 0,
+    itemsInProcess: 0,
+    itemsNotStarted: 0,
+  };
 
-  constructor(private itemService: ItemService) {}
+  dummyTodoList: TodoList = {
+    id: -1,
+    isArchived: false,
+    title: '',
+    userID: -1,
+  };
+
+  listChangedSignal$: WritableSignal<TodoListWithStatistics[]> = signal<TodoListWithStatistics[]>([]);
 
   getList(id: number): Observable<TodoList> {
-    return of(this.lists.find((l) => l.id == id)!);
+    const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
+    return this.httpService
+      .get<TodoList>(`lists/${id}`, token)
+      .pipe(catchError(this.userService.handleError<TodoList>()));
   }
 
   getLists(): Observable<TodoListWithStatistics[]> {
-    return of(this.listsWithStat);
+    const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
+    return this.httpService
+      .get<TodoListWithStatistics[]>('lists/details', token)
+      .pipe(tap((result) => {
+        this.notifyAboutListSet(result as TodoListWithStatistics[]);
+        return result;
+      }),
+      catchError(this.userService.handleError<any>()));
   }
 
-  createList(createdList: TodoListCreate) {
-    let id = this.lists.length == 0 ? 1 : this.lists.slice(-1)[0].id + 1;
-    let newList = {
-      id: id,
-      title: createdList.title,
-      isArchived: createdList.isArchived,
-      userID: createdList.userID,
-    };
-    this.lists.push(newList);
-    this.listsWithStat.push({
-      id: id,
-      title: createdList.title,
-      isArchived: createdList.isArchived,
-      userID: createdList.userID,
-      itemsCompleted: 0,
-      itemsNotStarted: 0,
-      itemsInProcess: 0,
-    });
-
-    return of(newList);
+  createList(createdList: TodoListCreate): Observable<object> {
+    const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
+    return this.httpService
+      .post<TodoListCreate>('lists', token, createdList)
+      .pipe(
+        tap((result) => {
+          this.notifyAboutListAdd(result as TodoList);
+          return result;
+        }),
+        catchError(this.userService.handleError<object>())
+      );
   }
 
-  updateList(listToUpdate: TodoList) {
-    let list = this.lists.find((list) => list.id == listToUpdate.id);
-    if (list != undefined) {
-      this.lists[this.lists.indexOf(list)] = listToUpdate;
-    }
-    let listStat = this.listsWithStat.find(
-      (list) => list.id == listToUpdate.id
-    );
-    this.listsWithStat[this.listsWithStat.indexOf(listStat!)] = {
-      id: listToUpdate.id,
-      title: listToUpdate.title,
-      isArchived: listToUpdate.isArchived,
-      userID: listToUpdate.userID,
-      itemsCompleted: listStat!.itemsCompleted,
-      itemsInProcess: listStat!.itemsInProcess,
-      itemsNotStarted: listStat!.itemsNotStarted,
-    };
-    return new Observable<void>();
+  updateList(listToUpdate: TodoList): Observable<TodoList> {
+    const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
+    console.log(listToUpdate)
+    return this.httpService
+      .put<TodoList>('lists', token, listToUpdate)
+      .pipe(tap(
+        (result) => {
+          console.log(result);
+          this.notifyAboutListUpdate(result);
+          return result;
+        }
+      ), catchError(this.userService.handleError<TodoList>()));
   }
 
-  updateStats(
-    id: number,
-    notStarted: -1 | 0 | 1,
-    inProcess: -1 | 0 | 1,
-    completed: -1 | 0 | 1
-  ) {
-    let list = this.listsWithStat.find((list) => list.id == id);
-    if (list != undefined) {
-      this.listsWithStat[this.listsWithStat.indexOf(list)] = {
-        id: list.id,
-        title: list.title,
-        isArchived: list.isArchived,
-        userID: list.userID,
-        itemsCompleted: list.itemsCompleted + completed,
-        itemsNotStarted: list.itemsNotStarted + notStarted,
-        itemsInProcess: list.itemsInProcess + inProcess,
-      };
-    }
-  }
-
-  deleteList(id: number) {
-    this.lists.splice(
-      this.lists.indexOf(this.lists.find((l) => l.id == id)!),
-      1
-    );
-    this.listsWithStat.splice(
-      this.listsWithStat.indexOf(this.listsWithStat.find((l) => l.id == id)!),
-      1
-    );
-
-    let items: TodoItem[] = [];
-    this.itemService.getItemsByListID(id).subscribe((is) => (items = is));
-    items.map((item) => this.itemService.deleteItem(item.id));
-
-    return new Observable<void>();
+  deleteList(id: number): Observable<object> {
+    const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
+    return this.httpService
+      .delete(`lists/${id}`, token)
+      .pipe(tap((result) => {
+        this.notifyAboutListRemove(id);
+        return result;
+      }),
+      catchError(this.userService.handleError<object>()));
   }
 
   copyList(id: number) {
-    let originalList = this.lists.find((l) => l.id == id)!;
-    let originalListStat = this.listsWithStat.find((l) => l.id == id)!;
+    const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
+    return this.httpService
+      .get(`lists/copy/${id}`, token)
+      .pipe(tap((result) => {
+        this.notifyAboutListCopy(result as TodoListWithStatistics);
+        return result;
+      }),
+      catchError(this.userService.handleError<void>()));
+  }
 
-    let listID = this.lists.length == 0 ? 1 : this.lists.slice(-1)[0].id + 1;
-    this.lists.push({
-      id: listID,
-      title: `${originalList.title} (copy)`,
-      isArchived: originalList.isArchived,
-      userID: originalList.userID,
+  updateStats(listId: number, status: ItemStatus, value: number): void {
+    this.listChangedSignal$.update((prevState) => {
+      const foundList: TodoListWithStatistics | undefined = prevState.find(list => list.id == listId);
+      if (foundList){
+        switch (status){
+          case (ItemStatus.COMPLETED): {
+            foundList.itemsCompleted += value;
+            break;
+          }
+          case (ItemStatus.NOT_STARTED): {
+            foundList.itemsNotStarted += value;
+            break;
+          }
+          case (ItemStatus.IN_PROCESS): {
+            foundList.itemsInProcess += value;
+            break;
+          }
+        }
+        prevState[prevState.findIndex((list) => list.id == foundList.id)] = foundList;
+      }
+      return prevState;
     });
+  }
 
-    this.listsWithStat.push({
-      id: listID,
-      title: `${originalListStat.title} (copy)`,
-      isArchived: originalListStat.isArchived,
-      userID: originalListStat.userID,
-      itemsCompleted: originalListStat.itemsCompleted,
-      itemsInProcess: originalListStat.itemsInProcess,
-      itemsNotStarted: originalListStat.itemsNotStarted,
+  private notifyAboutListUpdate(list: TodoList): void {
+    const foundList: TodoListWithStatistics | undefined = this.listChangedSignal$().find(l => l.id == list.id);
+
+    if (foundList){
+      const updatedList: TodoListWithStatistics = {
+        ...list,
+        itemsCompleted: foundList.itemsCompleted,
+        itemsInProcess: foundList.itemsInProcess,
+        itemsNotStarted: foundList.itemsNotStarted
+      }
+      this.listChangedSignal$.update(prevState => {
+        prevState[prevState.indexOf(foundList)] = updatedList;
+        return prevState;
+      })
+    }
+  }
+
+  private notifyAboutListSet(lists: TodoListWithStatistics[]): void {
+    this.listChangedSignal$.set(lists);
+  }
+
+  private notifyAboutListAdd(list: TodoList): void {
+    const createdListWithStats: TodoListWithStatistics = {
+      id: list.id,
+      isArchived: list.isArchived,
+      title: list.title,
+      userID: list.userID,
+      itemsCompleted: 0,
+      itemsInProcess: 0,
+      itemsNotStarted: 0,
+    };
+    this.listChangedSignal$.update((lists) => {
+      lists.push(createdListWithStats);
+      return lists;
     });
+  }
 
-    let items: TodoItem[] = [];
-    this.itemService.getItemsByListID(id).subscribe((is) => (items = is));
-    items.map((item) =>
-      this.itemService
-        .createItem({
-          title: item.title,
-          description: item.description,
-          createdAt: item.createdAt,
-          deadline: item.deadline,
-          status: item.status,
-          priority: item.priority,
-          remind: item.remind,
-          toDoListID: listID,
-        })
-        .subscribe()
-    );
+  private notifyAboutListCopy(list: TodoListWithStatistics): void {
+    this.listChangedSignal$.update((lists) => {
+      lists.push(list);
+      return lists;
+    });
+  }
 
-    return new Observable<void>();
+  private notifyAboutListRemove(id: number): void {
+    this.listChangedSignal$.update((lists) => lists.filter((list) => list.id != id));
   }
 }

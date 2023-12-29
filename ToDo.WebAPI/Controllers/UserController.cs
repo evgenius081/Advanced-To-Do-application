@@ -61,14 +61,7 @@ namespace ToDo.WebAPI.Controllers
                 return this.BadRequest("User with this username already exists");
             }
 
-            var token = await this.userService.Login(bodyUser);
-
-            if (token != null)
-            {
-                return this.Ok(token);
-            }
-
-            return this.BadRequest("User registered, but login failed. Try again later.");
+            return this.Ok();
         }
     }
 }

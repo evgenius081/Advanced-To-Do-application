@@ -5,16 +5,17 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from '@angular/router';
-import { UserService } from '../shared/services/user.service';
+import { TokenService } from '../shared/services/token.service';
+import { TokenType } from '../shared/enums/token-type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private router: Router, private tokenService: TokenService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.userService.checkToken()) {
+    if (this.tokenService.getToken(TokenType.ACCESS)) {
       return true;
     }
 

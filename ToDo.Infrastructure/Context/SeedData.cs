@@ -68,7 +68,7 @@ namespace ToDo.Infrastructure.Context
                     TodoList = toDoList1,
                     Status = ItemStatus.NotStarted,
                     Remind = true,
-                    Priority = Priority.Top,
+                    Priority = Priority.High,
                 },
                 new ToDoItem
                 {
@@ -80,27 +80,148 @@ namespace ToDo.Infrastructure.Context
                     TodoList = toDoList1,
                     Status = ItemStatus.NotStarted,
                     Remind = false,
-                    Priority = Priority.Top,
+                    Priority = Priority.High,
                 },
             };
 
             toDoList2.Items = new List<ToDoItem>()
             {
-                new ToDoItem { Title = "Finish coding challenge", Description = "Complete the coding challenge for the job application", CreatedAt = DateTime.UtcNow.AddDays(-4), Deadline = DateTime.UtcNow.AddDays(2), ToDoListID = toDoList2.Id, TodoList = toDoList2, Status = ItemStatus.InProcess, Remind = false, Priority = Priority.Default },
-                new ToDoItem { Title = "Finish project report", Description = "Write up the findings from the experiments", CreatedAt = DateTime.UtcNow.AddDays(-3), Deadline = DateTime.UtcNow.AddDays(1), ToDoListID = toDoList2.Id, TodoList = toDoList2, Status = ItemStatus.InProcess, Remind = false, Priority = Priority.Default },
-                new ToDoItem { Title = "Submit expense report", Description = "Submit the expense report for reimbursement", CreatedAt = DateTime.UtcNow.AddDays(-3), Deadline = DateTime.UtcNow, ToDoListID = toDoList2.Id, TodoList = toDoList2, Status = ItemStatus.InProcess, Remind = false, Priority = Priority.Top },
-                new ToDoItem { Title = "Reply to email", Description = "Respond to the email from your coworker", CreatedAt = DateTime.UtcNow.AddDays(-1), Deadline = DateTime.UtcNow.AddDays(1), ToDoListID = toDoList2.Id, TodoList = toDoList2, Status = ItemStatus.NotStarted, Remind = false, Priority = Priority.Default },
-                new ToDoItem { Title = "Prepare for meeting", Description = "Review the agenda and prepare notes for the meeting", CreatedAt = DateTime.UtcNow.AddDays(-1), Deadline = DateTime.UtcNow, ToDoListID = toDoList2.Id, TodoList = toDoList2, Status = ItemStatus.InProcess, Remind = true, Priority = Priority.Default },
+                new ToDoItem
+                {
+                    Title = "Finish coding challenge",
+                    Description = "Complete the coding challenge for the job application",
+                    CreatedAt = DateTime.UtcNow.AddDays(-4),
+                    Deadline = DateTime.UtcNow.AddDays(2),
+                    ToDoListID = toDoList2.Id,
+                    TodoList = toDoList2,
+                    Status = ItemStatus.InProcess,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
+                new ToDoItem
+                {
+                    Title = "Finish project report",
+                    Description = "Write up the findings from the experiments",
+                    CreatedAt = DateTime.UtcNow.AddDays(-3),
+                    Deadline = DateTime.UtcNow.AddDays(1),
+                    ToDoListID = toDoList2.Id,
+                    TodoList = toDoList2,
+                    Status = ItemStatus.InProcess,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
+                new ToDoItem
+                {
+                    Title = "Submit expense report",
+                    Description = "Submit the expense report for reimbursement",
+                    CreatedAt = DateTime.UtcNow.AddDays(-3),
+                    Deadline = DateTime.UtcNow,
+                    ToDoListID = toDoList2.Id,
+                    TodoList = toDoList2,
+                    Status = ItemStatus.InProcess,
+                    Remind = false,
+                    Priority = Priority.High,
+                },
+                new ToDoItem
+                {
+                    Title = "Reply to email",
+                    Description = "Respond to the email from your coworker",
+                    CreatedAt = DateTime.UtcNow.AddDays(-1),
+                    Deadline = DateTime.UtcNow.AddDays(1),
+                    ToDoListID = toDoList2.Id,
+                    TodoList = toDoList2,
+                    Status = ItemStatus.NotStarted,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
+                new ToDoItem
+                {
+                    Title = "Prepare for meeting",
+                    Description = "Review the agenda and prepare notes for the meeting",
+                    CreatedAt = DateTime.UtcNow.AddDays(-1),
+                    Deadline = DateTime.UtcNow,
+                    ToDoListID = toDoList2.Id,
+                    TodoList = toDoList2,
+                    Status = ItemStatus.InProcess,
+                    Remind = true,
+                    Priority = Priority.Standard,
+                },
             };
 
             toDoList3.Items = new List<ToDoItem>()
             {
-                new ToDoItem { Title = "Go for a run", Description = "Run for 30 minutes around the park", CreatedAt = DateTime.UtcNow.AddDays(-7), Deadline = DateTime.UtcNow.AddDays(-2), ToDoListID = toDoList3.Id, TodoList = toDoList3, Status = ItemStatus.Completed, Remind = false, Priority = Priority.Low },
-                new ToDoItem { Title = "Call mom", Description = "Check in with her and see how she's doing", CreatedAt = DateTime.UtcNow.AddDays(-2), Deadline = DateTime.UtcNow.AddDays(3), ToDoListID = toDoList3.Id, TodoList = toDoList3, Status = ItemStatus.NotStarted, Remind = false,  Priority = Priority.Default },
-                new ToDoItem { Title = "Send birthday card", Description = "Mail the birthday card to your friend", CreatedAt = DateTime.UtcNow.AddDays(-5), Deadline = DateTime.UtcNow.AddDays(1), ToDoListID = toDoList3.Id, TodoList = toDoList3, Status = ItemStatus.Completed, Remind = true, Priority = Priority.Default },
-                new ToDoItem { Title = "Schedule dentist appointment", Description = "Make an appointment for a teeth cleaning", CreatedAt = DateTime.UtcNow.AddDays(-1), Deadline = DateTime.UtcNow.AddDays(7), ToDoListID = toDoList3.Id, TodoList = toDoList3, Status = ItemStatus.NotStarted, Remind = false, Priority = Priority.Low },
-                new ToDoItem { Title = "Read book", Description = "Read the next chapter in the book club book", CreatedAt = DateTime.UtcNow.AddDays(-6), Deadline = DateTime.UtcNow.AddDays(3), ToDoListID = toDoList3.Id, TodoList = toDoList3, Status = ItemStatus.NotStarted, Remind = false,  Priority = Priority.Default },
-                new ToDoItem { Title = "Buy birthday gift", Description = "Choose and purchase a gift for the upcoming birthday", CreatedAt = DateTime.UtcNow.AddDays(-5), Deadline = DateTime.UtcNow.AddDays(2), ToDoListID = toDoList3.Id, TodoList = toDoList3, Status = ItemStatus.NotStarted, Remind = false, Priority = Priority.Default },
+                new ToDoItem
+                {
+                    Title = "Go for a run",
+                    Description = "Run for 30 minutes around the park",
+                    CreatedAt = DateTime.UtcNow.AddDays(-7),
+                    Deadline = DateTime.UtcNow.AddDays(-2),
+                    ToDoListID = toDoList3.Id,
+                    TodoList = toDoList3,
+                    Status = ItemStatus.Completed,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
+                new ToDoItem
+                {
+                    Title = "Call mom",
+                    Description = "Check in with her and see how she's doing",
+                    CreatedAt = DateTime.UtcNow.AddDays(-2),
+                    Deadline = DateTime.UtcNow.AddDays(3),
+                    ToDoListID = toDoList3.Id,
+                    TodoList = toDoList3,
+                    Status = ItemStatus.NotStarted,
+                    Remind = false,
+                    Priority = Priority.High,
+                },
+                new ToDoItem
+                {
+                    Title = "Send birthday card",
+                    Description = "Mail the birthday card to your friend",
+                    CreatedAt = DateTime.UtcNow.AddDays(-5),
+                    Deadline = DateTime.UtcNow.AddDays(1),
+                    ToDoListID = toDoList3.Id,
+                    TodoList = toDoList3,
+                    Status = ItemStatus.Completed,
+                    Remind = true,
+                    Priority = Priority.High,
+                },
+                new ToDoItem
+                {
+                    Title = "Schedule dentist appointment",
+                    Description = "Make an appointment for a teeth cleaning",
+                    CreatedAt = DateTime.UtcNow.AddDays(-1),
+                    Deadline = DateTime.UtcNow.AddDays(7),
+                    ToDoListID = toDoList3.Id,
+                    TodoList = toDoList3,
+                    Status = ItemStatus.NotStarted,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
+                new ToDoItem
+                {
+                    Title = "Read book",
+                    Description = "Read the next chapter in the book club book",
+                    CreatedAt = DateTime.UtcNow.AddDays(-6),
+                    Deadline = DateTime.UtcNow.AddDays(3),
+                    ToDoListID = toDoList3.Id,
+                    TodoList = toDoList3,
+                    Status = ItemStatus.NotStarted,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
+                new ToDoItem
+                {
+                    Title = "Buy birthday gift",
+                    Description = "Choose and purchase a gift for the upcoming birthday",
+                    CreatedAt = DateTime.UtcNow.AddDays(-5),
+                    Deadline = DateTime.UtcNow.AddDays(2),
+                    ToDoListID = toDoList3.Id,
+                    TodoList = toDoList3,
+                    Status = ItemStatus.NotStarted,
+                    Remind = false,
+                    Priority = Priority.Standard,
+                },
             };
             context.SaveChanges();
         }

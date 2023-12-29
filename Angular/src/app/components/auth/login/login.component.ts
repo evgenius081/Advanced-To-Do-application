@@ -1,7 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { UserService } from '../../../shared/services/user.service';
-import { User } from '../../../shared/classes/user';
 import { Router } from '@angular/router';
+import { UserLogin } from '../../../shared/classes/user/user-login';
+import { TokenService } from '../../../shared/services/token.service';
+import { Token } from '../../../shared/classes/token';
+import { TokenType } from '../../../shared/enums/token-type';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,19 +16,23 @@ export class LoginComponent {
   @Input() login?: string = 'admin';
   @Input() password?: string = 'P@55w0rd';
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private tokenService: TokenService, private userService: UserService, private router: Router) {}
 
   handleSubmit(event: Event) {
     event.preventDefault();
-    if (this.login != undefined && this.password != undefined) {
-      let user: User | undefined;
-      this.userService
-        .login({ login: this.login, password: this.password })
-        .subscribe((u) => (user = u));
-      if (user) {
-        console.log('faesef');
+    if (this.login && this.password) {
+      const userLogin: UserLogin = {
+        login: this.login,
+        password: this.password,
+      };
+      this.userService.login(userLogin).subscribe((t) => {
+        const token: Token = t as Token;
+        this.tokenService.writeToken(token.accessToken, TokenType.ACCESS);
+        this.tokenService.writeToken(token.refreshToken, TokenType.REFRESH);
+        this.userService.isLoggedIn$.next(true);
+        this.userService.username$.next(this.tokenService.getUserNameFromToken());
         this.router.navigate(['']);
-      }
+      });
     }
   }
 }

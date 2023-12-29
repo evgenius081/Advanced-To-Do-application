@@ -9,22 +9,40 @@ namespace ToDo.Services.Interfaces
     public interface IToDoListService
     {
         /// <summary>
+        /// Gets all not archived lists with details.
+        /// </summary>
+        /// <returns>List of <see cref="ToDoListStatistics"/> with <see cref="ToDoList.IsArchived" /> set to false.</returns>
+        List<ToDoListStatistics> GetNotArchivedListsWithDetails();
+
+        /// <summary>
+        /// Gets all archived lists with details.
+        /// </summary>
+        /// <returns>List of <see cref="ToDoListStatistics"/> with <see cref="ToDoList.IsArchived" /> set to true.</returns>
+        List<ToDoListStatistics> GetArchivedListsWithDetails();
+
+        /// <summary>
+        /// Gets all lists with details.
+        /// </summary>
+        /// <returns>List of all <see cref="ToDoListStatistics"/>.</returns>
+        List<ToDoListStatistics> GetAllListsWithDetails();
+
+        /// <summary>
         /// Gets all not archived lists.
         /// </summary>
         /// <returns>List of <see cref="ToDoList"/> with <see cref="ToDoList.IsArchived" /> set to false.</returns>
-        List<ToDoListStatistics> GetNotArchivedLists();
+        List<ToDoList> GetNotArchivedLists();
 
         /// <summary>
         /// Gets all archived lists.
         /// </summary>
         /// <returns>List of <see cref="ToDoList"/> with <see cref="ToDoList.IsArchived" /> set to true.</returns>
-        List<ToDoListStatistics> GetArchivedLists();
+        List<ToDoList> GetArchivedLists();
 
         /// <summary>
         /// Gets all lists.
         /// </summary>
         /// <returns>List of all <see cref="ToDoList"/>.</returns>
-        List<ToDoListStatistics> GetAllLists();
+        List<ToDoList> GetAllLists();
 
         /// <summary>
         /// Gets list by ID.

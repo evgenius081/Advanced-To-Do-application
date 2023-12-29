@@ -10,18 +10,13 @@ namespace ToDo.DomainModel.Models
     public enum Priority
     {
         /// <summary>
-        /// Item is hidden.
+        /// Item has standard priority.
         /// </summary>
-        Low,
+        Standard,
 
         /// <summary>
-        /// Default status.
+        /// Item has maximum priority.
         /// </summary>
-        Default,
-
-        /// <summary>
-        /// Item is starred.
-        /// </summary>
-        Top,
+        High,
     }
 }

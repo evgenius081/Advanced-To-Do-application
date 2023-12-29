@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { TodoItem } from '../../shared/classes/todo-item';
+import { TodoItem } from '../../shared/classes/item/todo-item';
 import { ItemService } from '../../shared/services/item.service';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { UserService } from '../../shared/services/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-today',
@@ -15,11 +16,17 @@ export class TodayComponent {
   showCompleted = false;
   faEye = faEye;
   faEyeSlash = faEyeSlash;
+  username: string | undefined = undefined;
+
+  private subscription: Subscription;
 
   constructor(
     private itemService: ItemService,
     public userService: UserService
-  ) {}
+  ) {
+    this.username = this.userService.username;
+    this.subscription = this.userService.username$.subscribe((u) => this.username = u);
+  }
 
   ngOnInit(): void {
     this.getItems();
@@ -46,34 +53,13 @@ export class TodayComponent {
     this.updateItemsToShow();
   }
 
-  compareItems(a: TodoItem, b: TodoItem) {
-    if (a.priority < b.priority) {
-      return 1;
-    } else if (a.priority > b.priority) {
-      return -1;
-    } else {
-      if (new Date(a.deadline) > new Date(b.deadline)) {
-        return 1;
-      } else if (new Date(a.deadline) < new Date(b.deadline)) {
-        return -1;
-      } else {
-        if (a.status < b.status) {
-          return 1;
-        } else if (a.status > b.status) {
-          return -1;
-        }
-        return 0;
-      }
-    }
-  }
-
   getItems() {
-    let items: TodoItem[];
-    this.itemService.getTodayItems().subscribe((i) => (items = i));
-    this.items = items!.sort((a, b) => this.compareItems(a, b));
-    if (!this.showCompleted) {
-      this.itemsToShow = this.items.filter((item) => item.status != 2);
-    }
+    this.itemService.getTodayItems().subscribe((i) => {
+      this.items = i.sort((a, b) => this.itemService.compareItems(a, b));
+      if (!this.showCompleted) {
+        this.itemsToShow = this.items.filter((item) => item.status != 2);
+      }
+    });
   }
 
   changeItem(value: TodoItem) {
@@ -82,5 +68,9 @@ export class TodayComponent {
       this.items[this.items.indexOf(item)] = value;
     }
     this.updateItemsToShow();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
