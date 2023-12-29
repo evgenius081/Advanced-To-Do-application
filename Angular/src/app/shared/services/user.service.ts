@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { UserLogin } from '../classes/user/user-login';
 import { Observable, of, catchError, Subject } from 'rxjs';
 import { HttpService } from './http.service';
@@ -11,11 +11,8 @@ import * as moment from 'moment';
   providedIn: 'root',
 })
 export class UserService {
-  isLoggedIn$: Subject<boolean> = new Subject<boolean>();
-  username$: Subject<string | undefined> = new Subject<string | undefined>();
-
-  isLoggedIn: boolean = false;
-  username: string | undefined = undefined;
+  isLoggedInSignal$: WritableSignal<boolean> = signal<boolean>(false);
+  usernameSignal$: WritableSignal<string | undefined> = signal<string | undefined>(undefined);
 
   constructor(
     private tokenService: TokenService,
@@ -26,15 +23,9 @@ export class UserService {
       this.tokenService.getToken(TokenType.ACCESS) &&
       this.checkIfTokenExpired()
     ) {
-      this.username = this.tokenService.getUserNameFromToken();
-      this.isLoggedIn = true;
-      this.username$.next(this.tokenService.getUserNameFromToken());
-      this.isLoggedIn$.next(true);
+      this.usernameSignal$.set(this.tokenService.getUserNameFromToken());
+      this.isLoggedInSignal$.set(true);
     } else {
-      this.username = undefined;
-      this.isLoggedIn = false;
-      this.username$.next(undefined);
-      this.isLoggedIn$.next(false);
       this.tokenService.removeToken(TokenType.ACCESS);
       this.tokenService.removeToken(TokenType.REFRESH);
     }
@@ -55,8 +46,9 @@ export class UserService {
   logout(): void {
     this.tokenService.removeToken(TokenType.ACCESS);
     this.tokenService.removeToken(TokenType.REFRESH);
-    this.username$.next(undefined);
-    this.isLoggedIn$.next(false);
+    this.usernameSignal$.set(undefined);
+    this.isLoggedInSignal$.set(false);
+  console.log(this.isLoggedInSignal$())
   }
 
   checkIfTokenExpired(): boolean {

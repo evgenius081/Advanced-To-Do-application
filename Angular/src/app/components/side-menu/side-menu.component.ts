@@ -1,4 +1,4 @@
-import { Component, computed, effect } from '@angular/core';
+import { Component, Injector, computed, effect } from '@angular/core';
 import {
   faStar,
   faClock,
@@ -29,14 +29,11 @@ export class SideMenuComponent {
   constructor(
     private listService: ListService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private injector: Injector
   ) {
-    this.userService.username$.subscribe((u) => {
-      if (u !== undefined){
-        this.getLists();
-      }
-    })
     effect(() => {
+      this.userService.usernameSignal$();
       this.lists = this.listService.listChangedSignal$();
     })
   }
@@ -44,6 +41,8 @@ export class SideMenuComponent {
   click() {
     this.icon = !this.icon;
   }
+
+  
 
   ngOnInit() {
     this.getLists();

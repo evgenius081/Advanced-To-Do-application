@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { TodoItem } from '../../shared/classes/item/todo-item';
 import { ItemService } from '../../shared/services/item.service';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -19,9 +19,7 @@ export class HighPriorityComponent {
   faEyeSlash = faEyeSlash;
 
   constructor(private itemService: ItemService, private userService: UserService) {
-    this.userService.username$.subscribe((u) => {
-      this.username = u
-    });
+    effect(() => this.username = this.userService.usernameSignal$());
   }
 
   ngOnInit(): void {

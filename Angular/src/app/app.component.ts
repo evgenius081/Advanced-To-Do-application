@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { UserService } from './shared/services/user.service';
 import { Subscription } from 'rxjs';
 
@@ -8,16 +8,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  private subscription: Subscription;
-
   constructor(private userService: UserService) {
-    this.isLoggedIn = this.userService.isLoggedIn;
-    this.subscription = this.userService.isLoggedIn$.subscribe((i) => this.isLoggedIn = i);
+    effect(() => this.isLoggedIn = this.userService.isLoggedInSignal$());
   }
-  title = 'ToDo Application';
-  isLoggedIn: boolean = false;
 
-  ngOnDestroy() {
-     this.subscription.unsubscribe();
-   }
+  title = 'ToDo Application';
+  isLoggedIn: boolean = this.userService.isLoggedInSignal$();
 }

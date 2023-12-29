@@ -86,8 +86,8 @@ export class RegisterComponent {
           const token: Token = t as Token;
           this.tokenService.writeToken(token.accessToken, TokenType.ACCESS);
           this.tokenService.writeToken(token.refreshToken, TokenType.REFRESH);
-          this.userService.isLoggedIn$.next(true);
-          this.userService.username$.next(this.tokenService.getUserNameFromToken());
+          this.userService.isLoggedInSignal$.set(true);
+          this.userService.usernameSignal$.set(this.tokenService.getUserNameFromToken());
           this.router.navigate(['']);
         })
       });

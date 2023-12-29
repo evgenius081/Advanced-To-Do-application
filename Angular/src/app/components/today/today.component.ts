@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { TodoItem } from '../../shared/classes/item/todo-item';
 import { ItemService } from '../../shared/services/item.service';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -18,14 +18,12 @@ export class TodayComponent {
   faEyeSlash = faEyeSlash;
   username: string | undefined = undefined;
 
-  private subscription: Subscription;
-
   constructor(
     private itemService: ItemService,
     public userService: UserService
   ) {
-    this.username = this.userService.username;
-    this.subscription = this.userService.username$.subscribe((u) => this.username = u);
+    this.username = this.userService.usernameSignal$();
+    effect(() => this.username = this.userService.usernameSignal$());
   }
 
   ngOnInit(): void {
@@ -68,9 +66,5 @@ export class TodayComponent {
       this.items[this.items.indexOf(item)] = value;
     }
     this.updateItemsToShow();
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }
