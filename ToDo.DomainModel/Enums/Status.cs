@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ToDo.DomainModel.Models;
 
-namespace ToDo.DomainModel.Models
+namespace ToDo.DomainModel.Enums
 {
     /// <summary>
     /// Represents possible statuses of <see cref="ToDoItem" />.

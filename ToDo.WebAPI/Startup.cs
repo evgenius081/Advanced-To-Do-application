@@ -3,12 +3,13 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
 using ToDo.DomainModel.Interfaces;
 using ToDo.DomainModel.Models;
 using ToDo.Infrastructure.Context;
@@ -16,6 +17,7 @@ using ToDo.Infrastructure.Interfaces;
 using ToDo.Infrastructure.Repositories;
 using ToDo.Services.Interfaces;
 using ToDo.Services.Services;
+using ToDo.WebAPI.HubClients;
 
 namespace ToDo.WebAPI
 {
@@ -73,18 +75,53 @@ namespace ToDo.WebAPI
             services.AddControllers();
             services.AddScoped<IRepository<ToDoList>, ToDoListRepository>();
             services.AddScoped<IRepository<ToDoItem>, ToDoItemRepository>();
+            services.AddScoped<IRepository<Notification>, NotificationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IToDoItemService, ToDoItemService>();
             services.AddScoped<IToDoListService, ToDoListService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddTransient<IPasswordHasher, PasswordHasher>();
             services.AddTransient<IHttpContextService, HttpContextService>();
+
+            services.AddHttpContextAccessor();
 
             services.AddCors();
 
             services.AddLogging();
-        }
+
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(10);
+                hubOptions.HandshakeTimeout = TimeSpan.FromSeconds(5);
+            });
+
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+            services.AddQuartz(q =>
+            {
+                var jobKey = new JobKey(
+                    this.Configuration.GetSection("Quartz:Groups:Check:CheckItemNotifications").Value,
+                    this.Configuration.GetSection("Quartz:Groups:Check:Name").Value);
+                q.SchedulerId = this.Configuration.GetSection("Quartz:SchedulerId").Value;
+
+                q.UseSimpleTypeLoader();
+                q.UseInMemoryStore();
+                q.UseDefaultThreadPool(tp =>
+                {
+                    tp.MaxConcurrency = 20;
+                });
+
+                q.AddTrigger(t => t
+                    .WithIdentity(this.Configuration.GetSection("Quartz:Triggers:CheckNotifications").Value)
+                    .ForJob(jobKey)
+                    .StartNow()
+                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever())
+                    .WithDescription("Trigger, checking all items if it should notify user about them every 30 minutes."));
+            });
+            }
 
         /// <summary>
         /// Main application configuration.
@@ -108,7 +145,9 @@ namespace ToDo.WebAPI
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins(this.Configuration.GetSection("Frontend").Value));
+            app.UseCors(x => x.AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins(this.Configuration.GetSection("Frontend:Endpoint").Value));
 
             app.UseAuthentication();
             app.UseRouting();
@@ -116,6 +155,10 @@ namespace ToDo.WebAPI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<HubClient>(this.Configuration.GetSection("Hub:Endpoint").Get<string>(), options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

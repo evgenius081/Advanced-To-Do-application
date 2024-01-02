@@ -41,6 +41,8 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiInterceptor } from './shared/services/http-interceptor';
+import { NotificationsComponent } from './components/notifications/notifications.component';
+import { NotificationComponent } from './components/notifications/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +64,8 @@ import { ApiInterceptor } from './shared/services/http-interceptor';
     HighPriorityComponent,
     LoginComponent,
     RegisterComponent,
+    NotificationsComponent,
+    NotificationComponent,
   ],
   imports: [
     BrowserModule,

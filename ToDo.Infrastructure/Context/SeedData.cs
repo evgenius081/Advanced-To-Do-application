@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using ToDo.DomainModel.Enums;
 using ToDo.DomainModel.Models;
 
 namespace ToDo.Infrastructure.Context

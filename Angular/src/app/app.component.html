@@ -4,6 +4,13 @@
     <app-side-menu></app-side-menu>
   </mat-sidenav>
   <main>
-    <router-outlet></router-outlet>
+    <router-outlet />
   </main>
+  <app-notifications *ngIf="this.showNotifications"/>
+  <button class="{{'notification-button' + (this.showNotifications ? ' notification-button-active' : '')}}" (click)="notificationsClick()">
+    <div class="notification-button-container">
+      <fa-icon [icon]="faBell"/>
+      <span class="notifications-number" *ngIf="this.notificationsNumber > 0"></span>
+    </div>
+  </button>
 </mat-sidenav-container>

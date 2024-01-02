@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ToDo.DomainModel.Enums;
 using ToDo.DomainModel.Models;
 
 namespace ToDo.Services.DTOs

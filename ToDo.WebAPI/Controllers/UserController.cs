@@ -11,7 +11,7 @@ namespace ToDo.WebAPI.Controllers
     /// Controller handling requests for account.
     /// </summary>
     [Authorize]
-    [Route("users")]
+    [Route("api/users")]
     public class UserController : Controller
     {
         private readonly IUserService userService;

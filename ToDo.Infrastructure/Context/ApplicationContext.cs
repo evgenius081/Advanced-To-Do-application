@@ -34,12 +34,18 @@ namespace ToDo.Infrastructure.Context
         public virtual DbSet<User> Users { get; set; }
 
         /// <summary>
+        /// Gets or sets set of <see cref="Notification"/>.
+        /// </summary>
+        public virtual DbSet<Notification> Notifications { get; set; }
+
+        /// <summary>
         /// Sets relations between entities and seeds data.
         /// </summary>
         /// <param name="modelBuilder"><see cref="ModelBuilder"/>.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ToDoList>().HasMany<ToDoItem>(l => l.Items).WithOne(i => i.TodoList);
+            modelBuilder.Entity<User>().HasMany<ToDoList>(u => u.Lists).WithOne(l => l.User);
         }
     }
 }

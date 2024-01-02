@@ -1,5 +1,11 @@
-﻿using ToDo.DomainModel.Interfaces;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Quartz;
+using Quartz.Impl;
+using ToDo.DomainModel.Enums;
+using ToDo.DomainModel.Interfaces;
 using ToDo.DomainModel.Models;
+using ToDo.DomainModel.Models.NotificationData;
 using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
 
@@ -12,16 +18,28 @@ namespace ToDo.Services.Services
     {
         private readonly IRepository<ToDoItem> itemRepository;
         private readonly IRepository<ToDoList> listRepository;
+        private readonly IConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ToDoItemService"/> class.
         /// </summary>
         /// <param name="itemRepository">Repository for <see cref="ToDoItem"/>.</param>
         /// <param name="listRepository">Repository for <see cref="ToDoList"/>.</param>
-        public ToDoItemService(IRepository<ToDoItem> itemRepository, IRepository<ToDoList> listRepository)
+        /// <param name="configuration">Configuration.</param>
+        public ToDoItemService(
+            IRepository<ToDoItem> itemRepository,
+            IRepository<ToDoList> listRepository,
+            IConfiguration configuration)
         {
             this.itemRepository = itemRepository;
             this.listRepository = listRepository;
+            this.configuration = configuration;
+        }
+
+        /// <inheritdoc />
+        public List<ToDoItem> GetAll()
+        {
+            return this.itemRepository.GetAll().ToList();
         }
 
         /// <inheritdoc/>
@@ -43,6 +61,11 @@ namespace ToDo.Services.Services
                 ToDoListID = dto.ToDoListID,
                 TodoList = list,
             };
+
+            if (CheckIfRemind(item))
+            {
+                await this.CreateNotification(item, list);
+            }
 
             return await this.itemRepository.InsertAsync(item);
         }
@@ -84,11 +107,7 @@ namespace ToDo.Services.Services
         /// <inheritdoc/>
         public List<ToDoItem> GetItemsForReminder()
         {
-            return this.itemRepository.GetAll().Where(i =>
-            i.Deadline.Subtract(DateTime.Now).TotalMinutes <= 60 &&
-            i.Deadline.Subtract(DateTime.Now).TotalMinutes >= 0 &&
-            i.Status != ItemStatus.Completed &&
-            i.Remind).ToList();
+            return this.itemRepository.GetAll().Where(i => CheckIfRemind(i)).ToList();
         }
 
         /// <inheritdoc/>
@@ -118,6 +137,61 @@ namespace ToDo.Services.Services
             this.itemRepository.Update(foundItem);
 
             return foundItem;
+        }
+
+        /// <summary>
+        /// Checks if item has to be reminded now.
+        /// </summary>
+        /// <param name="item">Item to check for reminding.</param>
+        /// <returns>True/false.</returns>
+        private static bool CheckIfRemind(ToDoItem item)
+        {
+            return item.Deadline.Subtract(DateTime.Now).TotalMinutes <= 90 &&
+            item.Deadline.Subtract(DateTime.Now).TotalMinutes >= 0 &&
+            item.Status != ItemStatus.Completed &&
+            item.Remind;
+        }
+
+        /// <summary>
+        /// Creates job for sending notification.
+        /// </summary>
+        /// <param name="item">Item to be reminded.</param>
+        /// <param name="list">List the item belongs to.</param>
+        /// <returns>Async void.</returns>
+        private async Task CreateNotification(ToDoItem item, ToDoList list)
+        {
+            var schedulerFactory = new StdSchedulerFactory();
+            schedulerFactory.Initialize();
+            var scheduler = await schedulerFactory.GetScheduler(this.configuration.GetSection("Quartz:SchedulerId").Value!);
+            var notificationData = new ReminderNotificationData
+            {
+                TodoItem = item,
+                ToDoItemID = item.Id,
+                Deadline = item.Deadline,
+                TodoList = item.TodoList,
+                ToDoListID = item.ToDoListID,
+                ToDoItemName = item.Title,
+                ToDoListName = list.Title,
+            };
+            var notification = new Notification
+            {
+                NotificationData = notificationData,
+                NotificationState = NotificationState.Created,
+                NotificationType = NotificationType.ReminderNotificationType,
+                RecipientId = list.User!.Id,
+                SentAt = DateTime.UtcNow,
+                Recipient = list.User,
+            };
+            var jobData = new JobDataMap { { "notification", JsonConvert.SerializeObject(notification) } };
+            var trigger = TriggerBuilder.Create()
+                .WithIdentity(this.configuration.GetSection("Quartz:Triggers:SendNotification").Value!)
+                .ForJob(new JobKey(
+                    this.configuration.GetSection("Quartz:Groups:SendNotification:SendItemNotification").Value!,
+                    this.configuration.GetSection("Quartz:Groups:SendNotification:Name").Value!))
+                .StartAt(item.Deadline)
+                .UsingJobData(jobData)
+                .Build();
+            await scheduler!.ScheduleJob(trigger);
         }
     }
 }

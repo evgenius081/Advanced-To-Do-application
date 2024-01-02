@@ -16,7 +16,7 @@ namespace ToDo.WebAPI.Controllers
     /// </summary>
     [ApiController]
     [Authorize]
-    [Route("lists")]
+    [Route("api/lists")]
     public class ToDoListController : ControllerBase
     {
         private readonly IToDoListService toDoListService;

@@ -1,4 +1,5 @@
-﻿using ToDo.DomainModel.Interfaces;
+﻿using ToDo.DomainModel.Enums;
+using ToDo.DomainModel.Interfaces;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;

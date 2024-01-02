@@ -25,6 +25,11 @@ namespace ToDo.Infrastructure.Interfaces
         DbSet<User> Users { get; set; }
 
         /// <summary>
+        /// Gets or sets set of <see cref="Notification"/> in database.
+        /// </summary>
+        DbSet<Notification> Notifications { get; set; }
+
+        /// <summary>
         /// Saves changes in database.
         /// </summary>
         /// <returns>Number of written entries into database.</returns>

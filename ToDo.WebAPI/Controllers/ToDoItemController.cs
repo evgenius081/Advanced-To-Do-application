@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ToDo.DomainModel.Enums;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 using ToDo.Services.Interfaces;
@@ -15,7 +17,7 @@ namespace ToDo.WebAPI.Controllers
     /// </summary>
     [ApiController]
     [Authorize]
-    [Route("items")]
+    [Route("api/items")]
     public class ToDoItemController : ControllerBase
     {
         private readonly IToDoItemService toDoItemService;

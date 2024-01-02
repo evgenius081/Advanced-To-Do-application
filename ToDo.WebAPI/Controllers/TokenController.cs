@@ -8,7 +8,7 @@ namespace ToDo.WebAPI.Controllers
     /// <summary>
     /// Controller handling requests about tokens.
     /// </summary>
-    [Route("tokens")]
+    [Route("api/tokens")]
     public class TokenController : Controller
     {
         private readonly ITokenService tokenService;

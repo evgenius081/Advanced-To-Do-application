@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ToDo.DomainModel.Enums;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 
@@ -11,6 +12,12 @@ namespace ToDo.Services.Interfaces
     /// </summary>
     public interface IToDoItemService
     {
+        /// <summary>
+        /// Gets list of all <see cref="ToDoItem"/>.
+        /// </summary>
+        /// <returns>List of all <see cref="ToDoItem"/>.</returns>
+        List<ToDoItem> GetAll();
+
         /// <summary>
         /// Gets <see cref="ToDoItem"/> by <see cref="ToDoItem.Id"/>.
         /// </summary>
@@ -33,7 +40,7 @@ namespace ToDo.Services.Interfaces
         List<ToDoItem> GetItemsByPriority(Priority priority);
 
         /// <summary>
-        /// Gets items with <see cref="ToDoItem.Remind" /> and which deadline is in hour.
+        /// Gets items with <see cref="ToDoItem.Remind" /> set to true.
         /// </summary>
         /// <returns>List of items.</returns>
         List<ToDoItem> GetItemsForReminder();
@@ -48,14 +55,14 @@ namespace ToDo.Services.Interfaces
         /// <summary>
         /// Updates <see cref="ToDoItem"/> in database.
         /// </summary>
-        /// <param name="item">Item to be updated.</param>
+        /// <param name="dto">Item to be updated.</param>
         /// <returns>Updated item.</returns>
         Task<ToDoItem?> UpdateItem(ToDoItemUpdate dto);
 
         /// <summary>
         /// Adds <see cref="ToDoItem"/> to database.
         /// </summary>
-        /// <param name="item">Item to be updated.</param>
+        /// <param name="dto">Item to be updated.</param>
         /// <returns>Added item with all fields.</returns>
         Task<ToDoItem?> AddItem(ToDoItemCreate dto);
 

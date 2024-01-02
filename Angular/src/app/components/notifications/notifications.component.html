@@ -1,0 +1,11 @@
+<div class="notifications">
+  <div class="notifications-container" *ngIf="this.showNotifications()">
+    <app-notification
+      *ngFor="let notification of notifications()"
+      [notification]="notification"
+    />
+  </div>
+  <p class="no-notifications" *ngIf="!this.showNotifications()">
+    No notifications
+  </p>
+</div>

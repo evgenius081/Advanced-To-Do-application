@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using ToDo.DomainModel.Enums;
 
 namespace ToDo.DomainModel.Models
 {
@@ -12,7 +13,7 @@ namespace ToDo.DomainModel.Models
     public class ToDoItem
     {
         /// <summary>
-        /// Gets or sets unique ID of <see cref="ToDoList"/> item.
+        /// Gets or sets unique ID of <see cref="ToDoItem"/> item.
         /// </summary>
         [Key]
         [ScaffoldColumn(false)]
@@ -20,7 +21,7 @@ namespace ToDo.DomainModel.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets title of <see cref="ToDoList"/> item.
+        /// Gets or sets title of <see cref="ToDoItem"/> item.
         /// </summary>
         [Required]
         [MinLength(5)]
@@ -28,25 +29,25 @@ namespace ToDo.DomainModel.Models
         required public string Title { get; set; }
 
         /// <summary>
-        /// Gets or sets descirption of <see cref="ToDoList"/> item.
+        /// Gets or sets descirption of <see cref="ToDoItem"/> item.
         /// </summary>
         [MaxLength(1000)]
         public string? Description { get; set; }
 
         /// <summary>
-        /// Gets or sets date of creation of the <see cref="ToDoList"/>.
+        /// Gets or sets date of creation of the <see cref="ToDoItem"/>.
         /// </summary>
         [Required]
         required public DateTime CreatedAt { get; set; }
 
         /// <summary>
-        /// Gets or sets deadline of <see cref="ToDoList"/> item.
+        /// Gets or sets deadline of <see cref="ToDoItem"/> item.
         /// </summary>
         [Required]
         required public DateTime Deadline { get; set; }
 
         /// <summary>
-        /// Gets or sets priority of <see cref="ToDoList"/>.
+        /// Gets or sets priority of <see cref="ToDoItem"/>.
         /// </summary>
         [Required]
         required public Priority Priority { get; set; }
@@ -57,7 +58,7 @@ namespace ToDo.DomainModel.Models
         required public bool Remind { get; set; }
 
         /// <summary>
-        /// Gets or sets id of ToDoList this item belongs to.
+        /// Gets or sets id of <see cref="ToDoList"/> this item belongs to.
         /// </summary>
         [Required]
         required public int ToDoListID { get; set; }
@@ -70,7 +71,7 @@ namespace ToDo.DomainModel.Models
         public virtual ToDoList? TodoList { get; set; }
 
         /// <summary>
-        /// Gets or sets ItemStatus of <see cref="ToDoList"/> completeness.
+        /// Gets or sets ItemStatus of <see cref="ToDoItem"/> completeness.
         /// </summary>
         [Required]
         required public ItemStatus Status { get; set; }
