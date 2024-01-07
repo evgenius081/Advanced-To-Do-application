@@ -36,13 +36,13 @@ namespace ToDo.Infrastructure.Repositories
         /// <inheritdoc />
         public IEnumerable<Notification> GetAll()
         {
-            return this.context.Notifications.Include(n => n.Recipient);
+            return this.context.Notifications;
         }
 
        /// <inheritdoc />
         public async Task<Notification?> GetByID(int id)
         {
-            return await this.context.Notifications.Include(n => n.Recipient).SingleOrDefaultAsync(i => i.Id == id);
+            return await this.context.Notifications.SingleOrDefaultAsync(i => i.Id == id);
         }
 
         /// <inheritdoc />
@@ -55,20 +55,9 @@ namespace ToDo.Infrastructure.Repositories
                 throw new ArgumentNullException(nameof(notification), "Notification object must not be null.");
             }
 
-            if (notification.Recipient == null)
-            {
-                throw new ArgumentException("Notification must have recipient assigned.");
-            }
-
-            if (notification.RecipientId != notification.Recipient.Id)
-            {
-                throw new ArgumentException("RecipientId and Recipient.Id do not match.");
-            }
-
             var entryFound = this.context.Notifications.SingleOrDefault(n => n.Id == notification.Id) ?? throw new ArgumentException("There is no such Notification in database.");
             entryFound.NotificationData = notification.NotificationData;
             entryFound.NotificationType = notification.NotificationType;
-            entryFound.Recipient = notification.Recipient;
             entryFound.RecipientId = notification.RecipientId;
             entryFound.NotificationState = notification.NotificationState;
             entryFound.SentAt = notification.SentAt;
@@ -83,16 +72,6 @@ namespace ToDo.Infrastructure.Repositories
             if (notification == null)
             {
                 throw new ArgumentNullException(nameof(notification), "Notification object must not be null.");
-            }
-
-            if (notification.Recipient == null)
-            {
-                throw new ArgumentException("Notification must have recipient assigned.");
-            }
-
-            if (notification.RecipientId != notification.Recipient.Id)
-            {
-                throw new ArgumentException("RecipientId and Recipient.Id do not match.");
             }
 
             if (this.context.Notifications.Any(e => e.Id == notification.Id))

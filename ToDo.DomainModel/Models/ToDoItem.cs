@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using ToDo.DomainModel.Enums;
 
@@ -10,6 +9,7 @@ namespace ToDo.DomainModel.Models
     /// <summary>
     /// Class representing ToDoList item in database.
     /// </summary>
+    [Table("items")]
     public class ToDoItem
     {
         /// <summary>

@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace ToDo.WebAPI.HubClients
+namespace ToDo.Services.HubClients
 {
     /// <summary>
     /// SignalR client.

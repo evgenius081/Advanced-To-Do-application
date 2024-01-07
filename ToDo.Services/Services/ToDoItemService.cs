@@ -7,7 +7,8 @@ using ToDo.DomainModel.Interfaces;
 using ToDo.DomainModel.Models;
 using ToDo.DomainModel.Models.NotificationData;
 using ToDo.Services.DTOs;
-using ToDo.Services.Interfaces;
+using ToDo.Services.Jobs;
+using ToDo.Services.Services.Interfaces;
 
 namespace ToDo.Services.Services
 {
@@ -136,6 +137,11 @@ namespace ToDo.Services.Services
 
             this.itemRepository.Update(foundItem);
 
+            if (CheckIfRemind(foundItem))
+            {
+                await this.CreateNotification(foundItem, foundItem.TodoList);
+            }
+
             return foundItem;
         }
 
@@ -146,10 +152,12 @@ namespace ToDo.Services.Services
         /// <returns>True/false.</returns>
         private static bool CheckIfRemind(ToDoItem item)
         {
-            return item.Deadline.Subtract(DateTime.Now).TotalMinutes <= 90 &&
-            item.Deadline.Subtract(DateTime.Now).TotalMinutes >= 0 &&
-            item.Status != ItemStatus.Completed &&
-            item.Remind;
+            var diff = item.Deadline.Subtract(DateTime.UtcNow).TotalMinutes;
+
+            return item.Remind &&
+            diff <= 90 &&
+            diff >= 0 &&
+            item.Status != ItemStatus.Completed;
         }
 
         /// <summary>
@@ -158,18 +166,21 @@ namespace ToDo.Services.Services
         /// <param name="item">Item to be reminded.</param>
         /// <param name="list">List the item belongs to.</param>
         /// <returns>Async void.</returns>
-        private async Task CreateNotification(ToDoItem item, ToDoList list)
+        private async Task CreateNotification(ToDoItem item, ToDoList? list)
         {
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
             var schedulerFactory = new StdSchedulerFactory();
             schedulerFactory.Initialize();
             var scheduler = await schedulerFactory.GetScheduler(this.configuration.GetSection("Quartz:SchedulerId").Value!);
             var notificationData = new ReminderNotificationData
             {
-                TodoItem = item,
-                ToDoItemID = item.Id,
+                ToDoItemId = item.Id,
                 Deadline = item.Deadline,
-                TodoList = item.TodoList,
-                ToDoListID = item.ToDoListID,
+                ToDoListId = list.Id,
                 ToDoItemName = item.Title,
                 ToDoListName = list.Title,
             };
@@ -178,20 +189,21 @@ namespace ToDo.Services.Services
                 NotificationData = notificationData,
                 NotificationState = NotificationState.Created,
                 NotificationType = NotificationType.ReminderNotificationType,
-                RecipientId = list.User!.Id,
+                RecipientId = list.UserID,
                 SentAt = DateTime.UtcNow,
-                Recipient = list.User,
             };
-            var jobData = new JobDataMap { { "notification", JsonConvert.SerializeObject(notification) } };
-            var trigger = TriggerBuilder.Create()
-                .WithIdentity(this.configuration.GetSection("Quartz:Triggers:SendNotification").Value!)
-                .ForJob(new JobKey(
-                    this.configuration.GetSection("Quartz:Groups:SendNotification:SendItemNotification").Value!,
-                    this.configuration.GetSection("Quartz:Groups:SendNotification:Name").Value!))
-                .StartAt(item.Deadline)
-                .UsingJobData(jobData)
+            var partialNotificationJobData = new JobDataMap { { "notification", JsonConvert.SerializeObject(notification, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All }) } };
+            var sendNotificationJobKey = new JobKey(Guid.NewGuid().ToString());
+            var job = JobBuilder.Create<SendItemNotificationJob>()
+                .WithIdentity(sendNotificationJobKey)
+                .UsingJobData(partialNotificationJobData)
                 .Build();
-            await scheduler!.ScheduleJob(trigger);
+            var trigger = TriggerBuilder.Create()
+                .WithIdentity(Guid.NewGuid().ToString())
+                .ForJob(sendNotificationJobKey)
+                .StartAt(DateTime.UtcNow)
+                .Build();
+            await scheduler!.ScheduleJob(job, trigger);
         }
     }
 }

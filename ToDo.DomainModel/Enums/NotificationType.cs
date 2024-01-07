@@ -1,23 +1,17 @@
-﻿using System;
+﻿using ToDo.DomainModel.Attributes;
 using ToDo.DomainModel.Models.NotificationData;
 
 namespace ToDo.DomainModel.Enums
 {
-    public record NotificationType : Enumeration<NotificationType>
+    /// <summary>
+    /// Represents notification type using name of notification data class.
+    /// </summary>
+    public enum NotificationType
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NotificationType"/> class.
+        /// Represents notification that is sent 1 hour before todo item deadline.
         /// </summary>
-        /// <param name="id">Enumeration item id.</param>
-        /// <param name="type">Enumeration item value.</param>
-        public NotificationType(int id, Type type)
-        : base(id, type)
-        {
-        }
-
-        /// <summary>
-        /// Reminder notification type.
-        /// </summary>
-        public static NotificationType ReminderNotificationType = new (1, typeof(ReminderNotificationData));
+        [StringValue(nameof(ReminderNotificationData))]
+        ReminderNotificationType = 1,
     }
 }

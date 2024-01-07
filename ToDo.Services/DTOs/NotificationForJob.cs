@@ -1,16 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using ToDo.DomainModel.Enums;
 
-namespace ToDo.DomainModel.Models
+namespace ToDo.Services.DTOs
 {
-    /// <summary>
-    /// Class representing notification in database.
-    /// </summary>
-    [Table("notifications")]
-    public class Notification
+    public class NotificationForJob
     {
         /// <summary>
         /// Gets or sets unique notification id.
@@ -25,11 +19,6 @@ namespace ToDo.DomainModel.Models
         /// </summary>
         [Required]
         required public DateTime SentAt { get; set; }
-
-        /// <summary>
-        /// Gets or sets notification data depending on notification type.
-        /// </summary>
-        required public NotificationData.NotificationData NotificationData { get; set; }
 
         /// <summary>
         /// Gets or sets notification type.

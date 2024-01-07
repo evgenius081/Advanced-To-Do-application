@@ -13,27 +13,25 @@ namespace ToDo.DomainModel.Models.NotificationData
         /// Gets or sets id of <see cref="ToDoItem"/> notification belongs to.
         /// </summary>
         [Required]
-        required public int ToDoItemID { get; set; }
+        required public int ToDoItemId { get; set; }
 
         /// <summary>
-        /// Gets or sets <see cref="ToDoItem"/> notification belongs to.
+        /// Gets or sets <see cref="TodoItem.Name" />.
         /// </summary>
         [Required]
-        [JsonIgnore]
-        public virtual ToDoItem? TodoItem { get; set; }
+        required public string ToDoItemName { get; set; }
 
         /// <summary>
         /// Gets or sets id of <see cref="ToDoList"/> item belongs to.
         /// </summary>
         [Required]
-        required public int ToDoListID { get; set; }
+        required public int ToDoListId { get; set; }
 
         /// <summary>
-        /// Gets or sets <see cref="ToDoList"/> of ToDoList item it belongs to.
+        /// Gets or sets <see cref="TodoList.Name" /> of the list item belongs to.
         /// </summary>
         [Required]
-        [JsonIgnore]
-        public virtual ToDoList? TodoList { get; set; }
+        required public string ToDoListName { get; set; }
 
         /// <summary>
         /// Gets or sets deadline of <see cref="ToDoItem"/> item.

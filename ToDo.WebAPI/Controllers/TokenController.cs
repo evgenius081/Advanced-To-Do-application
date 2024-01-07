@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.Services.DTOs;
-using ToDo.Services.Interfaces;
+using ToDo.Services.Services.Interfaces;
 
 namespace ToDo.WebAPI.Controllers
 {
@@ -12,17 +12,14 @@ namespace ToDo.WebAPI.Controllers
     public class TokenController : Controller
     {
         private readonly ITokenService tokenService;
-        private readonly IUserService userService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenController"/> class.
         /// </summary>
         /// <param name="tokenService">Service for handling tokens.</param>
-        /// <param name="userService">Service for handling users.</param>
-        public TokenController(ITokenService tokenService, IUserService userService)
+        public TokenController(ITokenService tokenService)
         {
             this.tokenService = tokenService;
-            this.userService = userService;
         }
 
         /// <summary>

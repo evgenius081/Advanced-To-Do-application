@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
-using ToDo.Services.Interfaces;
+using ToDo.Services.Services.Interfaces;
 
 namespace ToDo.WebAPI.Controllers
 {
@@ -33,15 +33,11 @@ namespace ToDo.WebAPI.Controllers
         /// Returns Action result with all notifications for given user.
         /// </summary>
         /// <param name="userId">Id of a user to search by.</param>
-        /// <returns>HTTP response: OK with list of notifications (may be empty), FORBID if user does not have access to it.</returns>
+        /// <returns>HTTP response: OK with list of notifications (may be empty).</returns>
         [HttpGet]
-        [Route("users/:id")]
-        public IActionResult GetAllByUserId(int userId)
+        public IActionResult GetAllByUserId()
         {
-            if (userId != this.httpContextService.GetIdByContextUser(this.HttpContext.User))
-            {
-                return this.Forbid("You do not have access to this user's notifications.");
-            }
+            var userId = this.httpContextService.GetIdByContextUser(this.HttpContext.User);
 
             return this.Ok(this.notificationService.GetByUserId(userId));
         }

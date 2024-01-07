@@ -1,7 +1,7 @@
 ﻿using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
 
-namespace ToDo.Services.Interfaces
+namespace ToDo.Services.Services.Interfaces
 {
     /// <summary>
     /// Service for <see cref="Notification"/>.

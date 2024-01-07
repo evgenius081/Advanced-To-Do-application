@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDo.Services.Interfaces
+namespace ToDo.Services.Services.Interfaces
 {
     /// <summary>
     /// Interface for password hasher and verifier.

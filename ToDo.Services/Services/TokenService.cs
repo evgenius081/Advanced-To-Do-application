@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ToDo.DomainModel.Interfaces;
 using ToDo.Services.DTOs;
-using ToDo.Services.Interfaces;
+using ToDo.Services.Services.Interfaces;
 
 namespace ToDo.Services.Services
 {

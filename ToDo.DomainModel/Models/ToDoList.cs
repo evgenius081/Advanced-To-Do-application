@@ -10,6 +10,7 @@ namespace ToDo.DomainModel.Models
     /// <summary>
     /// Class representing ToDoList object in database.
     /// </summary>
+    [Table("lists")]
     public class ToDoList
     {
         /// <summary>

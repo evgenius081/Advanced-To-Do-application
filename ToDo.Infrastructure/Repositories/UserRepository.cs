@@ -22,6 +22,12 @@ namespace ToDo.Infrastructure.Repositories
             this.context = context ?? throw new ArgumentNullException(nameof(context), "Context object must not be null.");
         }
 
+        /// <inheritdoc />
+        public IEnumerable<User> GetAll()
+        {
+            return this.context.Users;
+        }
+
         /// <inheritdoc/>
         /// <exception cref="ArgumentException">Thrown if there is no such <see cref="User"/> in database.</exception>
         public void Delete(int id)

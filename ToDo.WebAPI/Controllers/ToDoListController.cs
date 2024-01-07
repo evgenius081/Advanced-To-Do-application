@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ToDo.DomainModel.Models;
 using ToDo.Services.DTOs;
-using ToDo.Services.Interfaces;
+using ToDo.Services.Services.Interfaces;
 
 namespace ToDo.WebAPI.Controllers
 {

@@ -12,21 +12,23 @@ namespace ToDo.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpire = table.Column<DateTime>(type: "datetime2", nullable: false),
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Lists",
+                name: "lists",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,17 +39,40 @@ namespace ToDo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Lists", x => x.Id);
+                    table.PrimaryKey("PK_lists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Lists_Users_UserID",
+                        name: "FK_lists_users_UserID",
                         column: x => x.UserID,
-                        principalTable: "Users",
+                        principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Items",
+                name: "notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NotificationData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NotificationType = table.Column<int>(type: "int", nullable: false),
+                    RecipientId = table.Column<int>(type: "int", nullable: false),
+                    NotificationState = table.Column<int>(type: "int", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_notifications_users_RecipientId",
+                        column: x => x.RecipientId,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "items",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -63,28 +88,33 @@ namespace ToDo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Items", x => x.Id);
+                    table.PrimaryKey("PK_items", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Items_Lists_ToDoListID",
+                        name: "FK_items_lists_ToDoListID",
                         column: x => x.ToDoListID,
-                        principalTable: "Lists",
+                        principalTable: "lists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_ToDoListID",
-                table: "Items",
+                name: "IX_items_ToDoListID",
+                table: "items",
                 column: "ToDoListID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Lists_UserID",
-                table: "Lists",
+                name: "IX_lists_UserID",
+                table: "lists",
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_Username",
-                table: "Users",
+                name: "IX_notifications_RecipientId",
+                table: "notifications",
+                column: "RecipientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_Username",
+                table: "users",
                 column: "Username",
                 unique: true);
         }
@@ -93,13 +123,16 @@ namespace ToDo.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Items");
+                name: "items");
 
             migrationBuilder.DropTable(
-                name: "Lists");
+                name: "notifications");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "lists");
+
+            migrationBuilder.DropTable(
+                name: "users");
         }
     }
 }

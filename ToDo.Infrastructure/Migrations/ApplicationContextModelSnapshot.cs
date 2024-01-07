@@ -22,6 +22,37 @@ namespace ToDo.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ToDo.DomainModel.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NotificationData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NotificationState")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.ToTable("notifications");
+                });
+
             modelBuilder.Entity("ToDo.DomainModel.Models.ToDoItem", b =>
                 {
                     b.Property<int>("Id")
@@ -61,7 +92,7 @@ namespace ToDo.Infrastructure.Migrations
 
                     b.HasIndex("ToDoListID");
 
-                    b.ToTable("Items");
+                    b.ToTable("items");
                 });
 
             modelBuilder.Entity("ToDo.DomainModel.Models.ToDoList", b =>
@@ -87,7 +118,7 @@ namespace ToDo.Infrastructure.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Lists");
+                    b.ToTable("lists");
                 });
 
             modelBuilder.Entity("ToDo.DomainModel.Models.User", b =>
@@ -118,7 +149,18 @@ namespace ToDo.Infrastructure.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("users");
+                });
+
+            modelBuilder.Entity("ToDo.DomainModel.Models.Notification", b =>
+                {
+                    b.HasOne("ToDo.DomainModel.Models.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
                 });
 
             modelBuilder.Entity("ToDo.DomainModel.Models.ToDoItem", b =>

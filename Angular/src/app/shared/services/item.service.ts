@@ -33,6 +33,7 @@ export class ItemService {
   }
 
   createItem(item: TodoItemCreate): Observable<object> {
+    console.log(item);
     const token: string = this.tokenService.getToken(TokenType.ACCESS) ?? '';
     return this.httpService
       .post<TodoItemCreate>("items", token, item)

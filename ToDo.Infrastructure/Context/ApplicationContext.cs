@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ToDo.DomainModel.Models;
+using ToDo.DomainModel.Models.NotificationData;
 using ToDo.Infrastructure.Interfaces;
 
 namespace ToDo.Infrastructure.Context
@@ -46,6 +48,9 @@ namespace ToDo.Infrastructure.Context
         {
             modelBuilder.Entity<ToDoList>().HasMany<ToDoItem>(l => l.Items).WithOne(i => i.TodoList);
             modelBuilder.Entity<User>().HasMany<ToDoList>(u => u.Lists).WithOne(l => l.User);
+            modelBuilder.Entity<Notification>().Property(n => n.NotificationData).HasConversion(
+                v => JsonConvert.SerializeObject(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore }),
+                v => JsonConvert.DeserializeObject<NotificationData>(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore }) !);
         }
     }
 }

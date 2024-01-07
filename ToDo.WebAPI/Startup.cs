@@ -15,9 +15,10 @@ using ToDo.DomainModel.Models;
 using ToDo.Infrastructure.Context;
 using ToDo.Infrastructure.Interfaces;
 using ToDo.Infrastructure.Repositories;
-using ToDo.Services.Interfaces;
+using ToDo.Services.HubClients;
+using ToDo.Services.Jobs;
 using ToDo.Services.Services;
-using ToDo.WebAPI.HubClients;
+using ToDo.Services.Services.Interfaces;
 
 namespace ToDo.WebAPI
 {
@@ -98,14 +99,9 @@ namespace ToDo.WebAPI
                 hubOptions.HandshakeTimeout = TimeSpan.FromSeconds(5);
             });
 
-            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
             services.AddQuartz(q =>
             {
-                var jobKey = new JobKey(
-                    this.Configuration.GetSection("Quartz:Groups:Check:CheckItemNotifications").Value,
-                    this.Configuration.GetSection("Quartz:Groups:Check:Name").Value);
-                q.SchedulerId = this.Configuration.GetSection("Quartz:SchedulerId").Value;
+                q.SchedulerName = this.Configuration.GetSection("Quartz:SchedulerId").Value;
 
                 q.UseSimpleTypeLoader();
                 q.UseInMemoryStore();
@@ -114,14 +110,19 @@ namespace ToDo.WebAPI
                     tp.MaxConcurrency = 20;
                 });
 
+                var checkNewItemsJobKey = new JobKey(nameof(CheckForNewNotificationsJob));
+
+                q.AddJob<CheckForNewNotificationsJob>(checkNewItemsJobKey);
+
                 q.AddTrigger(t => t
                     .WithIdentity(this.Configuration.GetSection("Quartz:Triggers:CheckNotifications").Value)
-                    .ForJob(jobKey)
+                    .ForJob(checkNewItemsJobKey)
                     .StartNow()
-                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever())
-                    .WithDescription("Trigger, checking all items if it should notify user about them every 30 minutes."));
+                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(30)).RepeatForever()));
             });
-            }
+
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+        }
 
         /// <summary>
         /// Main application configuration.
@@ -145,9 +146,14 @@ namespace ToDo.WebAPI
             }
 
             app.UseHttpsRedirection();
-            app.UseCors(x => x.AllowAnyHeader()
-            .AllowAnyMethod()
-            .WithOrigins(this.Configuration.GetSection("Frontend:Endpoint").Value));
+            app.UseCors(x =>
+            {
+                x.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .SetIsOriginAllowed((x) => true)
+                .WithOrigins(this.Configuration.GetSection("Frontend:Endpoint").Value);
+            });
 
             app.UseAuthentication();
             app.UseRouting();

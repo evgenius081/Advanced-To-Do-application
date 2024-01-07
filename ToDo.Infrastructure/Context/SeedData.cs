@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ToDo.DomainModel.Enums;
 using ToDo.DomainModel.Models;
 

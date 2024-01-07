@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using ToDo.Services.DTOs;
 
-namespace ToDo.Services.Interfaces
+namespace ToDo.Services.Services.Interfaces
 {
     /// <summary>
     /// Service for handling JWT tokens.

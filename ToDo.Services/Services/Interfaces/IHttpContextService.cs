@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDo.Services.Interfaces
+namespace ToDo.Services.Services.Interfaces
 {
     /// <summary>
     /// Interface for http context helper.

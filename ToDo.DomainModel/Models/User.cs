@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using ToDo.DomainModel.Models;
 
 namespace ToDo.DomainModel.Models
 {
@@ -12,6 +11,7 @@ namespace ToDo.DomainModel.Models
     /// Class representing user in database.
     /// </summary>
     [Index(nameof(Username), IsUnique = true)]
+    [Table("users")]
     public class User
     {
         /// <summary>
